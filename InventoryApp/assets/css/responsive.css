@@ -1,0 +1,230 @@
+/* Responsive CSS */
+@media screen and (max-width:1199px) {
+	.sidebar {
+		position: static;
+	}
+	.report-feedback {
+		position: static;
+	}
+	.sidebar .nav-link, .report-feedback a {
+		display: block;
+		padding: 15px 30px;
+	}
+	.sidebar-sticky {
+		height: auto;
+		padding-bottom: 15px;
+	}
+	.main {
+		padding-top: 0;
+	}
+	.modal .close {
+		position: relative;
+		margin-bottom: 10px;
+		z-index: 1;
+		right: 0;
+		left: auto;
+	}
+}
+@media screen and (max-width:1024px) {
+	.campaign-img .controls .control-item.prev {
+		left: 10px;
+	}
+	.campaign-img .controls .control-item.next {
+		right: 10px;
+	}
+}
+@media screen and (max-width:991px) {
+	.space {
+		padding: 0 30px 10px;
+	}
+    .searchBoxSpace {
+        padding: 30px 30px 10px 10px !important;
+    }
+	.btn-block {
+		padding-top: 30px;
+	}
+	.visits-followers {
+		margin-top: 30px;
+		margin-bottom: 30px;
+	}
+	.nice-select {
+		margin-bottom: 0;
+	}
+	.campaign-info {
+		padding-top: 0;
+	}
+	.add-card {
+		padding-top: 0;
+	}
+	.add-card .btn-block {
+		padding-top: 20px;
+		padding-bottom: 0;
+	}
+	.add-card-form .button-block {
+		padding-top: 0;
+	}
+
+    .searchBoxSpace {
+        padding: 10px;
+    }
+}
+@media screen and (max-width:767px) {
+	.sidebar .nav-link, .report-feedback a {
+		padding: 12px 15px;
+	}
+	.main {
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+	label {
+		padding-right: 0;
+	}
+	.table-bordered td {
+		height: 60px;
+		max-width: 
+	}
+	form {
+		padding-top: 40px;
+	}
+	.personal-information {
+		padding-bottom: 30px;
+	}
+	.company-logo {
+		margin-bottom: 35px;
+	}
+	.campaign-btn .nice-select .option {
+		padding: 15px 40px;
+	}
+	.campaign-img .controls .control-item {
+		width: 50px;
+		height: 50px;
+	}
+	.campaign-img .controls .control-item.prev:before, .campaign-img .controls .control-item.next:before {
+		font-size: 30px;
+	}
+	.modal-bottom .user-image, .modal-bottom .user-infor {
+		width: 100%;
+		text-align: center;
+	}
+	.modal-bottom .user-infor {
+		padding-left: 0;
+	}
+}
+@media screen and (max-width:680px) {
+	.package-listing .col-sm-3 {
+		flex: 0 0 50%;
+		max-width: 50%;
+	}
+	.space {
+		padding: 0 20px 0px;
+	}
+    .searchBoxSpace {
+        padding: 10px;
+    }
+}
+@media screen and (max-width:580px) {
+	.user-name span {
+		display: none;
+	}
+	.navbar-collapse {
+		flex-basis: inherit;
+	}
+	.user-name img {
+		padding-right: 0;
+	}
+	.navbar-nav .nav-link {
+		display: inline-block;
+		float: right;
+	}
+	.navbar-nav .dropdown-menu {
+		position: absolute;
+	}
+	.custom-radio-block {
+		padding-top: 0;
+		text-align: left;
+	}
+	.custom-control-inline {
+		width: 40%;
+	}
+}
+@media screen and (max-width:575px) {
+	.overview-listing [class*="col-"] {
+		margin: 10px 0;
+	}
+	.overview-listing h6 {
+		padding: 10px 0 0;
+	}
+	.visits-followers [class*="col-"] {
+		text-align: center !important;
+		padding: 5px 0;
+	}
+	.masonry-item {
+		width: 50%;
+	}
+	.information li {
+		text-align: center;
+		overflow: hidden;
+		padding: 10px 25px;
+	}
+	.information li span {
+		text-align: center !important;
+		display: block;
+		width: 100%;
+	}
+	.width-fix [class*="col-"] {
+		width: 80px;
+	}
+	.exipration-date .row [class*="col-"]:first-child {
+		margin-bottom: 25px;
+	}
+	.add-card-form .btn {
+		width: 100%;
+	}
+}
+@media screen and (max-width:479px) {
+	.package-listing .col-sm-3 {
+		flex: 0 0 100%;
+		max-width: 100%;
+	}
+	.custom-file, .custom-file input {
+		height: 200px;
+	}
+	.btn.border-pink {
+		padding: 14px 12px;
+		width: 100%;
+		min-width: 100%;
+		white-space: normal;
+		word-wrap: break-word;
+	}
+    .uploadButton {
+        padding-top: 24px !important;
+        padding-bottom: 24px !important;
+        vertical-align: middle;
+    }
+    .btnFileUpload {
+        padding: 15px 15px !important;
+        
+    }
+	.btn.btn-white .fa, .btn.border-pink .fa {
+		padding-left: 0;
+		vertical-align: bottom;
+	}
+	.btn.solid-pink.large {
+		font-size: 15px;
+		width: 100%;
+		min-width: 100%;
+	}
+	.btn.btn-white, .add-card > .btn-block > .btn {
+		width: 100%;
+		padding: 14px 20px;
+	}
+	.campaign-btn .nice-select {
+		width: 100%;
+	}
+	.campaign-btn .nice-select:after {
+		right: 50px;
+	}
+	.sidebar .nav-link, .report-feedback a {
+		font-size: 16px;
+	}
+}

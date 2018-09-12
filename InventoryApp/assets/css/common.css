@@ -1,0 +1,272 @@
+﻿
+/***
+Sorting
+***/
+.sorting,
+.sorting_asc,
+.sorting_desc,
+.sorting_asc_disabled,
+.sorting_desc_disabled {
+    cursor: pointer;
+}
+
+    .sorting:after,
+    .sorting_asc:after,
+    .sorting_desc:after,
+    .sorting_asc_disabled:after,
+    .sorting_desc_disabled:after {
+        display: none;
+    }
+
+.sorting {
+    background: url("/images/sort_both.png") no-repeat center right;
+}
+
+.sorting_asc {
+    background: url("/images/sort_asc.png") no-repeat center right;
+}
+
+.sorting_desc {
+    background: url("/images/sort_desc.png") no-repeat center right;
+}
+
+.sorting_asc_disabled {
+    background: url("/images/sort_asc_disabled.png") no-repeat center right;
+}
+
+.sorting_desc_disabled {
+    background: url("/images/sort_desc_disabled.png") no-repeat center right;
+}
+
+.box-main > .box a {
+    color: white;
+    text-decoration: none;
+}
+
+.searcharea > .col-md-1 button {
+    color: white;
+}
+
+.PrevButton {
+    background-color: #EB6F25 !important;
+    color: white !important;
+}
+
+.NextButton {
+    background-color: #282828 !important;
+    color: white !important;
+}
+
+    .PrevButton i,
+    .NextButton i {
+        vertical-align: top !important;
+    }
+
+.pagingActive {
+    background-color: #FE0B75 !important;
+    color: white !important;
+}
+
+.CharityCheckboxList {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 150px;
+    overflow-y: scroll;
+    text-align: left;
+    float: left;
+    width: 100%;
+    padding: 0px 20px 0px 20px;
+}
+
+
+.CharityCheckboxListError {
+    border: 1px solid #b94a48;
+    border-radius: 4px;
+    height: 150px;
+    overflow-y: scroll;
+}
+
+.LogoError {
+    border: 1px solid #b94a48 !important;
+}
+
+
+.pagination {
+    margin-top: 0;
+}
+
+    .pagination a {
+        border: 1px solid #ddd;
+        padding: 8px 14px;
+        color: #aaa;
+        float: left;
+        margin: 2px;
+        background: #fff;
+    }
+
+        .pagination a i.fa {
+            color: #E8E8E8;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .pagination a.active {
+            color: #fff;
+            background: #FE0B75;
+        }
+.reg-main {
+    background: #FCFCFC;
+    border: 5px solid #fff;
+    padding: 30px;
+}
+
+.mainTerms {
+    margin: 0 auto !important;
+    width: 100% !important;
+    padding: 85px 50px 22px;
+}
+
+
+.fileUpload {
+    position: relative;
+    overflow: hidden;
+}
+
+    .fileUpload span {
+        cursor: pointer;
+        color: #EE7A34;
+        position: relative;
+        z-index: 9;
+    }
+
+        .fileUpload span i.fa {
+            margin-right: 10px;
+        }
+
+    .fileUpload #txtcompanylogo {
+        width: 100%;
+        left: 0;
+        cursor: pointer;
+    }
+
+.company .fileUpload {
+    width: 100%;
+    padding: 6px 12px;
+    background: #fff;
+    border: 1px dashed #ddd;
+    text-align: center;
+    height: 38px;
+    cursor: pointer;
+}
+
+.fileUpload span.companylogo {
+    color: #808080;
+    display: block;
+    cursor: pointer;
+}
+
+.fileUpload input.upload, .fileimage #flimage {
+    position: absolute;
+    top: 0;
+    left: 15px;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    width: 0;
+}
+
+.fileimage .fallback #flimage {
+    height: 100%;
+    width: 100%;
+    float: left;
+    left: 0;
+    cursor: pointer;
+}
+
+.fileUpload input.upload, .fileimage #CampaignImage {
+    position: absolute;
+    top: 0;
+    left: 15px;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    width: 0;
+}
+
+.fileimage .fallback #CampaignImage {
+    height: 100%;
+    width: 100%;
+    float: left;
+    left: 0;
+    cursor: pointer;
+}
+
+.fileUpload input.upload, .fileimage #CouponCode {
+    position: absolute;
+    top: 0;
+    left: 15px;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    width: 0;
+}
+
+.fileimage .fallback #CouponCode {
+    height: 100%;
+    width: 100%;
+    float: left;
+    left: 0;
+    cursor: pointer;
+}
+
+.fileimage #imgCampaignImage {
+    width: 100%;
+}
+
+.fileimage #imgCampaignDetailsImage {
+    width: 100%;
+}
+
+.fileimage #upimg {
+    width: 100%;
+}
+
+.fileimage .fallback {
+    border: 2px dashed #ddd;
+    float: left;
+    position: relative;
+}
+
+.frmregister {
+    margin-top: -60px !important;
+}
+
+.linkCommon {
+    color: #FE0B75;
+    text-decoration: underline;
+}
+
+.signupBack {
+    float: right;
+    margin-top: -30px;
+    font-weight: bold;
+}
+
+.hideControl {
+    display: none;
+}
+
+.centerpage {
+    width: 360px;
+    margin: auto;
+}
+
+.commonColor {
+    color: #FE0B75;
+}

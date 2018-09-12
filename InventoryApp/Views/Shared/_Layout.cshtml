@@ -1,44 +1,127 @@
-﻿<!DOCTYPE html>
-<html>
+﻿@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>@ViewBag.Title</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="~/assets/images/favicon-16x16.png">
+    @Styles.Render("~/assets/css/common.css")
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:300,400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+    @Styles.Render("~/assets/css/loadingbar.css")
+    <link href="~/assets/css/nice-select.min.css" rel="stylesheet" type="text/css" media="all">
+    <link href="~/assets/css/styles.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/responsive.css" rel="stylesheet" />
+    <link href="~/assets/css/common.css" rel="stylesheet" />
+    @RenderSection("header", required: false)
+    @Scripts.Render("~/bundles/jquery")
+    <style>
 
+        .userBtn {
+            background: white;
+            border: none;
+            font-family: 'AvenirLTStd-Book';
+            font-size: 17px;
+            letter-spacing: 1px;
+            outline: none;
+        }
+
+            .userBtn:focus {
+                outline: none;
+            }
+
+        .open .dropdown-menu {
+            display: block;
+        }
+    </style>
+    <script src="~/Areas/Admin/assets/Scripts/scripts.js" type="text/javascript"></script>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
+    <div id="divLoader" style="display: none;">
+        <div style="border: none; z-index: 100010; position: fixed; top: 0px; bottom: 0px; left: 0px; right: 0px; overflow: hidden; padding: 0; margin: 0; background-color: #000; filter: alpha(opacity=40); opacity: 0.20;">
+        </div>
+    </div>
+    <div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="main col-xl-12 ml-sm-auto">
+                    @RenderBody()
+                </div>
             </div>
         </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
-
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    <script type="text/javascript" src="~/assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="~/assets/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/assets/js/plugins.js"></script>
+    <script type="text/javascript" src="~/assets/js/scripts.js"></script>
+    <link href="~/Content/select2.min.css" rel="stylesheet" />
+    <script src="~/Scripts/select2/select2.min.js"></script>
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/assets/scripts/jquery.loadingbar.min.js")
+    @Scripts.Render("~/Scripts/jquery.validate.js")
+    @Scripts.Render("~/Scripts/jquery.validate.unobtrusive.js")
+    @Scripts.Render("~/Scripts/CommonFunctions.js")
     @RenderSection("scripts", required: false)
+    <script type="text/javascript">var lsLoginUrl = "#";
+        jQuery(document).ready(function () {
+
+            $('a[id*=_loader]').click(function () {
+                if ($("#loadingbar").length === 0) {
+                    $("body").append("<div id='loadingbar'></div>")
+                    $("#divLoader").css("display", "block");
+                    $("#loadingbar").addClass("waiting").append($("<dt/><dd/>"));
+                    $("#loadingbar").width((50 + Math.random() * 30) + "%");
+                }
+            });
+
+            $('input[name="password"]').attr('autocomplete', 'off');
+
+            $(document).ajaxError(
+                function (event, jqXHR, ajaxSettings, thrownError) {
+                    if (jqXHR.status == '403') {
+                    }
+                    else if (jqXHR.status == '401') {
+
+                    }
+                });
+
+            $.ajaxSetup({
+                beforeSend: function () {
+                    if ($("#loadingbar").length === 0) {
+                        $("body").append("<div id='loadingbar'></div>")
+                        $("#divLoader").css("display", "block");
+                        $("#loadingbar").addClass("waiting").append($("<dt/><dd/>"));
+                        $("#loadingbar").width((50 + Math.random() * 30) + "%");
+                    }
+                },
+                complete: function () {
+                    $("#loadingbar").width("101%").delay(200).fadeOut(400, function () {
+                        $(this).remove();
+                        $("#divLoader").css("display", "none");
+                    });
+                }
+            });
+        });
+
+        window.onload = function () {
+
+            var tabID = $("#ActiveMenu").text();
+
+            $(".menu1").each(function (index) {
+                var menuSelected = $(this).attr("id");
+                $(this).parent().removeClass("open active");
+                if (String(tabID).toLowerCase() === String(menuSelected).toLowerCase()) {
+                    $(this).parent().addClass("open active");
+                    $(this).append("<span class='selected'></span>")
+                }
+            });
+        }
+
+        function openWinInFullScreen() {
+            $(document).fullScreen(true);
+        }</script>
 </body>
 </html>
