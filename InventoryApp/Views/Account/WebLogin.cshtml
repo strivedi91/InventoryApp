@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "WebLogin";
+}
+<link href="~/assets/css/styles.css" rel="stylesheet" />
+<center>
+    <section>
+        <div class="row">
+            <div class="col-md-12 col-lg-5 centerpage">
+                <div class="white-box bg-white space pinkborder">
+                    <div class="form-group">
+                        <img src="/assets/images/logo.png" alt="Purpics Logo">
+                    </div>
+                    <form name="frmlogin" class="" method="post">
+
+                        @*login-form signup*@
+                        <div class="form-group">
+                            <div class="btn-block-solid-pink text-center">
+                                <a href="@Url.Action("Index", "Registration", new { area = "Charity" })" class="btn btn-gradient" style="width: 100%">SIGN UP AS  A <br /> CHARITY</a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="btn-block-solid-pink text-center">
+                                <a href="@Url.Action("Index", "Registration", new { area = "StudentOrganization" })" class="btn btn-gradient" style="width: 100%">SIGN UP AS A <br /> STUDENT ORGANIZATION</a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="btn-block-solid-pink  text-center">
+                                <a href="@Url.Action("Index", "Registration", new { area = "Company" })" class="btn btn-gradient" style="width: 100%">SIGN UP AS A <br /> COMPANY</a>
+                            </div>
+                        </div>
+                        <div class="form-group pull-right">
+                            <span>Already have an account? @Html.ActionLink("Login", "Login", "Account", new { area = "" }, htmlAttributes: new { id = "loginLink", Class = "loginlink" }) </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</center>
+<div class="col-lg-12 text-center" style="color:#FE0B75">Copyrights © @DateTime.Now.Year purpics.com. All Rights Reserved.</div>
+
+

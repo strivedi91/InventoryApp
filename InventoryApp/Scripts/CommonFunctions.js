@@ -46,7 +46,7 @@ function refreshCreditBalance() {
 }
 
 /**
-Purpics Site Javascript
+Javascript
 **/
 
 function isNumericValue(e) {
