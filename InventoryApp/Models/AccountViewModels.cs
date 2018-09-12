@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace InventoryApp.Models
@@ -65,7 +66,6 @@ namespace InventoryApp.Models
     public class RegisterViewModel
     {
         [Required]
-        [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
@@ -79,6 +79,30 @@ namespace InventoryApp.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [Display(Name = "Name")]
+        public string Name { get; set; }
+
+        [Required]
+        [Display(Name = "Address")]
+        public string Address { get; set; }
+
+        [Required]
+        [Display(Name = "PhoneNumber")]
+        public string PhoneNumber { get; set; }
+
+        [Required]
+        [Display(Name = "DepositAmount")]
+        public decimal DepositAmount { get; set; }
+
+        [Required]
+        [Display(Name = "MembershipDuration")]
+        public int MembershipDuration { get; set; }
+
+        public bool IsPaid { get; set; }
+
+        public DateTimeOffset? PaymentDate { get; set; }
     }
 
     public class ResetPasswordViewModel
