@@ -1,0 +1,44 @@
+﻿@model InventoryApp.Areas.Admin.Models.UserViewModel
+@{
+    ViewBag.Title = "User Detail";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<section>
+    <div>
+        <div class="breadcrumbs">
+            <a href="@Url.RouteUrl("Admin_default", new { action = "", controller = "AdminDashBoard" })" title="Home/Dashboard">Home</a><i class="fa fa-angle-right"></i>
+            <span>Company Detail</span>
+            @*<a href="@Url.RouteUrl("Admin_default", new { action = "", controller = "ManageCompany" })" style="color:white; text-decoration:none; background-color:#EB6F25;" class="btn btn-default create pull-right" title="Back"><i class="fa fa-angle-left"></i>Back</a>*@
+            @if (Request.UrlReferrer != null)
+            {
+                <a href="@Request.UrlReferrer" style="color:white; text-decoration:none; background-color:#EB6F25;" class="btn btn-default create pull-right" title="Back"><i class="fa fa-angle-left"></i>Back</a>
+            }
+            else
+            {
+                <a href="@Url.RouteUrl("Admin_default", new { action = "", controller = "ManageCompany" })" style="color:white; text-decoration:none; background-color:#EB6F25;" class="btn btn-default create pull-right" title="Back"><i class="fa fa-angle-left"></i>Back</a>
+            }
+            
+        </div>
+        <div>
+            <hr />
+        </div>
+        <div id="divDetails">
+            @Html.Partial("_UserDetail", Model)
+        </div>
+
+    </div>
+        <script type="text/javascript">
+            var lsApproveCompany = '@Url.RouteUrl("Admin_default", new { controller = "ManageCompany", action = "approveCompany" })';
+            var lsDeclineCompanyStatus = '@Url.RouteUrl("Admin_default", new { controller = "ManageCompany", action = "declineCompanyStatus" })';
+        </script>
+        <!-- END PAGE CONTENT BODY -->
+        <!-- END CONTENT BODY -->
+        <script src="@Url.Content("~/Areas/Admin/assets/scripts/CompanyDetail.js?ver=1.2")" type="text/javascript"></script>
+    
+</section>
+<script>
+    $(document).ready(function () {
+        $(".menu-item a").removeClass("active");
+        $('#lnkManageCompany').addClass('active');
+    });
+</script>

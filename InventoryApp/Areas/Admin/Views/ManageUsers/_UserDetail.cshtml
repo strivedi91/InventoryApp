@@ -1,0 +1,131 @@
+﻿@model PurpicsWeb.Areas.Admin.ViewModels.Company.CompanyViewModel
+<div class="row">
+    <div class="col-lg-8 section-title">
+        <h2 class="pull-left wrapcontent">@Model.LegalEntityName</h2>
+        @Html.Hidden("hdnId", @Model.Id)
+    </div>
+    <div class="col-lg-4 section-title">
+        <h2 class="pull-right">
+            Status:
+            @if (@Model.Status == (int)PurpicsWeb.Services.CommonFunctions.CommonEnums.UserStatus.Pending)
+            {
+                <strong>Waiting For Approval</strong>
+            }
+            else if (@Model.Status == (int)PurpicsWeb.Services.CommonFunctions.CommonEnums.UserStatus.Approved)
+            {
+                <strong>Approved</strong>
+            }
+            else
+            {
+                <strong>Declined</strong>
+            }
+        </h2>
+    </div>
+</div>
+@if (TempData["SuccessMsg"] != null && TempData["SuccessMsg"].ToString() != "")
+{
+    <div class="alert alert-success ">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <span> @TempData["SuccessMsg"].ToString()</span>
+
+        @{TempData["SuccessMsg"] = "";}
+    </div>
+}
+@if (TempData["ErrorMsg"] != null && TempData["ErrorMsg"].ToString() != "")
+{
+    <div class="alert alert-danger ">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        @TempData["ErrorMsg"].ToString()
+    </div>
+}
+<form action="#" class="form-horizontal form-bordered">
+    <div class="account-main">
+        <div class="row">
+            <div class="col-lg-6" id="divGeneralInfo">
+                <div class="white-box bg-white">
+                    <div class="box-title">GENERAL INFORMATION:</div>
+                    <ul class="price-listing per-info">
+                        <li>Username:<span class="pull-right">@Model.AspNetUsername</span></li>
+                        <li>Contact Name:<span class="pull-right">@Model.ContactPerson</span></li>
+                        <li>Contact Phone:<span class="pull-right">@Model.ContactPhone</span></li>
+                        <li>About Company:<span class="pull-right">@Model.About</span></li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="white-box bg-white">
+                    <div class="box-title">OTHER INFORMATION:</div>
+                    <ul class="price-listing per-info">
+                        <li>Legal Entity Name:<span class="pull-right">@Model.LegalEntityName</span></li>
+                        <li>Company Name:<span class="pull-right">@Model.CompanyName</span></li>
+                        <li>Company Address:<span class="pull-right">@Model.Address</span></li>
+                        <li>
+                            Company Logo:<span class="pull-right">
+                                <img src="@Href(@System.Configuration.ConfigurationManager.AppSettings["CompanyLogo"] + @Model.LogoFilename)" id="upimg">
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="">&nbsp;</div>
+        @if (Model.Status == 1)
+        {
+            <div class="padding-zero bank-info">
+                <div class="form-group pull-right agree bank">
+                    <button type="submit" class="btn btn-gradient" onclick="approveCompany(); return false;" title="Approve">Approve</button>
+                    <button type="submit" class="btn btn-gradient" onclick="confirmDecline(); return false;" title="Decline">Decline</button>
+                </div>
+            </div>
+            <div class="modal fade" tabindex="-1" role="dialog" id="modelDeleteCard">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size:larger;">&times;</span></button>
+                            <h4 class="modal-title">Confirmation</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to decline this company?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-addnew" onclick="DeleteCardClick();">Yes</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div>
+            <script>
+
+                function confirmDecline() {
+
+                    jQuery.noConflict();
+                    (function ($) {
+                        $('#modelDeleteCard').modal('show');
+                    }
+                    )(jQuery);
+                }
+                function DeleteCardClick() {
+                    jQuery.noConflict();
+                    (function ($) {
+                        $('#modelDeleteCard').modal('hide');
+                    }
+                    )(jQuery);
+                    if ($("#loadingbar").length === 0) {
+                        $("body").append("<div id='loadingbar'></div>")
+                        $("#divLoader").css("display", "block");
+                        $("#loadingbar").addClass("waiting").append($("<dt/><dd/>"));
+                        $("#loadingbar").width((50 + Math.random() * 30) + "%");
+                    }
+                    declineCompanyStatus();
+                    $("#loadingbar").width("101%").delay(200).fadeOut(400, function () {
+                        $(this).remove();
+                        $("#divLoader").css("display", "none");
+                    });
+                }
+            </script>
+        }
+    </div>
+</form>
+

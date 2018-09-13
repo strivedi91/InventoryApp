@@ -72,6 +72,9 @@
     <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
     </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -233,6 +236,8 @@
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\ManageUsersController.cs" />
+    <Compile Include="Areas\Admin\Models\UserModel.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\API\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
@@ -241,70 +246,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Pager.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\Entities\AspNetRole.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\AspNetUser.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\AspNetUserCategory.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\AspNetUserClaim.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\AspNetUserDocumentType.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\AspNetUserLogin.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\AspNetUserProduct.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\Cart.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\Category.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\C__MigrationHistory.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\DocumentType.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\InventoryAppModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>InventoryAppModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\InventoryAppModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\InventoryAppModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>InventoryAppModel.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\Offer.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\Order.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\OrderDetail.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\Product.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\TierPricing.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -312,6 +255,26 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\Admin\assets\css\DatePicker.css" />
+    <Content Include="Areas\Admin\assets\scripts\AppSettings.js" />
+    <Content Include="Areas\Admin\assets\scripts\Campaign.js" />
+    <Content Include="Areas\Admin\assets\scripts\CampaignDashboard.js" />
+    <Content Include="Areas\Admin\assets\scripts\CampaignDetails.js" />
+    <Content Include="Areas\Admin\assets\scripts\CampaignReport.js" />
+    <Content Include="Areas\Admin\assets\scripts\Charity.js" />
+    <Content Include="Areas\Admin\assets\scripts\CharityCategory.js" />
+    <Content Include="Areas\Admin\assets\scripts\CharityDetail.js" />
+    <Content Include="Areas\Admin\assets\scripts\CharityPayment.js" />
+    <Content Include="Areas\Admin\assets\scripts\Company.js" />
+    <Content Include="Areas\Admin\assets\scripts\CompanyDetail.js" />
+    <Content Include="Areas\Admin\assets\scripts\GiftCard.js" />
+    <Content Include="Areas\Admin\assets\scripts\Packages.js" />
+    <Content Include="Areas\Admin\assets\scripts\RedeemGiftCard.js" />
+    <Content Include="Areas\Admin\assets\scripts\scripts.js" />
+    <Content Include="Areas\Admin\assets\scripts\StudentOrganization.js" />
+    <Content Include="Areas\Admin\assets\scripts\StudentOrganizationDetail.js" />
+    <Content Include="Areas\Admin\assets\scripts\Volunteer.js" />
+    <Content Include="Areas\Admin\assets\scripts\VolunteerDetail.js" />
     <Content Include="assets\css\bootstrap-datetimepicker.css" />
     <Content Include="assets\css\bootstrap-datetimepicker.min.css" />
     <Content Include="assets\css\bootstrap.min.css" />
@@ -487,16 +450,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Models\Entities\InventoryAppModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>InventoryAppModel.edmx</DependentUpon>
-      <LastGenOutput>InventoryAppModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\Entities\InventoryAppModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>InventoryAppModel.edmx</DependentUpon>
-      <LastGenOutput>InventoryAppModel.cs</LastGenOutput>
-    </Content>
     <Content Include="Scripts\autoNumeric.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\bootstrap-switch\bootstrap-switch.min.js" />
@@ -527,13 +480,10 @@
     <Content Include="assets\fonts\fontawesome-webfont.woff2" />
     <Content Include="assets\fonts\FontAwesome.otf" />
     <Content Include="Areas\Admin\Views\Shared\_LayoutAdmin.cshtml" />
-    <EntityDeploy Include="Models\Entities\InventoryAppModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>InventoryAppModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\Entities\InventoryAppModel.edmx.diagram">
-      <DependentUpon>InventoryAppModel.edmx</DependentUpon>
-    </Content>
+    <Content Include="Areas\Admin\Views\ManageUsers\UserDetail.cshtml" />
+    <Content Include="Areas\Admin\Views\ManageUsers\ManageUser.cshtml" />
+    <Content Include="Areas\Admin\Views\ManageUsers\_UserDetail.cshtml" />
+    <Content Include="Areas\Admin\Views\ManageUsers\_ManageUser.cshtml" />
     <None Include="Properties\PublishProfiles\inventory.sachintrivedi.com - Web Deploy.pubxml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Scripts\jquery-2.1.4.min.map" />
@@ -707,7 +657,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Admin\Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -724,6 +673,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InventoryApp_DL\InventoryApp_DL.csproj">
+      <Project>{82fc4d97-01d3-4ade-844e-3b63ad029399}</Project>
+      <Name>InventoryApp_DL</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

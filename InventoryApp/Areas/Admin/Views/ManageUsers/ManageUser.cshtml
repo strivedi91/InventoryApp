@@ -1,0 +1,38 @@
+﻿@model InventoryApp.Areas.Admin.Models.UserModel
+@{
+    ViewBag.Title = "Manage User";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<form action="#" class="">
+    <div class="white-box bg-white space">
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="usersearch">
+                    <input type="text" class="form-control" id="txtSearch" maxlength="100" placeholder="Search by seller name ..." onkeypress="userSearch(event);">
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <button type="button" id="btnSearch" class="btn btn-gradient" style="background-color:#ee7a34;" title="Search" onclick="search();">Search</button>
+            </div>
+        </div>
+    </div>
+</form>
+<div id="companylist">
+    @Html.Partial("_ManageUser", Model)
+</div>
+@Html.Hidden("hdnOrder", "ID ASC")
+@Html.Hidden("hdnSortingOnColumn", "sortID")
+@Html.Hidden("hdnSortingDirection", "ASC")
+@Html.Hidden("hdnStatus", "0")
+<script type="text/javascript">
+    var lsgetCompanyList = '@Url.RouteUrl("Admin_default", new { controller = "ManageCompany", action = "searchCompany" })';
+
+</script>
+<script src="@Url.Content("~/Areas/Admin/assets/scripts/Company.js?ver=1.4")" type="text/javascript"></script>
+<script>
+    $(document).ready(function () {
+        $(".menu-item a").removeClass("active");
+        $('#lnkManageSellers').addClass('active');
+    });
+</script>

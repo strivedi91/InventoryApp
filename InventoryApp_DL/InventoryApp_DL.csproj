@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{82FC4D97-01D3-4ADE-844E-3B63AD029399}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>InventoryApp_DL</RootNamespace>
+    <AssemblyName>InventoryApp_DL</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataContext\DataContext.cs" />
+    <Compile Include="DataContext\IDataContext.cs" />
+    <Compile Include="DataContext\IDataContextAsync.cs" />
+    <Compile Include="Entities\AspNetRoles.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AspNetRolesConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AspNetUserCategories.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AspNetUserCategoriesConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AspNetUserClaims.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AspNetUserClaimsConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AspNetUserDocumentTypes.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AspNetUserDocumentTypesConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AspNetUserLogins.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AspNetUserLoginsConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AspNetUserProducts.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AspNetUserProductsConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AspNetUsers.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AspNetUsersConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Cart.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\CartConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Categories.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\CategoriesConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\DocumentTypes.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\DocumentTypesConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Offers.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\OffersConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\OrderDetails.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\OrderDetailsConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Orders.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\OrdersConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Parish.cs" />
+    <Compile Include="Entities\ParishConfiguration.cs" />
+    <Compile Include="Entities\Products.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\ProductsConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\InventoryApp_Database.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\TierPricing.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\TierPricingConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Infrastructure\Entity.cs" />
+    <Compile Include="Infrastructure\IEntityIdentifier.cs" />
+    <Compile Include="Infrastructure\IObjectState.cs" />
+    <Compile Include="Infrastructure\ObjectState.cs" />
+    <Compile Include="Infrastructure\StateHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\IQueryFluent.cs" />
+    <Compile Include="Repositories\IQueryObject.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Repositories\IRepositoryAsync.cs" />
+    <Compile Include="Repositories\QueryFluent.cs" />
+    <Compile Include="Repositories\QueryObject.cs" />
+    <Compile Include="Repositories\Repository.cs" />
+    <Compile Include="UnitOfWork\IUnitOfWork.cs" />
+    <Compile Include="UnitOfWork\IUnitOfWorkAsync.cs" />
+    <Compile Include="UnitOfWork\UnitOfWork.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="ClassDiagram1.cd" />
+    <None Include="Entities\InventoryApp_Database.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>InventoryApp_Database.cs</LastGenOutput>
+    </None>
+    <None Include="Entities\EF.Reverse.POCO.Core.ttinclude" />
+    <None Include="Entities\EF.Reverse.POCO.ttinclude" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LINQKit\LinqKit.csproj">
+      <Project>{aec98f52-83f5-488d-99ef-8affe7c9f6e6}</Project>
+      <Name>LinqKit</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,60 @@
+﻿@model InventoryApp.Areas.Admin.Models.UserModel
+@if (Model != null && Model.loUserList.Count > 0)
+{
+    <div class="table-responsive">
+        <table class="table table-bordered wordwrap bg-white">
+            <thead>
+                <tr class="heading">
+                    @Html.Hidden("hdnPageIndex", Model.inPageIndex)
+                    @*<th id="sortID" onclick="getOrderbyCompanyList('ID', 'sortID');" class="sorting"><span class="heading-text">Ref Id</span></th>*@
+                    <th id="sortLegalEntityName" onclick="getOrderbyCompanyList('LegalEntityName', 'sortLegalEntityName');" class="text-left sorting"><span class="heading-text">Name</span></th>
+                    <th><span class="heading-text">Email</span></th>
+                    <th><span class="heading-text">Phone</span></th>
+                    <th><span class="heading-text">Address</span></th>
+                    <th><span class="heading-text">Deposit</span></th>
+                    <th><span class="heading-text">Payment Date</span></th>
+                </tr>
+            </thead>
+            @foreach (var pac in Model.loUserList)
+            {
+                @*<tr style="cursor:pointer" onclick="location.href = '@(Url.Action("CompanyDetail", "ManageCompany", new { fiCompanyId = pac.Id }))'">*@
+                <tr>                    
+                    <td>@pac.Name</td>
+                    <td>@pac.Email</td>
+                    <td>@pac.PhoneNumber</td>
+                    <td>@pac.Address</td>
+                    <td>@pac.DepositAmount</td>
+                    <td>@pac.PaymentDate</td>
+                </tr>
+            }
+        </table>
+    </div>
+
+    if (@Model.inRecordCount > 10)
+    {
+        <div class="col-xs-12 showing">
+            <span>
+                Page @(Model.inPageIndex) out of
+                @((Model.inRecordCount + 10 - 1) / 10)
+            </span>
+            <div class="pull-right">
+                @Html.Hidden("hdnTotalRec", @Model.inRecordCount)
+                <div id="divPager"></div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="table-responsive">
+        <div id="divItemListNoRecord" class="alert alert-warning" align="center">
+            <h4><i class="fa fa-warning"></i> No Record Found </h4>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        GetPager($("#hdnTotalRec").val(), $("#hdnPageIndex").val());
+    });
+</script>
