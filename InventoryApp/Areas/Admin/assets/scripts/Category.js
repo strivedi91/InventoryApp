@@ -4,7 +4,7 @@
 });
 function userSearch(e) {
 
-    if (e.which == 13) {
+    if (e.which === 13) {
         e.preventDefault();
         $(this).blur();
         $('#btnSearch').focus().click();
@@ -14,7 +14,7 @@ function userSearch(e) {
 function search() {
     var stSearch = "";
     var stToDate = "";
-    if ($('#txtSearch').val() != "") {
+    if ($('#txtSearch').val() !== "") {
         stSearch = $('#txtSearch').val();
     }
     refeshList(stSearch);
@@ -26,11 +26,11 @@ function refeshList(foId,pageIndex) {
     var lsOriginalSearch = $('#txtSearch').val().trim();
     lsSearch = encodeURIComponent(lsSearch);
 
-    var lsSearch = lsSearch.replace(/'/g, "''");
-    if (foId == "load") {
+    lsSearch = lsSearch.replace(/'/g, "''");
+    if (foId === "load") {
         pageIndex = 1;
     }
-    else if (foId == "Name ASC" || foId == "Name DESC" || foId == "PointCost ASC" || foId == "PointCost DESC") {
+    else if (foId === "Name ASC" || foId === "Name DESC" || foId === "ID ASC" || foId === "ID DESC") {
         pageIndex = parseInt($('#hdnPageIndex').val());
     }
     
@@ -46,10 +46,10 @@ function refeshList(foId,pageIndex) {
             stSearch: lsSearch
         },
         success: function (lodata) {
-            if (lodata != null) {
-                var divSOReleased = $('#giftcardlist');
-                divSOReleased.html('');
-                divSOReleased.html(lodata);
+            if (lodata !== null) {
+                var divToPutHTML = $('#categorylist');
+                divToPutHTML.html('');
+                divToPutHTML.html(lodata);
                 $('#hdnPageIndex').val(pageIndex);
                 //SetPaging();
                 setSortingArrow();
@@ -60,7 +60,7 @@ function refeshList(foId,pageIndex) {
         error: function (jqXHR, textStatus, errorThrown) {
             $('#txtSearch').val(lsOriginalSearch);
             $('#txtSearch').focus();
-            if (errorThrown == "abort") {
+            if (errorThrown === "abort") {
                 return;
             }
             else {
@@ -69,11 +69,11 @@ function refeshList(foId,pageIndex) {
         }
     });
 }
-function getOrderbyGiftcardList(foOrderedField, tdID) {
+function getOrderbyCategoryList(foOrderedField, tdID) {
     var foFieldwithOrder = "";
     $('#hdnSortingOnColumn').val(tdID);
 
-    if ($('#hdnOrder').val() == "") {
+    if ($('#hdnOrder').val() === "") {
         $('#hdnOrder').val(foOrderedField + " ASC");
         foFieldwithOrder = foOrderedField + " ASC";
         $('#hdnOrder').val(foFieldwithOrder);
@@ -81,7 +81,7 @@ function getOrderbyGiftcardList(foOrderedField, tdID) {
 
     }
     else {
-        if ($('#hdnOrder').val() == (foOrderedField + " ASC")) {
+        if ($('#hdnOrder').val() === (foOrderedField + " ASC")) {
             foFieldwithOrder = foOrderedField + " DESC";
             $('#hdnOrder').val(foFieldwithOrder);
             $('#hdnSortingDirection').val("DESC");
@@ -101,10 +101,10 @@ function setSortingArrow() {
 
     if (sortTD != "") {
         $('#' + sortTD).removeClass("sorting");
-        if (sortDirection.toUpperCase() == "ASC") {
+        if (sortDirection.toUpperCase() === "ASC") {
             $('#' + sortTD).addClass("sorting_asc");
         }
-        else if (sortDirection.toUpperCase() == "DESC") {
+        else if (sortDirection.toUpperCase() === "DESC") {
             $('#' + sortTD).addClass("sorting_desc");
         }
     }
@@ -115,23 +115,24 @@ function setSortingArrow() {
     }
 }
 
-function DeleteGiftCard(fiGiftcardId) {
+function DeleteCategory(fiCategoryId) {
+    
         $.ajax({
             type: "POST",
             url: deleteGiftCardUrl,
             content: "application/json; charset=utf-8",
             dataType: "json",
             data: {
-                ID: fiGiftcardId
+                ID: fiCategoryId
             },
             success: function (lodata) {
-                if (lodata != null) {
+                if (lodata !== null) {
 
                     refeshList("delete");
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                if (errorThrown == "abort") {
+                if (errorThrown === "abort") {
                     return;
                 }
                 else {

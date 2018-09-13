@@ -1,0 +1,32 @@
+﻿@model InventoryApp.Helpers.Pager
+
+@if (Model.EndPage > 1)
+{
+    <ul class="pagination">
+        @if (Model.CurrentPage > 1)
+        {
+            <li>
+                <a title="First" href="javascript:void(0)" id="aHrefNext" class="NextButton" onclick="refeshList(this.id,1);"><i class="fa fa-step-backward"></i> First</a>
+            </li>
+            <li>
+                <a title="Previous" href="javascript:void(0)" id="aHrefNext" class="NextButton" onclick="refeshList(this.id,@Model.CurrentPage - 1);"><i class=" fa fa-angle-left"></i> Previous</a>
+            </li>
+        }
+        @for (var page = Model.StartPage; page <= Model.EndPage; page++)
+        {
+            <li class="@(page == Model.CurrentPage ? "active" : "")">
+                <a title="@page" href="javascript:void(0)" id="aHrefNext" class="@(page == Model.CurrentPage ? "pagingActive" : "nextbutton")" onclick="refeshList(this.id,@page);">@page</a>
+            </li>
+        }
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <li>
+                <a title="Next" href="javascript:void(0)" id="aHrefNext" class="NextButton" onclick="refeshList(this.id,@Model.CurrentPage + 1);">Next <i class="fa fa-angle-right"></i></a>
+            </li>
+            <li>
+                <a title="Last" href="javascript:void(0)" id="aHrefNext" class="NextButton" onclick="refeshList(this.id, @Model.TotalPages);">Last <i class="fa fa-step-forward"></i></a>
+            </li>
+        }
+    </ul>
+}
+	

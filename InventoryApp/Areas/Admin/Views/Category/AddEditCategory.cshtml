@@ -1,0 +1,106 @@
+﻿@model InventoryApp.Areas.Admin.Models.CategoryViewModel
+@{
+    ViewBag.Title = "Add/Edit Category";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<script type="text/javascript">
+    function jsInteger(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode == 46)
+            return false;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+    function validateGiftcard() {
+
+        var form = $("#frmAddEditCategory");
+
+        form.valid();
+
+        if (form.valid()) {
+            form.submit();
+            if ($("#loadingbar").length === 0) {
+                $("body").append("<div id='loadingbar'></div>")
+                $("#divLoader").css("display", "block");
+                $("#loadingbar").addClass("waiting").append($("<dt/><dd/>"));
+                $("#loadingbar").width((50 + Math.random() * 30) + "%");
+            }
+        }
+        return false;
+    }
+
+</script>
+<section>
+    <div class="section-title"><h2>Add/Edit Gift Card</h2></div>
+    <div class="white-box bg-white space">
+        @using (Html.BeginForm("AddEditCategory", "Category", FormMethod.Post, new { @id = "frmAddEditCategory" }))
+        {
+            @Html.HiddenFor(m => m.Id, new { @id = "hdnCategoryId" })
+            @Html.ValidationSummary(true)
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Category Name&nbsp;<span class="required">*</span>
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.TextBoxFor(m => m.Name, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Name", @maxlength = "100", @autofocus = "autofocus", @tabindex = "1", @id = "txtName" })
+                        <div class="required">
+                            @Html.ValidationMessageFor(m => m.Name)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Description
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.TextBoxFor(m => m.Description, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Description", @maxlength = "10", @tabindex = "2", @id = "txtDescription" })
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Active
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.CheckBoxFor(m => m.IsActive, new { @placeholder = "Active", @tabindex = "5" })
+
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-block-solid-pink text-center pull-right">
+                <button tabindex="5" type="submit" title="Submit" class="btn btn-gradient" id="btnSubmit">
+                    <i class="fa fa-save"></i>&nbsp;&nbsp;Save <i class=" m-icon-swapright">
+                    </i>
+                </button>
+                <a class="btn  btn-gradient" title="Cancel" onclick="cancelForm();" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Category" })">
+                    <i class=" fa fa-angle-left"></i>&nbsp;&nbsp;Cancel
+                </a>
+            </div>            
+        }
+    </div>
+</section>
+
+<script>
+    $(document).ready(function () {
+        $(".menu-item a").removeClass("active");
+        $('#lnkGiftCard').addClass('active');
+
+        $('.dashboard-menu').height($(document).height());
+    });
+</script>
