@@ -66,7 +66,9 @@ namespace InventoryApp.Controllers.API
             includes.Add(IncludeProducts);
 
             string LoggedInUserId = User.Identity.GetUserId();
-            var userCategories = Repository<AspNetUserPreferences>.GetEntityListForQuery(x => x.UserId == LoggedInUserId, null, includes).Item1;
+            var userCategories = Repository<AspNetUserPreferences>.GetEntityListForQuery(x => x.UserId == LoggedInUserId, null, includes).
+                Item1.GroupBy(x => x.CategoryId)
+                       .Select(x => x.FirstOrDefault());
 
             if (userCategories.Count() > 0)
             {
@@ -74,8 +76,7 @@ namespace InventoryApp.Controllers.API
                 {
                     Categories =
                        from category in userCategories
-                       .GroupBy(x => x.id)
-                       .Select(x => x.FirstOrDefault())
+
                        select new
                        {
                            Id = category.Categories.Id,
@@ -92,17 +93,18 @@ namespace InventoryApp.Controllers.API
                 includesforProduct.Add(IncludeProduct);
                 var categories = Repository<Categories>.GetEntityListForQuery(x => x.IsActive == true, null, includesforProduct).Item1;
 
-               loJObjResult = JObject.FromObject(new
+                loJObjResult = JObject.FromObject(new
                 {
+                    status = true,
                     Categories =
-                       from category in categories
-                       select new
-                       {
-                           Id = category.Id,
-                           Name = category.Name,
-                           ProductCount = category.Products.Where(x => x.IsActive == true).Count(),
-                           SelectedProductCount = 0
-                       }
+                        from category in categories
+                        select new
+                        {
+                            Id = category.Id,
+                            Name = category.Name,
+                            ProductCount = category.Products.Where(x => x.IsActive == true).Count(),
+                            SelectedProductCount = 0
+                        }
                 });
             }
 
