@@ -582,9 +582,27 @@ namespace InventoryApp_DL.Repositories
                     catch (Exception ex) { }
                 }
             }
+        }
 
+        public static async Task InsertMultipleEntities(IEnumerable<TEntity> entities)
+        {
+            using (IDataContextAsync dataContext = new DataContext.DataContext())
+            {
+                Repository<TEntity> repository = new Repository<TEntity>(dataContext);
 
+                using (IUnitOfWorkAsync unitOfWork = new UnitOfWork(dataContext))
+                {
+                    //unitOfWork.BeginTransaction();
 
+                    try
+                    {
+                        repository.InsertRange(entities);
+                        await unitOfWork.SaveChangesAsync();
+
+                    }
+                    catch (Exception ex) { }
+                }
+            }
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -623,7 +641,7 @@ namespace InventoryApp_DL.Repositories
         ///
         /// <returns>   The entity list for query. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public static (List<TEntity>,int) GetEntityListForQuery
+        public static (List<TEntity>, int) GetEntityListForQuery
             (Expression<Func<TEntity, Boolean>> query,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             List<Expression<Func<TEntity, Object>>> includes = null,
@@ -642,7 +660,7 @@ namespace InventoryApp_DL.Repositories
                 TotalRecords = result.Item2;
             }
 
-            return (entities,TotalRecords);
+            return (entities, TotalRecords);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -711,17 +729,4 @@ namespace InventoryApp_DL.Repositories
         }
         #endregion
     }
-
-    public class PagedResult<TEntity>
-    {
-        public int TotalRecords { get; set; }
-        public IEnumerable<TEntity> entities { get; set; }
-
-        public PagedResult(int TotalRecords, IEnumerable<TEntity> entities)
-        {
-            this.TotalRecords = TotalRecords;
-            this.entities = entities;
-        }
-    }
-
 }

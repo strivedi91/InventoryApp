@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Web.Http;
 using Microsoft.AspNet.Identity;
 
 namespace InventoryApp.Controllers.API
@@ -17,6 +18,16 @@ namespace InventoryApp.Controllers.API
 
             return Ok(result);
         }
+
+        protected IHttpActionResult GetInternalServerErrorResult(String result)
+        {
+            if (result == null)
+            {
+                return InternalServerError();
+            }
+            return InternalServerError(new Exception(result));
+        }
+
 
         protected IHttpActionResult GetErrorResult(IdentityResult result)
         {
@@ -46,5 +57,5 @@ namespace InventoryApp.Controllers.API
 
             return null;
         }
-	}
+    }
 }
