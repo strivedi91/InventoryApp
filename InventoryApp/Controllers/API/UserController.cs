@@ -193,7 +193,7 @@ namespace InventoryApp.Controllers.API
         [Route("addtocart")]
         public async Task<IHttpActionResult> AddToCart()
         {
-
+            return Ok();
         }
     }
 }
