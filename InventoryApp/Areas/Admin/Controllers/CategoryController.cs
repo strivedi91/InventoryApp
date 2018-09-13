@@ -121,21 +121,21 @@ namespace InventoryApp.Areas.Admin.Controllers
                 {
                     if (loCategoryViewModel.Id == 0)
                     {
-                        Categories lowebstats = new Categories();
-                        lowebstats.Name = loCategoryViewModel.Name;
-                        lowebstats.Description = loCategoryViewModel.Description;
-                        lowebstats.IsActive = loCategoryViewModel.IsActive;
-                        Repository<Categories>.InsertEntity(lowebstats, entity => { return entity.Id; });
+                        Categories objCategory = new Categories();
+                        objCategory.Name = loCategoryViewModel.Name;
+                        objCategory.Description = loCategoryViewModel.Description;
+                        objCategory.IsActive = loCategoryViewModel.IsActive;
+                        Repository<Categories>.InsertEntity(objCategory, entity => { return entity.Id; });
                                                 
                         TempData["SuccessMsg"] = "Category has been added successfully";
                     }
                     else
                     {
-                        Categories lowebstats = Repository<Categories>.GetEntityListForQuery(x => x.Id == loCategoryViewModel.Id).Item1.FirstOrDefault();
-                        lowebstats.Name = loCategoryViewModel.Name;
-                        lowebstats.Description = loCategoryViewModel.Description;
-                        lowebstats.IsActive = loCategoryViewModel.IsActive;                        
-                        Repository<Categories>.UpdateEntity(lowebstats, (entity) => { return entity.Id; });
+                        Categories objCategory = Repository<Categories>.GetEntityListForQuery(x => x.Id == loCategoryViewModel.Id).Item1.FirstOrDefault();
+                        objCategory.Name = loCategoryViewModel.Name;
+                        objCategory.Description = loCategoryViewModel.Description;
+                        objCategory.IsActive = loCategoryViewModel.IsActive;                        
+                        Repository<Categories>.UpdateEntity(objCategory, (entity) => { return entity.Id; });
 
                         TempData["SuccessMsg"] = "Category has been updated successfully";
                     }
@@ -154,13 +154,14 @@ namespace InventoryApp.Areas.Admin.Controllers
 
             if (id != null && id > 0)
             {
-                Categories objPackages = Repository<Categories>.GetEntityListForQuery(x => x.Id == id).Item1.FirstOrDefault();
+                Categories objCategory = Repository<Categories>.GetEntityListForQuery(x => x.Id == id).Item1.FirstOrDefault();
 
                 objCategoryViewModel = new CategoryViewModel
                 {
-                    Id = objPackages.Id,
-                    Name = objPackages.Name,
-                    Description = objPackages.Description
+                    Id = objCategory.Id,
+                    Name = objCategory.Name,
+                    Description = objCategory.Description,
+                    IsActive = objCategory.IsActive
                 };
             }
 
@@ -173,9 +174,9 @@ namespace InventoryApp.Areas.Admin.Controllers
 
             if (ID > 0)
             {
-                Categories objPackages = Repository<Categories>.GetEntityListForQuery(x => x.Id == ID).Item1.FirstOrDefault();                
-                objPackages.IsDeleted = true;
-                Repository<Categories>.UpdateEntity(objPackages, (entity) => { return entity.Id; });
+                Categories objCategory = Repository<Categories>.GetEntityListForQuery(x => x.Id == ID).Item1.FirstOrDefault();                
+                objCategory.IsDeleted = true;
+                Repository<Categories>.UpdateEntity(objCategory, (entity) => { return entity.Id; });
 
                 TempData["SuccessMsg"] = "Category has been deleted successfully";
             }

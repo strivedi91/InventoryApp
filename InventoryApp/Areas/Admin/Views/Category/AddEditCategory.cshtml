@@ -64,7 +64,7 @@
                         </label>
                     </div>
                     <div class="col-lg-5 col-md-7">
-                        @Html.TextBoxFor(m => m.Description, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Description", @maxlength = "10", @tabindex = "2", @id = "txtDescription" })
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control placeholder-no-fix", @placeholder = "Description", @maxlength = "500", @tabindex = "2", @id = "txtDescription" })
                         
                     </div>
                 </div>
