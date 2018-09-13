@@ -15,11 +15,11 @@ using Newtonsoft.Json.Linq;
 namespace InventoryApp.Controllers.API
 {
     [Authorize]
-    [RoutePrefix("api/user")]
+    [RoutePrefix("api")]
     public class UserController : BaseAPIController
     {
         [HttpPost]
-        [Route("savepreferences")]
+        [Route("user/savepreferences")]
         public async Task<IHttpActionResult> SaveUserPreferences(SaveUserPreferencesModel[] saveUserPreferencesModel)
         {
             JObject Result = null;
@@ -54,7 +54,7 @@ namespace InventoryApp.Controllers.API
         }
 
         [HttpGet]
-        [Route("getpreferences")]
+        [Route("user/getpreferences")]
         public async Task<IHttpActionResult> GetUserPreferences()
         {
             JObject loJObjResult = null;
@@ -108,6 +108,84 @@ namespace InventoryApp.Controllers.API
                 });
             }
 
+            return GetOkResult(loJObjResult);
+        }
+
+
+        [HttpGet]
+        [Route("user/products")]
+        public async Task<IHttpActionResult> GetProducts()
+        {
+            JObject loJObjResult = null;
+
+            List<Expression<Func<AspNetUserPreferences, Object>>> includes = new List<Expression<Func<AspNetUserPreferences, object>>>();
+            Expression<Func<AspNetUserPreferences, object>> IncludeCategories = (category) => category.Categories;
+            Expression<Func<AspNetUserPreferences, object>> IncludeProducts = (product) => product.Products;
+            includes.Add(IncludeCategories);
+            includes.Add(IncludeProducts);
+
+            string LoggedInUserId = User.Identity.GetUserId();
+            var userSelectedProducts = Repository<AspNetUserPreferences>.
+                GetEntityListForQuery(x => x.UserId == LoggedInUserId, null, includes).Item1;
+
+            loJObjResult = JObject.FromObject(new
+            {
+                status = true,
+                Products =
+                        from product in userSelectedProducts
+                        select new
+                        {
+                            Id = product.Products.id,
+                            Name = product.Products.Name,
+                            Category = product.Categories.Name,
+                            Brand = product.Products.Brand,
+                            Description = product.Products.Description,
+                            Type = product.Products.Type,
+                            Price = product.Products.Price,
+                            OfferPrice = product.Products.OfferPrice,
+                            product.Products.MOQ,
+                            product.Products.Quantity,
+                            TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive).
+                            Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price })
+                        }
+            });
+
+            return GetOkResult(loJObjResult);
+        }
+
+        [HttpGet]
+        [Route("category/{Id:int}/products")]
+        public async Task<IHttpActionResult> GetProductsByCategoryId(int Id)
+        {
+            JObject loJObjResult = null;
+
+            List<Expression<Func<Products, Object>>> includes = new List<Expression<Func<Products, object>>>();
+            Expression<Func<Products, object>> IncludeCategories = (category) => category.Categories;
+            Expression<Func<Products, object>> IncludeTierPricing = (pricing) => pricing.TierPricings;
+            includes.Add(IncludeCategories);
+            includes.Add(IncludeTierPricing);
+
+            var products = Repository<Products>.GetEntityListForQuery(x => x.IsActive && x.CategoryId == Id, null, includes).Item1;
+
+            loJObjResult = JObject.FromObject(new
+            {
+                Products =
+                   from product in products
+                   select new
+                   {
+                       Id = product.id,
+                       Name = product.Name,
+                       Category = product.Categories.Name,
+                       Brand = product.Brand,
+                       Description = product.Description,
+                       Type = product.Type,
+                       Price = product.Price,
+                       OfferPrice = product.OfferPrice,
+                       product.MOQ,
+                       product.Quantity,
+                       TierPricing = product.TierPricings.Select(x => new { x.QtyTo, x.QtyFrom, x.Price })
+                   }
+            });
             return GetOkResult(loJObjResult);
         }
     }
