@@ -106,15 +106,13 @@ namespace InventoryApp_DL.Entities
 
         public virtual ICollection<AspNetRoles> AspNetRoles { get; set; } // Many to many mapping
 
-        public virtual ICollection<AspNetUserCategories> AspNetUserCategories { get; set; } // AspNetUserCategories.FK_AspNetUserCategories_AspNetUsers
-
         public virtual ICollection<AspNetUserClaims> AspNetUserClaims { get; set; } // AspNetUserClaims.FK_dbo.AspNetUserClaims_dbo.AspNetUsers_UserId
 
         public virtual ICollection<AspNetUserDocumentTypes> AspNetUserDocumentTypes { get; set; } // AspNetUserDocumentTypes.FK_AspNetUserDocumentTypes_AspNetUsers
 
         public virtual ICollection<AspNetUserLogins> AspNetUserLogins { get; set; } // Many to many mapping
 
-        public virtual ICollection<AspNetUserProducts> AspNetUserProducts { get; set; } // AspNetUserProducts.FK_AspNetUserProducts_AspNetUsers
+        public virtual ICollection<AspNetUserPreferences> AspNetUserPreferences { get; set; } // AspNetUserPreferences.FK_AspNetUserCategories_AspNetUsers
 
         public virtual ICollection<Cart> Carts { get; set; } // Cart.FK_Cart_AspNetUsers
 
@@ -131,15 +129,13 @@ namespace InventoryApp_DL.Entities
             IsDeleted = false;
 
 
-            AspNetUserCategories = new List<AspNetUserCategories>();
-
             AspNetUserClaims = new List<AspNetUserClaims>();
 
             AspNetUserDocumentTypes = new List<AspNetUserDocumentTypes>();
 
             AspNetUserLogins = new List<AspNetUserLogins>();
 
-            AspNetUserProducts = new List<AspNetUserProducts>();
+            AspNetUserPreferences = new List<AspNetUserPreferences>();
 
             Carts = new List<Cart>();
 

@@ -32,11 +32,11 @@ namespace InventoryApp_DL.Entities
 
 
 
-    // AspNetUserProducts
+    // AspNetUserPreferences
 	[Serializable]
 
 	
-    public partial class AspNetUserProducts : InventoryApp_DL.Infrastructure.Entity
+    public partial class AspNetUserPreferences : InventoryApp_DL.Infrastructure.Entity
     {
 
 
@@ -47,6 +47,9 @@ namespace InventoryApp_DL.Entities
         public string UserId { get; set; } // UserId
 
 
+        public int CategoryId { get; set; } // CategoryId
+
+
         public int ProductId { get; set; } // ProductId
 
 
@@ -54,9 +57,11 @@ namespace InventoryApp_DL.Entities
 
         // Foreign keys
 
-        public virtual AspNetUsers AspNetUsers { get; set; } //  FK_AspNetUserProducts_AspNetUsers
+        public virtual AspNetUsers AspNetUsers { get; set; } //  FK_AspNetUserCategories_AspNetUsers
 
-        public virtual Products Products { get; set; } //  FK_AspNetUserProducts_Products
+        public virtual Categories Categories { get; set; } //  FK_AspNetUserCategories_Categories
+
+        public virtual Products Products { get; set; } //  FK_AspNetUserPreferences_Products
 
 
     }

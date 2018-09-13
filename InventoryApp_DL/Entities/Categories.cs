@@ -62,7 +62,7 @@ namespace InventoryApp_DL.Entities
 
         // Reverse navigation
 
-        public virtual ICollection<AspNetUserCategories> AspNetUserCategories { get; set; } // AspNetUserCategories.FK_AspNetUserCategories_Categories
+        public virtual ICollection<AspNetUserPreferences> AspNetUserPreferences { get; set; } // AspNetUserPreferences.FK_AspNetUserCategories_Categories
 
         public virtual ICollection<Offers> Offers { get; set; } // Offers.FK_Offers_Categories
 
@@ -81,7 +81,7 @@ namespace InventoryApp_DL.Entities
             ParentId = 0;
 
 
-            AspNetUserCategories = new List<AspNetUserCategories>();
+            AspNetUserPreferences = new List<AspNetUserPreferences>();
 
             Offers = new List<Offers>();
 

@@ -32,18 +32,18 @@ namespace InventoryApp_DL.Entities
 
 
 
-    // AspNetUserProducts
+    // AspNetUserPreferences
 	
-    internal partial class AspNetUserProductsConfiguration : EntityTypeConfiguration<AspNetUserProducts>
+    internal partial class AspNetUserPreferencesConfiguration : EntityTypeConfiguration<AspNetUserPreferences>
     {
-		public AspNetUserProductsConfiguration() : this("dbo")
+		public AspNetUserPreferencesConfiguration() : this("dbo")
 		{
 		}
 
-        public AspNetUserProductsConfiguration(string schema = "dbo")
+        public AspNetUserPreferencesConfiguration(string schema = "dbo")
         {
  
-           ToTable(schema + ".AspNetUserProducts");
+           ToTable(schema + ".AspNetUserPreferences");
  
            HasKey(x => x.id);
 
@@ -52,15 +52,19 @@ namespace InventoryApp_DL.Entities
 
             Property(x => x.UserId).HasColumnName("UserId").IsRequired().HasMaxLength(128);
 
+            Property(x => x.CategoryId).HasColumnName("CategoryId").IsRequired();
+
             Property(x => x.ProductId).HasColumnName("ProductId").IsRequired();
 
 
 
             // Foreign keys
 
-            HasRequired(a => a.AspNetUsers).WithMany(b => b.AspNetUserProducts).HasForeignKey(c => c.UserId); // FK_AspNetUserProducts_AspNetUsers
+            HasRequired(a => a.AspNetUsers).WithMany(b => b.AspNetUserPreferences).HasForeignKey(c => c.UserId); // FK_AspNetUserCategories_AspNetUsers
 
-            HasRequired(a => a.Products).WithMany(b => b.AspNetUserProducts).HasForeignKey(c => c.ProductId); // FK_AspNetUserProducts_Products
+            HasRequired(a => a.Categories).WithMany(b => b.AspNetUserPreferences).HasForeignKey(c => c.CategoryId); // FK_AspNetUserCategories_Categories
+
+            HasRequired(a => a.Products).WithMany(b => b.AspNetUserPreferences).HasForeignKey(c => c.ProductId); // FK_AspNetUserPreferences_Products
 
 
 

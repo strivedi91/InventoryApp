@@ -64,12 +64,6 @@
     <Compile Include="Entities\AspNetRolesConfiguration.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AspNetUserCategories.cs">
-      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Entities\AspNetUserCategoriesConfiguration.cs">
-      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
-    </Compile>
     <Compile Include="Entities\AspNetUserClaims.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
@@ -88,10 +82,10 @@
     <Compile Include="Entities\AspNetUserLoginsConfiguration.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AspNetUserProducts.cs">
+    <Compile Include="Entities\AspNetUserPreferences.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AspNetUserProductsConfiguration.cs">
+    <Compile Include="Entities\AspNetUserPreferencesConfiguration.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\AspNetUsers.cs">

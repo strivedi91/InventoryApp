@@ -7,7 +7,7 @@ namespace InventoryApp.Models.ApiModels
 {
     public class SaveUserPreferencesModel
     {
-        public int[] Categories { get; set; }
-        public int[] Products { get; set; }
+        public int CategoryId { get; set; }
+        public int ProductId { get; set; }
     }
 }

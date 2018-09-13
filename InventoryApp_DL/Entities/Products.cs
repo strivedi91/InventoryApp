@@ -80,7 +80,7 @@ namespace InventoryApp_DL.Entities
 
         // Reverse navigation
 
-        public virtual ICollection<AspNetUserProducts> AspNetUserProducts { get; set; } // AspNetUserProducts.FK_AspNetUserProducts_Products
+        public virtual ICollection<AspNetUserPreferences> AspNetUserPreferences { get; set; } // AspNetUserPreferences.FK_AspNetUserPreferences_Products
 
         public virtual ICollection<Cart> Carts { get; set; } // Cart.FK_Cart_Products
 
@@ -106,7 +106,7 @@ namespace InventoryApp_DL.Entities
             IsDeleted = false;
 
 
-            AspNetUserProducts = new List<AspNetUserProducts>();
+            AspNetUserPreferences = new List<AspNetUserPreferences>();
 
             Carts = new List<Cart>();
 
