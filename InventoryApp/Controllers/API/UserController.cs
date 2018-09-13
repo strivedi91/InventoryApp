@@ -188,5 +188,12 @@ namespace InventoryApp.Controllers.API
             });
             return GetOkResult(loJObjResult);
         }
+
+        [HttpPost]
+        [Route("addtocart")]
+        public async Task<IHttpActionResult> AddToCart()
+        {
+
+        }
     }
 }
