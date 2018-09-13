@@ -236,7 +236,9 @@
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\ManageUsersController.cs" />
+    <Compile Include="Areas\Admin\Models\CategoryModel.cs" />
     <Compile Include="Areas\Admin\Models\UserModel.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\API\AccountController.cs" />
@@ -244,6 +246,7 @@
     <Compile Include="Controllers\API\BaseAPIController.cs" />
     <Compile Include="Controllers\API\UserController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\PagerController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -258,25 +261,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\assets\css\DatePicker.css" />
-    <Content Include="Areas\Admin\assets\scripts\AppSettings.js" />
-    <Content Include="Areas\Admin\assets\scripts\Campaign.js" />
-    <Content Include="Areas\Admin\assets\scripts\CampaignDashboard.js" />
-    <Content Include="Areas\Admin\assets\scripts\CampaignDetails.js" />
-    <Content Include="Areas\Admin\assets\scripts\CampaignReport.js" />
-    <Content Include="Areas\Admin\assets\scripts\Charity.js" />
-    <Content Include="Areas\Admin\assets\scripts\CharityCategory.js" />
-    <Content Include="Areas\Admin\assets\scripts\CharityDetail.js" />
-    <Content Include="Areas\Admin\assets\scripts\CharityPayment.js" />
-    <Content Include="Areas\Admin\assets\scripts\Company.js" />
-    <Content Include="Areas\Admin\assets\scripts\CompanyDetail.js" />
-    <Content Include="Areas\Admin\assets\scripts\GiftCard.js" />
-    <Content Include="Areas\Admin\assets\scripts\Packages.js" />
-    <Content Include="Areas\Admin\assets\scripts\RedeemGiftCard.js" />
-    <Content Include="Areas\Admin\assets\scripts\scripts.js" />
-    <Content Include="Areas\Admin\assets\scripts\StudentOrganization.js" />
-    <Content Include="Areas\Admin\assets\scripts\StudentOrganizationDetail.js" />
-    <Content Include="Areas\Admin\assets\scripts\Volunteer.js" />
-    <Content Include="Areas\Admin\assets\scripts\VolunteerDetail.js" />
+    <Content Include="Areas\Admin\assets\scripts\Category.js" />
     <Content Include="assets\css\bootstrap-datetimepicker.css" />
     <Content Include="assets\css\bootstrap-datetimepicker.min.css" />
     <Content Include="assets\css\bootstrap.min.css" />
@@ -486,6 +471,9 @@
     <Content Include="Areas\Admin\Views\ManageUsers\ManageUser.cshtml" />
     <Content Include="Areas\Admin\Views\ManageUsers\_UserDetail.cshtml" />
     <Content Include="Areas\Admin\Views\ManageUsers\_ManageUser.cshtml" />
+    <Content Include="Areas\Admin\Views\Category\AddEditCategory.cshtml" />
+    <Content Include="Areas\Admin\Views\Category\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Category\_Category.cshtml" />
     <None Include="Properties\PublishProfiles\inventory.sachintrivedi.com - Web Deploy.pubxml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Scripts\jquery-2.1.4.min.map" />
@@ -656,9 +644,11 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Shared\_Pager.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Pager\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
