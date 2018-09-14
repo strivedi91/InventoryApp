@@ -4,6 +4,8 @@ using InventoryApp_DL.Entities;
 using InventoryApp_DL.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -14,6 +16,8 @@ namespace InventoryApp.Areas.Admin.Controllers
 {
     public class ProductsController : Controller
     {
+        string ProductImagePath = ConfigurationManager.AppSettings["ProductImagePath"].ToString();
+
         public ActionResult Index()
         {
             ProductsViewModel foRequest = new ProductsViewModel();
@@ -165,14 +169,6 @@ namespace InventoryApp.Areas.Admin.Controllers
         {
             ProductsViewModel objProductsViewModel = new ProductsViewModel();
 
-            var objCategories = Repository<Categories>.GetEntityListForQuery(x => x.IsDeleted == false).Item1.ToList();
-
-            objProductsViewModel.objCategoryList.Add(new SelectListItem { Text = "-- Select --", Value = "0", Selected = true });
-
-            foreach (var Category in objCategories)
-            {
-                objProductsViewModel.objCategoryList.Add(new SelectListItem { Text = Category.Name, Value = Category.Id.ToString(), Selected = false });
-            }
 
             if (id != null && id > 0)
             {
@@ -191,10 +187,26 @@ namespace InventoryApp.Areas.Admin.Controllers
                     MOQ = objProduct.MOQ,
                     CategoryId = objProduct.CategoryId,
                     IsActive = objProduct.IsActive,
+                    objTierPricing = getTierPricing(objProduct.id)
                 };
+            }
+            
+            var objCategories = Repository<Categories>.GetEntityListForQuery(x => x.IsDeleted == false).Item1.ToList();
+
+            objProductsViewModel.objCategoryList.Add(new SelectListItem { Text = "-- Select --", Value = "0", Selected = true });
+
+            foreach (var Category in objCategories)
+            {
+                objProductsViewModel.objCategoryList.Add(new SelectListItem { Text = Category.Name, Value = Category.Id.ToString(), Selected = false });
             }
 
             return View("~/Areas/Admin/Views/Products/AddEditProduct.cshtml", objProductsViewModel);
+        }
+
+        public List<TierPricing> getTierPricing(int productId)
+        {
+            List<TierPricing> objProductTierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == productId && x.IsDeleted == false).Item1.ToList();
+            return objProductTierPricing;
         }
 
         [ValidateInput(false)]
@@ -220,6 +232,37 @@ namespace InventoryApp.Areas.Admin.Controllers
                         objProduct.IsActive = foProduct.IsActive;
                         await Repository<Products>.InsertEntity(objProduct, entity => { return entity.id; });
 
+                        string[] lstTierPricing = foProduct.lstTierPircing.Split(',');
+                        foreach (string tierPrice in lstTierPricing)
+                        {
+                            string[] objPrices = tierPrice.Split('/');
+                            int inFromQnty = Convert.ToInt32(objPrices[0]);
+                            int inToQnty = Convert.ToInt32(objPrices[1]);
+                            decimal dcPrice = Convert.ToDecimal(objPrices[2]);
+
+                            TierPricing objTierPricing = new TierPricing();
+                            objTierPricing.QtyFrom = inFromQnty;
+                            objTierPricing.QtyTo = inToQnty;
+                            objTierPricing.Price = dcPrice;
+                            objTierPricing.ProductId = objProduct.id;
+                            objTierPricing.IsActive = true;
+                            await Repository<TierPricing>.InsertEntity(objTierPricing, entity => { return entity.Id; });
+                        }
+
+                        string savepath = Path.Combine(Server.MapPath(ProductImagePath), objProduct.id.ToString());
+                        System.IO.Directory.CreateDirectory(savepath);
+
+                        for (int i = 0; i < Request.Files.Count; i++)
+                        {
+                            HttpPostedFileBase file = Request.Files[i];
+                            int fileSize = file.ContentLength;
+                            string fileName = file.FileName;
+                            string mimeType = file.ContentType;
+                            System.IO.Stream fileContent = file.InputStream;
+
+                            file.SaveAs(savepath + "/" + fileName);
+                        }
+
                         TempData["SuccessMsg"] = "Product has been added successfully";
                     }
                     else
@@ -237,6 +280,45 @@ namespace InventoryApp.Areas.Admin.Controllers
                         objProduct.IsActive = foProduct.IsActive;
                         await Repository<Products>.UpdateEntity(objProduct, (entity) => { return entity.id; });
 
+                        var objTierPrice = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == objProduct.id && x.IsDeleted == false).Item1;
+                        foreach (var tierPriceExist in objTierPrice)
+                        {
+                            tierPriceExist.IsDeleted = true;
+                            await Repository<TierPricing>.UpdateEntity(tierPriceExist, entity => { return entity.Id; });
+                        }
+
+                        string[] lstTierPricing = foProduct.lstTierPircing.Split(',');
+                        foreach (string tierPrice in lstTierPricing)
+                        {
+                            string[] objPrices = tierPrice.Split('/');
+                            int inFromQnty = Convert.ToInt32(objPrices[0]);
+                            int inToQnty = Convert.ToInt32(objPrices[1]);
+                            decimal dcPrice = Convert.ToDecimal(objPrices[2]);
+
+                            TierPricing objTierPricing = new TierPricing();
+                            objTierPricing.QtyFrom = inFromQnty;
+                            objTierPricing.QtyTo = inToQnty;
+                            objTierPricing.Price = dcPrice;
+                            objTierPricing.IsActive = true;
+                            objTierPricing.ProductId = objProduct.id;
+                            await Repository<TierPricing>.InsertEntity(objTierPricing, entity => { return entity.Id; });
+                        }
+
+                        string savepath = Path.Combine(Server.MapPath(ProductImagePath), objProduct.id.ToString());
+                        if (!Directory.Exists(savepath))
+                            System.IO.Directory.CreateDirectory(savepath);
+
+                        for (int i = 0; i < Request.Files.Count; i++)
+                        {
+                            HttpPostedFileBase file = Request.Files[i];
+                            //int fileSize = file.ContentLength;
+                            string fileName = file.FileName;
+                            //string mimeType = file.ContentType;
+                            //System.IO.Stream fileContent = file.InputStream;
+
+                            file.SaveAs(savepath + "/" + fileName);
+                        }
+
                         TempData["SuccessMsg"] = "Product has been updated successfully";
                     }
                 }
@@ -248,18 +330,25 @@ namespace InventoryApp.Areas.Admin.Controllers
             return RedirectToAction("Index", "Products");
         }
 
-        public ActionResult DeleteProduct(int Id)
+        public async Task<ActionResult> DeleteProduct(int Id)
         {
             int liSuccess = 0;
             string lsMessage = string.Empty;
 
             if (Id > 0)
             {
-                Products objProducts = Repository<Products>.GetEntityListForQuery(x => x.id == Id).Item1.FirstOrDefault();
-                objProducts.IsDeleted = true;
-                Repository<Products>.UpdateEntity(objProducts, (entity) => { return entity.id; });
+                try
+                {
+                    Products objProducts = Repository<Products>.GetEntityListForQuery(x => x.id == Id).Item1.FirstOrDefault();
+                    objProducts.IsDeleted = true;
+                    await Repository<Products>.UpdateEntity(objProducts, (entity) => { return entity.id; });
 
-                TempData["SuccessMsg"] = "Products has been deleted successfully";
+                    TempData["SuccessMsg"] = "Products has been deleted successfully";
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMsg"] = "Something wrong!! Please try after sometime";
+                }
             }
 
             return this.Json(new ProductsViewModel { id = liSuccess });

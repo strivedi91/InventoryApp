@@ -32,7 +32,7 @@
                     @Html.Hidden("hdnPageIndex", Model.inPageIndex)
                     <th id="sortID" onclick="getOrderbyCategoryList('ID', 'sortID');" class="heading-text sorting">ID</th>
                     <th id="sortName" onclick="getOrderbyCategoryList('Name', 'sortName');" class="heading-text sorting">Name</th>
-                    <th>Description</th>
+                    @*<th>Description</th>*@
                     <th id="sortType" onclick="getOrderbyCategoryList('Type', 'sortType');" class="heading-text sorting">Type</th>
                     <th id="sortBrand" onclick="getOrderbyCategoryList('Brand', 'sortBrand');" class="heading-text sorting">Brand</th>
                     <th id="sortPrice" onclick="getOrderbyCategoryList('Price', 'sortPrice');" class="heading-text sorting">Price</th>
@@ -40,7 +40,7 @@
                     <th id="sortQuantity" onclick="getOrderbyCategoryList('Quantity', 'sortQuantity');" class="heading-text sorting">Quantity</th>
                     <th id="sortMOQ" onclick="getOrderbyCategoryList('MOQ', 'sortMOQ');" class="heading-text sorting">MOQ</th>
                     <th id="sortCategoryId" onclick="getOrderbyCategoryList('CategoryId', 'sortCategoryId');" class="heading-text sorting">Category</th>
-                    <th>Is Active?</th>
+                    @*<th>Is Active?</th>*@
                     <th>Action</th>
                 </tr>
             </thead>
@@ -49,7 +49,7 @@
             <tr>
                 <td>@prod.id</td>
                 <td>@prod.Name</td>
-                <td>@prod.Description</td>
+                @*<td>@prod.Description</td>*@
                 <td>@prod.Type</td>
                 <td>@prod.Brand</td>
                 <td>@prod.Price</td>
@@ -57,7 +57,7 @@
                 <td>@prod.Quantity</td>
                 <td>@prod.MOQ</td>
                 <td>@prod.CategoryName</td>
-                <td>
+                @*<td>
                     @if (prod.IsActive)
                     {
                         <input checked type="checkbox" disabled />
@@ -66,7 +66,7 @@
                     {
                         <input type="checkbox" disabled />
                     }
-                </td>
+                </td>*@
                 <td>
                     <a href="@Url.Action("AddEditProduct", "Products", new { Id = prod.id })" title="Edit"><i class="fa fa-pencil-square-o" style="font-size: 1.5em;"></i></a>
                     <a href=javascript:void(0); onclick="confirmDelete(@prod.id)" title="Delete"><i class="fa fa-close" style="color:#23527C; font-size:1.5em;"></i></a>

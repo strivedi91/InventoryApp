@@ -1,7 +1,9 @@
 ﻿using InventoryApp.Helpers;
+using InventoryApp_DL.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
 using System.Web.Mvc;
 
 namespace InventoryApp.Areas.Admin.Models
@@ -67,5 +69,11 @@ namespace InventoryApp.Areas.Admin.Models
         public Int64 inRowNumber { get; set; }
 
         public List<SelectListItem> objCategoryList { get; set; }
+
+        public List<TierPricing> objTierPricing { get; set; }
+
+        public string lstTierPircing { get; set; }
+
+        public HttpPostedFileBase[] loFiles { get; set; }
     }
 }
