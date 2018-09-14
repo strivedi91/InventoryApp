@@ -23,7 +23,6 @@
     <link href="~/Areas/Admin/assets/css/DatePicker.css" rel="stylesheet" />
 </head>
 <body>
-
     <div id="divLoader" style="display: none;">
         <div style="border: none; z-index: 100010; position: fixed; top: 0px; bottom: 0px; left: 0px; right: 0px; overflow: hidden; padding: 0; margin: 0; background-color: #000; filter: alpha(opacity=40); opacity: 0.20;">
         </div>
@@ -54,7 +53,6 @@
                     </li>
                 }
             </ul>
-
         </div>
     </nav>
 
@@ -82,7 +80,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a id="lnkManageCompany" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "#" })">
+                            <a id="lnkProduct" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Products" })">
                                 <i class="fa fa-building-o"></i>
                                 &nbsp;Products
                             </a>

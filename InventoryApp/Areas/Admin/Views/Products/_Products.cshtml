@@ -1,0 +1,145 @@
+﻿@model InventoryApp.Areas.Admin.Models.ProductsModel
+
+@if (Model != null && Model.loProductList.Count > 0)
+{
+    if (TempData["SuccessMsg"] != null && TempData["SuccessMsg"].ToString() != "")
+    {
+        <div class="table-responsive">
+            <hr style="border-color:#F7F7F7 !important;" />
+            <div class="alert alert-success">
+                <span class="close" data-dismiss="alert" aria-label="close">&times;</span>
+                <span style="vertical-align:middle;"> @TempData["SuccessMsg"].ToString()</span>
+
+                @{TempData["SuccessMsg"] = "";}
+            </div>
+        </div>
+    }
+    if (TempData["ErrorMsg"] != null && TempData["ErrorMsg"].ToString() != "")
+    {
+        <div class="table-responsive">
+            <div class="alert alert-danger" style="height:30px; padding:4px !important; margin-bottom:0px !important; margin-top:10px;">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                @TempData["ErrorMsg"].ToString()
+            </div>
+        </div>
+
+    }
+
+    <div class="table-responsive dash-table">
+        <table class="table table-bordered bg-white">
+            <thead>
+                <tr class="heading">
+                    @Html.Hidden("hdnPageIndex", Model.inPageIndex)
+                    <th id="sortID" onclick="getOrderbyCategoryList('ID', 'sortID');" class="heading-text sorting">ID</th>
+                    <th id="sortName" onclick="getOrderbyCategoryList('Name', 'sortName');" class="heading-text sorting">Name</th>
+                    <th>Description</th>
+                    <th id="sortType" onclick="getOrderbyCategoryList('Type', 'sortType');" class="heading-text sorting">Type</th>
+                    <th id="sortBrand" onclick="getOrderbyCategoryList('Brand', 'sortBrand');" class="heading-text sorting">Brand</th>
+                    <th id="sortPrice" onclick="getOrderbyCategoryList('Price', 'sortPrice');" class="heading-text sorting">Price</th>
+                    <th id="sortOfferPrice" onclick="getOrderbyCategoryList('OfferPrice', 'sortOfferPrice');" class="heading-text sorting">OfferPrice</th>
+                    <th id="sortQuantity" onclick="getOrderbyCategoryList('Quantity', 'sortQuantity');" class="heading-text sorting">Quantity</th>
+                    <th id="sortMOQ" onclick="getOrderbyCategoryList('MOQ', 'sortMOQ');" class="heading-text sorting">MOQ</th>
+                    <th id="sortCategoryId" onclick="getOrderbyCategoryList('CategoryId', 'sortCategoryId');" class="heading-text sorting">Category</th>
+                    <th>Is Active?</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            @foreach (var prod in Model.loProductList)
+            {
+            <tr>
+                <td>@prod.id</td>
+                <td>@prod.Name</td>
+                <td>@prod.Description</td>
+                <td>@prod.Type</td>
+                <td>@prod.Brand</td>
+                <td>@prod.Price</td>
+                <td>@prod.OfferPrice</td>
+                <td>@prod.Quantity</td>
+                <td>@prod.MOQ</td>
+                <td>@prod.CategoryName</td>
+                <td>
+                    @if (prod.IsActive)
+                    {
+                        <input checked type="checkbox" disabled />
+                    }
+                    else
+                    {
+                        <input type="checkbox" disabled />
+                    }
+                </td>
+                <td>
+                    <a href="@Url.Action("AddEditProduct", "Products", new { Id = prod.id })" title="Edit"><i class="fa fa-pencil-square-o" style="font-size: 1.5em;"></i></a>
+                    <a href=javascript:void(0); onclick="confirmDelete(@prod.id)" title="Delete"><i class="fa fa-close" style="color:#23527C; font-size:1.5em;"></i></a>
+                </td>
+            </tr>
+            }
+        </table>
+    </div>
+    if (@Model.inRecordCount > 10)
+    {
+        <div class="showing">
+            <span>
+                Page @(Model.inPageIndex) out of
+                @((Model.inRecordCount + 10 - 1) / 10)
+            </span>
+            <div class="pull-right">
+                @Html.Hidden("hdnTotalRec", @Model.inRecordCount)
+                <div id="divPager"></div>
+            </div>
+        </div>
+    }
+    @Html.Hidden("hdnId", "")
+}
+else
+{
+    <div class="table-responsive dash-table">
+        <div id="divItemListNoRecord" class="alert alert-warning" align="center">
+            <h4><i class="fa fa-warning"></i> No Record Found </h4>
+        </div>
+    </div>
+}
+<div class="modal fade" tabindex="-1" role="dialog" id="modelDeleteProd">
+    <div class="modal-dialog">
+        <div class="modal-content white-box bg-white">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size:larger;">&times;</span></button>
+                <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this Category?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gradient" onclick="DeleteClick();">Yes</button>
+                <button type="button" class="btn btn-gradient" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmDelete(id) {
+        $('#hdnId').val(id);
+        jQuery.noConflict();
+        (
+            function ($) {
+                $('#modelDeleteProd').modal('show');
+            }
+        )(jQuery);
+    }
+
+    function DeleteClick() {
+        jQuery.noConflict();
+        (
+            function ($) {
+            $('#modelDeleteProd').modal('hide');
+        }
+        )(jQuery);
+        var id = $('#hdnId').val();
+        DeleteCategory(id);
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        GetPager($("#hdnTotalRec").val(), $("#hdnPageIndex").val());
+    });
+</script>

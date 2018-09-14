@@ -1,0 +1,200 @@
+﻿@model InventoryApp.Areas.Admin.Models.ProductsViewModel
+    @{
+        ViewBag.Title = "Add/Edit Product";
+        Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    }
+
+    <section>
+        <div class="section-title">
+            @if (Model.id != 0)
+            {
+                <h2>Edit Product</h2>
+            }
+            else
+            {
+                <h2>Add Product</h2>
+            }
+        </div>
+        <div class="white-box bg-white space">
+            @using (Html.BeginForm("AddEditProduct", "Products", FormMethod.Post, new { @id = "frmAddEditProduct" }))
+            {
+                @Html.HiddenFor(m => m.id, new { @id = "hdnProductId" })
+                @Html.ValidationSummary(true)
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-5">
+                            <label>
+                                Product Name&nbsp;<span class="required">*</span>
+                            </label>
+                        </div>
+                        <div class="col-lg-5 col-md-7">
+                            @Html.TextBoxFor(m => m.Name, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Name", @maxlength = "100", @autofocus = "autofocus", @tabindex = "1", @id = "txtName" })
+                            <div class="required">
+                                @Html.ValidationMessageFor(m => m.Name)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-5">
+                            <label>
+                                Description
+                            </label>
+                        </div>
+                        <div class="col-lg-5 col-md-7">
+                            @Html.TextAreaFor(m => m.Description, new { @class = "form-control placeholder-no-fix", @placeholder = "Description", @maxlength = "500", @tabindex = "2", @id = "txtDescription" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-5">
+                            <label>
+                                Type
+                            </label>
+                        </div>
+                        <div class="col-lg-5 col-md-7">
+                            @Html.TextBoxFor(m => m.Type, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Type", @maxlength = "100", @autofocus = "autofocus", @tabindex = "3", @id = "txtType" })
+                            <div class="required">
+                                @Html.ValidationMessageFor(m => m.Type)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-5">
+                            <label>
+                                Brand
+                            </label>
+                        </div>
+                        <div class="col-lg-5 col-md-7">
+                            @Html.TextBoxFor(m => m.Brand, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Brand", @maxlength = "100", @autofocus = "autofocus", @tabindex = "4", @id = "txtBrand" })
+                            <div class="required">
+                                @Html.ValidationMessageFor(m => m.Brand)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-5">
+                            <label>
+                                Price&nbsp;<span class="required">*</span>
+                            </label>
+                        </div>
+                        <div class="col-lg-5 col-md-7">
+                            @Html.TextBoxFor(m => m.Price, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Price", @maxlength = "100", @autofocus = "autofocus", @tabindex = "5", @id = "txtPrice", @onKeyUp = "return validate_double(this, 18, 2)" })
+                            <div class="required">
+                                @Html.ValidationMessageFor(m => m.Price)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-5">
+                            <label>
+                                Offer Price
+                            </label>
+                        </div>
+                        <div class="col-lg-5 col-md-7">
+                            @Html.TextBoxFor(m => m.OfferPrice, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Offer Price", @maxlength = "100", @autofocus = "autofocus", @tabindex = "6", @id = "txtOfferPrice", @onKeyUp = "return validate_double(this, 18, 2)" })
+                            <div class="required">
+                                @Html.ValidationMessageFor(m => m.OfferPrice)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-5">
+                            <label>
+                                Quantity&nbsp;<span class="required">*</span>
+                            </label>
+                        </div>
+                        <div class="col-lg-5 col-md-7">
+                            @Html.TextBoxFor(m => m.Quantity, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Quantity", @maxlength = "100", @autofocus = "autofocus", @tabindex = "7", @id = "txtQuantity", @onkeypress = "return jsInteger(event);" })
+                            <div class="required">
+                                @Html.ValidationMessageFor(m => m.Quantity)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-5">
+                            <label>
+                                MOQ
+                            </label>
+                        </div>
+                        <div class="col-lg-5 col-md-7">
+                            @Html.TextBoxFor(m => m.MOQ, null, new { @class = "form-control placeholder-no-fix", @placeholder = "MOQ", @maxlength = "100", @autofocus = "autofocus", @tabindex = "8", @id = "txtMOQ", @onkeypress = "return jsInteger(event);" })
+                            <div class="required">
+                                @Html.ValidationMessageFor(m => m.MOQ)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-5">
+                            <label>
+                                Category
+                            </label>
+                        </div>
+                        <div class="col-lg-5 col-md-7">
+                            @Html.DropDownListFor(m => m.CategoryId, Model.objCategoryList, new { @class = "form-control placeholder-no-fix", @autofocus = "autofocus", @tabindex = "9", @id = "txtCategoryId" })
+                            <div class="required">
+                                @Html.ValidationMessageFor(m => m.CategoryId)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-5">
+                            <label>
+                                Active
+                            </label>
+                        </div>
+                        <div class="col-lg-5 col-md-7">
+                            @Html.CheckBoxFor(m => m.IsActive, new { @placeholder = "Active", @tabindex = "10" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-block-solid-pink text-center pull-right">
+                    <button tabindex="5" type="submit" title="Submit" class="btn btn-gradient" id="btnSubmit">
+                        <i class="fa fa-save"></i>&nbsp;&nbsp;Save <i class=" m-icon-swapright">
+                        </i>
+                    </button>
+                    <a class="btn  btn-gradient" title="Cancel" onclick="cancelForm();" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Products" })">
+                        <i class=" fa fa-angle-left"></i>&nbsp;&nbsp;Cancel
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
+
+    <script>
+        $(document).ready(function () {
+            $(".menu-item a").removeClass("active");
+            $('#lnkProduct').addClass('active');
+
+            $('.dashboard-menu').height($(document).height());
+
+            function jsInteger(evt) {
+                var charCode = (evt.which) ? evt.which : event.keyCode;
+                if (charCode == 46)
+                    return false;
+                if (charCode != 46 && charCode > 31
+                    && (charCode < 48 || charCode > 57))
+                    return false;
+
+                return true;
+            }
+        });
+    </script>

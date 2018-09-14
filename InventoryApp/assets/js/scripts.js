@@ -40,6 +40,6 @@ $(document).ready(function() {
 
   //Remove Modal Popup Scrolling Issue for IE Browser
   $('.campaign-image a').click(function() {
-	  $('html').addClass('modal-open');
+	 $('html').addClass('modal-open');
 	});
 });
