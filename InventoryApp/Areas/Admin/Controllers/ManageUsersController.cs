@@ -392,7 +392,7 @@ namespace InventoryApp.Areas.Admin.Controllers
             {
                 string lsFrom = "no-replay@thgodowninventorryapp.com";
 
-                string lsToMails = "mahir99047@gmail.com";//user.Email;
+                string lsToMails = user.Email;
 
                 string lsSubject = string.Empty;
 
