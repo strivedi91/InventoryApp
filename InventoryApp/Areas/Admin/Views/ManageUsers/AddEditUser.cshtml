@@ -1,0 +1,197 @@
+﻿@model InventoryApp.Areas.Admin.Models.UserViewModel
+@{
+    ViewBag.Title = "AddEdit User";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<script type="text/javascript">
+    function jsInteger(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode == 46)
+            return false;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+    function validateGiftcard() {
+
+        var form = $("#frmAddEditUser");
+
+        form.valid();
+
+        if (form.valid()) {
+            form.submit();
+            if ($("#loadingbar").length === 0) {
+                $("body").append("<div id='loadingbar'></div>")
+                $("#divLoader").css("display", "block");
+                $("#loadingbar").addClass("waiting").append($("<dt/><dd/>"));
+                $("#loadingbar").width((50 + Math.random() * 30) + "%");
+            }
+        }
+        return false;
+    }
+
+</script>
+<section>
+    <div class="section-title"><h2>Add/Edit Gift Card</h2></div>
+    <div class="white-box bg-white space">
+        @using (Html.BeginForm("AddEditCategory", "Category", FormMethod.Post, new { @id = "frmAddEditUser" }))
+        {
+            @Html.HiddenFor(m => m.Id, new { @id = "hdnUserId" })
+            @Html.HiddenFor(m => m.DocumentTypes, new { @id = "hdnDocumentTypes" })
+            @Html.ValidationSummary(true)
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Name&nbsp;<span class="required">*</span>
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.TextBoxFor(m => m.Name, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Name", @maxlength = "100", @autofocus = "autofocus", @tabindex = "1", @id = "txtName" })
+                        <div class="required">
+                            @Html.ValidationMessageFor(m => m.Name)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Email&nbsp;<span class="required">*</span>
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.TextBoxFor(m => m.Email, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Email", @maxlength = "100", @autofocus = "autofocus", @tabindex = "1", @id = "txtEmail" })
+                        <div class="required">
+                            @Html.ValidationMessageFor(m => m.Email)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Phone Number
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.TextBoxFor(m => m.PhoneNumber, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Phone Number", @maxlength = "15", @autofocus = "autofocus", @tabindex = "1", @id = "txtPhone" })
+                        <div class="required">
+                            @Html.ValidationMessageFor(m => m.PhoneNumber)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Address
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.TextAreaFor(m => m.Address, new { @class = "form-control placeholder-no-fix", @placeholder = "Address", @maxlength = "500", @tabindex = "2", @id = "txtAddress" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Deposite Amount
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.TextBoxFor(m => m.DepositAmount, null ,new { @class = "form-control placeholder-no-fix", @placeholder = "Deposite Amount", @maxlength = "20", @tabindex = "2", @id = "txtDepositeAmount", @onkeypress= "isDecimalValue()" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Is Paid?
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.CheckBoxFor(m => m.IsPaid, new { @placeholder = "Active", @tabindex = "5" })
+
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            PaymetnDate
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.TextBoxFor(m => m.PaymentDate, new { @placeholder = "Payment Date", @tabindex = "5", @class = "form-control placeholder-no-fix" })
+
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Membership Duration
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.DropDownListFor(m => m.MembershipDuration, new List<SelectListItem>
+                               {
+                            new SelectListItem{ Text="1 Year", Value = "1" },
+                            new SelectListItem{ Text="2 Year", Value = "2" } }, new { @class = "form-control placeholder-no-fix"})
+
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Documents
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @foreach (var item in Model.loDocumentTypeList)
+                        {
+                            <input id="chk@(item.Id)" 
+                                   type="checkbox"
+                                   value="@item.Id"
+                                   checked="@item.IsAdded" />
+                            @item.Name <br />
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="btn-block-solid-pink text-center pull-right">
+                <button tabindex="5" type="submit" title="Submit" class="btn btn-gradient" id="btnSubmit">
+                    <i class="fa fa-save"></i>&nbsp;&nbsp;Save <i class=" m-icon-swapright">
+                    </i>
+                </button>
+                <a class="btn  btn-gradient" title="Cancel" onclick="cancelForm();" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Category" })">
+                    <i class=" fa fa-angle-left"></i>&nbsp;&nbsp;Cancel
+                </a>
+            </div>
+        }
+    </div>
+</section>
+
+<script>
+    $(document).ready(function () {
+        $(".menu-item a").removeClass("active");
+        $('#lnkGiftCard').addClass('active');
+
+        $('.dashboard-menu').height($(document).height());
+    });
+</script>
+

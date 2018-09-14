@@ -3,37 +3,7 @@
     ViewBag.Title = "Add/Edit Category";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
-<script type="text/javascript">
-    function jsInteger(evt) {
-        var charCode = (evt.which) ? evt.which : event.keyCode;
-        if (charCode == 46)
-            return false;
-        if (charCode != 46 && charCode > 31
-            && (charCode < 48 || charCode > 57))
-            return false;
 
-        return true;
-    }
-
-    function validateGiftcard() {
-
-        var form = $("#frmAddEditCategory");
-
-        form.valid();
-
-        if (form.valid()) {
-            form.submit();
-            if ($("#loadingbar").length === 0) {
-                $("body").append("<div id='loadingbar'></div>")
-                $("#divLoader").css("display", "block");
-                $("#loadingbar").addClass("waiting").append($("<dt/><dd/>"));
-                $("#loadingbar").width((50 + Math.random() * 30) + "%");
-            }
-        }
-        return false;
-    }
-
-</script>
 <section>
     <div class="section-title"><h2>Add/Edit Gift Card</h2></div>
     <div class="white-box bg-white space">

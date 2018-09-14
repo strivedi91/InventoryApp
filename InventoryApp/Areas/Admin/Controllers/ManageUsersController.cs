@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -17,8 +18,14 @@ namespace InventoryApp.Areas.Admin.Controllers
         public ActionResult Index()
         {
             UserViewModel foRequest = new UserViewModel();
-            foRequest.stSortColumn = "ID ASC";            
+            foRequest.stSortColumn = "ID ASC";
             return View("~/Areas/Admin/Views/ManageUsers/ManageUser.cshtml", getUserList(foRequest));
+        }
+
+        public ActionResult searchUser(UserViewModel foSearchRequest)
+        {
+            UserModel loUserModel = getUserList(foSearchRequest);
+            return PartialView("~/Areas/Admin/Views/ManageUsers/_ManageUser.cshtml", loUserModel);
         }
 
         public UserModel getUserList(UserViewModel foRequest)
@@ -94,6 +101,130 @@ namespace InventoryApp.Areas.Admin.Controllers
             }
 
             return objUserViewModel;
+        }
+
+        [HttpGet]
+        public ActionResult AddEditUser(string id = "")
+        {
+            UserViewModel objUserViewModel = new UserViewModel();
+            if (!string.IsNullOrEmpty(id))
+            {
+                AspNetUsers objUser = Repository<AspNetUsers>.GetEntityListForQuery(x => x.Id == id).Item1.FirstOrDefault();
+
+                objUserViewModel = new UserViewModel
+                {
+                    Id = objUser.Id,
+                    Name = objUser.Name,
+                    Email = objUser.Email,
+                    PhoneNumber = objUser.PhoneNumber,
+                    Address = objUser.Address,
+                    DepositAmount = objUser.DepositAmount,
+                    PaymentDate = objUser.PaymentDate,
+                    IsPaid = objUser.IsPaid,
+                    MembershipDuration = objUser.MembershipDuration,
+                    loDocumentTypeList = getDocumentType(id)
+                };
+            }
+            else
+            {
+                objUserViewModel = new UserViewModel
+                {
+                    loDocumentTypeList = getDocumentType(id)
+                };
+            }
+            return View(objUserViewModel);
+        }
+
+        private List<UserDocumentTypeModel> getDocumentType(string id)
+        {
+            List<UserDocumentTypeModel> objUserDocumentTypeList = new List<UserDocumentTypeModel>();
+            var objDocumentList = Repository<DocumentTypes>.GetEntityListForQuery(null).Item1;
+
+            var objUserDocuments = Repository<AspNetUserDocumentTypes>.GetEntityListForQuery(x => x.UserId == id).Item1;
+            foreach (var doc in objDocumentList)
+            {
+                var docAdded = objUserDocuments .Count > 0 ? objUserDocuments.Where(x => x.DocumentId == doc.id).FirstOrDefault() : null;
+
+                UserDocumentTypeModel objUserDocTypeViewModel = new UserDocumentTypeModel
+                {
+                    Id = doc.id,
+                    Name = doc.DocumentType,
+                    IsAdded = objUserDocuments != null ? true : false
+                };
+                objUserDocumentTypeList.Add(objUserDocTypeViewModel);
+            }
+            return objUserDocumentTypeList;
+        }
+
+        [ValidateInput(false)]
+        [HttpPost]
+        public async Task<ActionResult> AddEditUser(UserViewModel loUserViewModel)
+        {
+            if (loUserViewModel != null)
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(loUserViewModel.Id))
+                    {
+                        AspNetUsers objUser = new AspNetUsers();
+                        objUser.Name = loUserViewModel.Name;
+                        objUser.Email = loUserViewModel.Email;
+                        objUser.PhoneNumber = loUserViewModel.PhoneNumber;
+                        objUser.Address = loUserViewModel.Address;
+                        objUser.DepositAmount = loUserViewModel.DepositAmount;
+                        objUser.PaymentDate = loUserViewModel.PaymentDate;
+                        objUser.MembershipDuration = loUserViewModel.MembershipDuration;
+                        objUser.IsPaid = loUserViewModel.IsPaid;
+                        await Repository<AspNetUsers>.InsertEntity(objUser, entity => { return entity.Id; });
+
+                        string[] objDocumentSeleced = loUserViewModel.DocumentTypes.Split(',');
+                        foreach(string docId in objDocumentSeleced)
+                        {
+                            var objUserDocuments = Repository<AspNetUserDocumentTypes>.GetEntityListForQuery(x => x.UserId == loUserViewModel.Id && x.DocumentId == Convert.ToInt32(docId)).Item1.FirstOrDefault();
+                            if(objUserDocuments == null)
+                            {
+                                AspNetUserDocumentTypes objDocType = new AspNetUserDocumentTypes();
+                                objDocType.DocumentId = Convert.ToInt32(docId);
+                                objDocType.UserId = objUser.Id;
+                                await Repository<AspNetUserDocumentTypes>.InsertEntity(objDocType, entity => { return entity.id; });
+                            }                            
+                        }
+
+                        TempData["SuccessMsg"] = "User has been added successfully";
+                    }
+                    else
+                    {
+                        AspNetUsers objUser = Repository<AspNetUsers>.GetEntityListForQuery(x => x.Id == loUserViewModel.Id).Item1.FirstOrDefault();
+                        
+                        objUser.Name = loUserViewModel.Name;
+                        objUser.Email = loUserViewModel.Email;
+                        objUser.PhoneNumber = loUserViewModel.PhoneNumber;
+                        objUser.Address = loUserViewModel.Address;
+                        objUser.DepositAmount = loUserViewModel.DepositAmount;
+                        objUser.PaymentDate = loUserViewModel.PaymentDate;
+                        objUser.MembershipDuration = loUserViewModel.MembershipDuration;
+                        objUser.IsPaid = loUserViewModel.IsPaid;
+                        await Repository<AspNetUsers>.UpdateEntity(objUser, (entity) => { return entity.Id; });
+                        
+                        string[] objDocumentSeleced = loUserViewModel.DocumentTypes.Split(',');
+                        foreach (string docId in objDocumentSeleced)
+                        {
+                            AspNetUserDocumentTypes objDocType = new AspNetUserDocumentTypes();
+                            objDocType.DocumentId = Convert.ToInt32(docId);
+                            objDocType.UserId = objUser.Id;
+                            await Repository<AspNetUserDocumentTypes>.InsertEntity(objDocType, entity => { return entity.id; });
+                        }
+
+
+                        TempData["SuccessMsg"] = "User has been updated successfully";
+                    }
+                }
+                catch (Exception)
+                {
+                    TempData["ErrorMsg"] = "Something wrong!! Please try after sometime";
+                }
+            }
+            return RedirectToAction("Index", "Category");
         }
     }
 }

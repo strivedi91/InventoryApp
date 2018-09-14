@@ -474,6 +474,7 @@
     <Content Include="Areas\Admin\Views\Category\AddEditCategory.cshtml" />
     <Content Include="Areas\Admin\Views\Category\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Category\_Category.cshtml" />
+    <Content Include="Areas\Admin\Views\ManageUsers\AddEditUser.cshtml" />
     <None Include="Properties\PublishProfiles\inventory.sachintrivedi.com - Web Deploy.pubxml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Scripts\jquery-2.1.4.min.map" />
