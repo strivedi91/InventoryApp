@@ -5,24 +5,39 @@
 }
 
 <script type="text/javascript">
-    function jsInteger(evt) {
-        var charCode = (evt.which) ? evt.which : event.keyCode;
-        if (charCode == 46)
-            return false;
-        if (charCode != 46 && charCode > 31
-            && (charCode < 48 || charCode > 57))
-            return false;
 
-        return true;
+    function validate_double(theField, len, precision) {
+        numVal = theField.value.replace(/[^\d|\.]/g, '').split('.');
+        if (numVal.length > 1) {
+            numVal[0] = numVal[0].substr(0, len);
+            numVal[1] = numVal[1].substr(0, precision);
+            numVal.length = 2;
+            theField.value = numVal.join('.');
+        } else {
+            theField.value = numVal[0];
+        };
     }
 
-    function validateGiftcard() {
+    function validateForm() {
+
+        /* declare an checkbox array */
+        var chkArray = [];
+
+        /* look for all checkboes that have a class 'chk' attached to it and check if it was checked */
+        $(".docChk:checked").each(function () {
+            chkArray.push($(this).val());
+        });
+
+        var selected;
+        selected = chkArray.join(',');
+        
+        $('#hdnDocumentTypes').val(selected);
 
         var form = $("#frmAddEditUser");
 
         form.valid();
 
-        if (form.valid()) {
+        if (form.valid() && isValidEmail) {
             form.submit();
             if ($("#loadingbar").length === 0) {
                 $("body").append("<div id='loadingbar'></div>")
@@ -37,8 +52,9 @@
 </script>
 <section>
     <div class="section-title"><h2>Add/Edit Gift Card</h2></div>
+    
     <div class="white-box bg-white space">
-        @using (Html.BeginForm("AddEditCategory", "Category", FormMethod.Post, new { @id = "frmAddEditUser" }))
+        @using (Html.BeginForm("AddEditUser", "ManageUsers", FormMethod.Post, new { @id = "frmAddEditUser" }))
         {
             @Html.HiddenFor(m => m.Id, new { @id = "hdnUserId" })
             @Html.HiddenFor(m => m.DocumentTypes, new { @id = "hdnDocumentTypes" })
@@ -66,9 +82,12 @@
                         </label>
                     </div>
                     <div class="col-lg-5 col-md-7">
-                        @Html.TextBoxFor(m => m.Email, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Email", @maxlength = "100", @autofocus = "autofocus", @tabindex = "1", @id = "txtEmail" })
+                        @Html.TextBoxFor(m => m.Email, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Email", @maxlength = "100", @autofocus = "autofocus", @tabindex = "2", @id = "txtEmail" })
                         <div class="required">
                             @Html.ValidationMessageFor(m => m.Email)
+                        </div>
+                        <div class="required" id="emailExist" style="display:none">
+                            <span class="field-validation-error">Email Already Exist</span>
                         </div>
                     </div>
                 </div>
@@ -81,7 +100,7 @@
                         </label>
                     </div>
                     <div class="col-lg-5 col-md-7">
-                        @Html.TextBoxFor(m => m.PhoneNumber, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Phone Number", @maxlength = "15", @autofocus = "autofocus", @tabindex = "1", @id = "txtPhone" })
+                        @Html.TextBoxFor(m => m.PhoneNumber, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Phone Number", @maxlength = "15", @autofocus = "autofocus", @tabindex = "3", @id = "txtPhone" })
                         <div class="required">
                             @Html.ValidationMessageFor(m => m.PhoneNumber)
                         </div>
@@ -96,7 +115,7 @@
                         </label>
                     </div>
                     <div class="col-lg-5 col-md-7">
-                        @Html.TextAreaFor(m => m.Address, new { @class = "form-control placeholder-no-fix", @placeholder = "Address", @maxlength = "500", @tabindex = "2", @id = "txtAddress" })
+                        @Html.TextAreaFor(m => m.Address, new { @class = "form-control placeholder-no-fix", @placeholder = "Address", @maxlength = "500", @tabindex = "4", @id = "txtAddress" })
                     </div>
                 </div>
             </div>
@@ -108,7 +127,7 @@
                         </label>
                     </div>
                     <div class="col-lg-5 col-md-7">
-                        @Html.TextBoxFor(m => m.DepositAmount, null ,new { @class = "form-control placeholder-no-fix", @placeholder = "Deposite Amount", @maxlength = "20", @tabindex = "2", @id = "txtDepositeAmount", @onkeypress= "isDecimalValue()" })
+                        @Html.TextBoxFor(m => m.DepositAmount, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Deposite Amount", @maxlength = "20", @tabindex = "5", @id = "txtDepositeAmount", @onKeyUp = "return validate_double(this, 18, 2)" })
                     </div>
                 </div>
             </div>
@@ -120,7 +139,7 @@
                         </label>
                     </div>
                     <div class="col-lg-5 col-md-7">
-                        @Html.CheckBoxFor(m => m.IsPaid, new { @placeholder = "Active", @tabindex = "5" })
+                        @Html.CheckBoxFor(m => m.IsPaid, new { @placeholder = "Active", @tabindex = "6" })
 
                     </div>
                 </div>
@@ -133,7 +152,7 @@
                         </label>
                     </div>
                     <div class="col-lg-5 col-md-7">
-                        @Html.TextBoxFor(m => m.PaymentDate, new { @placeholder = "Payment Date", @tabindex = "5", @class = "form-control placeholder-no-fix" })
+                        @Html.TextBoxFor(m => m.PaymentDate, new { @placeholder = "Payment Date", @tabindex = "7", @class = "form-control placeholder-no-fix", @type="Date" })
 
                     </div>
                 </div>
@@ -148,8 +167,9 @@
                     <div class="col-lg-5 col-md-7">
                         @Html.DropDownListFor(m => m.MembershipDuration, new List<SelectListItem>
                                {
+                       new SelectListItem{ Text="--select--", Value = "0" },
                             new SelectListItem{ Text="1 Year", Value = "1" },
-                            new SelectListItem{ Text="2 Year", Value = "2" } }, new { @class = "form-control placeholder-no-fix"})
+                            new SelectListItem{ Text="2 Year", Value = "2" } }, new { @class = "form-control placeholder-no-fix", @tabindex = "8" })
 
                     </div>
                 </div>
@@ -164,8 +184,8 @@
                     <div class="col-lg-5 col-md-7">
                         @foreach (var item in Model.loDocumentTypeList)
                         {
-                            <input id="chk@(item.Id)" 
-                                   type="checkbox"
+                            <input id="chk@(item.Id)" class="docChk"
+                                   type="checkbox" tabindex="9"
                                    value="@item.Id"
                                    checked="@item.IsAdded" />
                             @item.Name <br />
@@ -174,18 +194,20 @@
                 </div>
             </div>
             <div class="btn-block-solid-pink text-center pull-right">
-                <button tabindex="5" type="submit" title="Submit" class="btn btn-gradient" id="btnSubmit">
+                <button tabindex="5" type="submit" title="Submit" class="btn btn-gradient" id="btnSubmit" tabindex="10" onclick="validateForm()">
                     <i class="fa fa-save"></i>&nbsp;&nbsp;Save <i class=" m-icon-swapright">
                     </i>
                 </button>
-                <a class="btn  btn-gradient" title="Cancel" onclick="cancelForm();" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Category" })">
+                <a class="btn  btn-gradient" title="Cancel" onclick="cancelForm();" tabindex="11" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "ManageUsers" })">
                     <i class=" fa fa-angle-left"></i>&nbsp;&nbsp;Cancel
                 </a>
             </div>
         }
     </div>
 </section>
-
+<script>
+    var checkEmailURL = '@Url.RouteUrl("Admin_default", new { controller = "ManageUsers", action = "checkEmail" })';
+</script>
 <script>
     $(document).ready(function () {
         $(".menu-item a").removeClass("active");
@@ -193,5 +215,40 @@
 
         $('.dashboard-menu').height($(document).height());
     });
+    var isValidEmail = true;
+    $("#txtEmail").blur(function () {
+        if ($("#txtEmail").val() !== "") {
+            $.ajax({
+                type: "POST",
+                url: checkEmailURL,
+                content: "application/json; charset=utf-8",
+                dataType: "html",
+                data: {
+                    email: $("#txtEmail").val(),
+                    userid: $("#hdnUserId").val()
+                },
+                success: function (lodata) {
+                    
+                    if (lodata === "True") {
+                        $('#emailExist').show();
+                        isValidEmail = false;
+                    }
+                    else {
+                        $('#emailExist').hide();
+                        isValidEmail = true;
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    if (errorThrown === "abort") {
+                        return;
+                    }
+                    else {
+                        alert(errorThrown);
+                    }
+                }
+            });
+        }
+    });
+
 </script>
 

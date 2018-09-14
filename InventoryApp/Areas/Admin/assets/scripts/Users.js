@@ -3,8 +3,7 @@
     $('#txtSearch').focus();
 });
 function userSearch(e) {
-    if (e.which == 13) {
-        debugger
+    if (e.which === 13) {        
         e.preventDefault();
         $(this).blur();
         $('#btnSearch').focus().click();
@@ -14,44 +13,40 @@ function userSearch(e) {
 function search() {
     var stSearch = "";
     var stToDate = "";
-    if ($('#txtSearch').val() != "") {
+    if ($('#txtSearch').val() !== "") {
         stSearch = $('#txtSearch').val();
     }
     refeshList(stSearch);
 }
-function statusSearch(val) {
-    $('#hdnStatus').val(val);
-    refeshList("load");
-}
+
 function refeshList(foId,pageIndex) {
     var stSortField = "";
     var lsStatus = parseInt($('#hdnStatus').val());
     var lsSearch = $('#txtSearch').val().trim();
     var lsOriginalSearch = $('#txtSearch').val().trim();
-    var lsSearch = lsSearch.replace(/'/g, "''");
+    lsSearch = lsSearch.replace(/'/g, "''");
     lsSearch = encodeURIComponent(lsSearch);
     
-    if (foId == "load") {
+    if (foId === "load") {
         pageIndex = 1;
     }
-    else if (foId == "ID ASC" || foId == "ID DESC" || foId == "LegalEntityName ASC" || foId == "LegalEntityName DESC") {
+    else if (foId === "ID ASC" || foId === "ID DESC" || foId === "Name ASC" || foId === "Name DESC" || foId === "Email ASC" || foId === "Email DESC") {
         pageIndex = parseInt($('#hdnPageIndex').val());
     }
     
     $.ajax({
         type: "POST",
-        url: lsgetCompanyList,
+        url: lsgetUserList,
         content: "application/json; charset=utf-8",
         dataType: "html",
         data: {
             inPageIndex: pageIndex,
             inPageSize: 10,
             stSortColumn: $('#hdnOrder').val(),
-            stSearch: lsSearch,
-            Status:lsStatus
+            stSearch: lsSearch
         },
         success: function (lodata) {
-            if (lodata != null) {
+            if (lodata !== null) {
                 var divSOReleased = $('#companylist');
                 divSOReleased.html('');
                 divSOReleased.html(lodata);
@@ -66,7 +61,7 @@ function refeshList(foId,pageIndex) {
         error: function (jqXHR, textStatus, errorThrown) {
             $('#txtSearch').val(lsOriginalSearch);
             $('#txtSearch').focus();
-            if (errorThrown == "abort") {
+            if (errorThrown === "abort") {
                 return;
             }
             else {
@@ -75,11 +70,11 @@ function refeshList(foId,pageIndex) {
         }
     });
 }
-function getOrderbyCompanyList(foOrderedField, tdID) {
+function getOrderbyUserList(foOrderedField, tdID) {
     var foFieldwithOrder = "";
     $('#hdnSortingOnColumn').val(tdID);
 
-    if ($('#hdnOrder').val() == "") {
+    if ($('#hdnOrder').val() === "") {
         $('#hdnOrder').val(foOrderedField + " ASC");
         foFieldwithOrder = foOrderedField + " ASC";
         $('#hdnOrder').val(foFieldwithOrder);
@@ -87,7 +82,7 @@ function getOrderbyCompanyList(foOrderedField, tdID) {
 
     }
     else {
-        if ($('#hdnOrder').val() == (foOrderedField + " ASC")) {
+        if ($('#hdnOrder').val() === (foOrderedField + " ASC")) {
             foFieldwithOrder = foOrderedField + " DESC";
             $('#hdnOrder').val(foFieldwithOrder);
             $('#hdnSortingDirection').val("DESC");
@@ -106,12 +101,12 @@ function setSortingArrow() {
     var sortTD = $('#hdnSortingOnColumn').val();
     var sortDirection = $('#hdnSortingDirection').val();
 
-    if (sortTD != "") {
+    if (sortTD !== "") {
         $('#' + sortTD).removeClass("sorting");
-        if (sortDirection.toUpperCase() == "ASC") {
+        if (sortDirection.toUpperCase() === "ASC") {
             $('#' + sortTD).addClass("sorting_asc");
         }
-        else if (sortDirection.toUpperCase() == "DESC") {
+        else if (sortDirection.toUpperCase() === "DESC") {
             $('#' + sortTD).addClass("sorting_desc");
         }
     }
@@ -120,4 +115,31 @@ function setSortingArrow() {
         $('#sortID').addClass("sorting_asc");
         $('#hdnOrder').val("ID ASC");
     }
+}
+
+function DeleteCategory(fiUserId) {
+
+    $.ajax({
+        type: "POST",
+        url: deleteUserUrl,
+        content: "application/json; charset=utf-8",
+        dataType: "json",
+        data: {
+            ID: fiUserId
+        },
+        success: function (lodata) {
+            if (lodata !== null) {
+
+                refeshList("delete");
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            if (errorThrown === "abort") {
+                return;
+            }
+            else {
+                alert(errorThrown);
+            }
+        }
+    });
 }

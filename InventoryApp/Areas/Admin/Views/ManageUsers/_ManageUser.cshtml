@@ -1,30 +1,57 @@
 ﻿@model InventoryApp.Areas.Admin.Models.UserModel
 @if (Model != null && Model.loUserList.Count > 0)
 {
+    if (TempData["SuccessMsg"] != null && TempData["SuccessMsg"].ToString() != "")
+    {
+        <div class="table-responsive">
+            <hr style="border-color:#F7F7F7 !important;" />
+            <div class="alert alert-success">
+                <span class="close" data-dismiss="alert" aria-label="close">&times;</span>
+                <span style="vertical-align:middle;"> @TempData["SuccessMsg"].ToString()</span>
+
+                @{TempData["SuccessMsg"] = "";}
+            </div>
+        </div>
+    }
+    if (TempData["ErrorMsg"] != null && TempData["ErrorMsg"].ToString() != "")
+    {
+        <div class="table-responsive">
+            <div class="alert alert-danger" style="height:30px; padding:4px !important; margin-bottom:0px !important; margin-top:10px;">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                @TempData["ErrorMsg"].ToString()
+            </div>
+        </div>
+
+    }
     <div class="table-responsive">
         <table class="table table-bordered wordwrap bg-white">
             <thead>
                 <tr class="heading">
                     @Html.Hidden("hdnPageIndex", Model.inPageIndex)
                     @*<th id="sortID" onclick="getOrderbyCompanyList('ID', 'sortID');" class="sorting"><span class="heading-text">Ref Id</span></th>*@
-                    <th id="sortLegalEntityName" onclick="getOrderbyCompanyList('LegalEntityName', 'sortLegalEntityName');" class="text-left sorting"><span class="heading-text">Name</span></th>
-                    <th><span class="heading-text">Email</span></th>
+                    <th id="sortName" onclick="getOrderbyUserList('Name', 'sortName');" class="text-left sorting"><span class="heading-text">Name</span></th>
+                    <th id="sortEmail" onclick="getOrderbyUserList('Email', 'sortEmail');" class="text-left sorting"><span class="heading-text">Email</span></th>
                     <th><span class="heading-text">Phone</span></th>
                     <th><span class="heading-text">Address</span></th>
                     <th><span class="heading-text">Deposit</span></th>
                     <th><span class="heading-text">Payment Date</span></th>
+                    <th><span class="heading-text">Action</span></th>
                 </tr>
             </thead>
             @foreach (var pac in Model.loUserList)
             {
                 @*<tr style="cursor:pointer" onclick="location.href = '@(Url.Action("CompanyDetail", "ManageCompany", new { fiCompanyId = pac.Id }))'">*@
-                <tr>                    
+                <tr>
                     <td>@pac.Name</td>
                     <td>@pac.Email</td>
                     <td>@pac.PhoneNumber</td>
                     <td>@pac.Address</td>
                     <td>@pac.DepositAmount</td>
-                    <td>@pac.PaymentDate</td>
+                    <td>@(pac.PaymentDate != null ? Convert.ToString(pac.PaymentDate.Value.ToString("dd/MM/yyyy")) : "")</td>
+                    <td>
+                        <a href="@Url.Action("AddEditUser", "ManageUsers", new { Id = pac.Id })" title="Edit"><i class="fa fa-pencil-square-o" style="font-size: 1.5em;"></i></a>
+                        <a href=javascript:void(0); onclick="confirmDelete('@pac.Id')" title="Delete"><i class="fa fa-close" style="color:#23527C; font-size:1.5em;"></i></a>
+                    </td>
                 </tr>
             }
         </table>
@@ -43,6 +70,7 @@
             </div>
         </div>
     }
+    @Html.Hidden("hdnId", "")
 }
 else
 {
@@ -52,8 +80,43 @@ else
         </div>
     </div>
 }
+<div class="modal fade" tabindex="-1" role="dialog" id="modelDeleteCard">
+    <div class="modal-dialog">
+        <div class="modal-content white-box bg-white">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size:larger;">&times;</span></button>
+                <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this User?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gradient" onclick="DeleteClick();">Yes</button>
+                <button type="button" class="btn btn-gradient" data-dismiss="modal">Cancel</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
 
 <script type="text/javascript">
+    function confirmDelete(id) {
+        $('#hdnId').val(id);
+        jQuery.noConflict();
+        (function ($) {
+            $('#modelDeleteCard').modal('show');
+        }
+        )(jQuery);
+    }
+    function DeleteClick() {
+        jQuery.noConflict();
+        (function ($) {
+            $('#modelDeleteCard').modal('hide');
+        }
+        )(jQuery);
+        var id = $('#hdnId').val();
+        DeleteCategory(id);
+    }
+
     $(document).ready(function () {
         GetPager($("#hdnTotalRec").val(), $("#hdnPageIndex").val());
     });
