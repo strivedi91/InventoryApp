@@ -74,8 +74,8 @@ namespace InventoryApp.Controllers.API
             {
                 loJObjResult = JObject.FromObject(new
                 {
-                    status=true,
-                    FirstTimeLogin=false,
+                    status = true,
+                    FirstTimeLogin = false,
                     Categories =
                        from category in userCategories
 
@@ -193,7 +193,7 @@ namespace InventoryApp.Controllers.API
         }
 
         [HttpPost]
-        [Route("addtocart")]
+        [Route("user/addtocart")]
         public async Task<IHttpActionResult> AddToCart(AddToCartModel[] addToCartModel)
         {
             JObject Result = null;
@@ -209,7 +209,7 @@ namespace InventoryApp.Controllers.API
                     {
                         UserId = LoggedInUserId,
                         OfferId = x.OfferId,
-                        Quantity=x.Quantity,
+                        Quantity = x.Quantity,
                         ProductId = x.ProductId
                     }));
 
@@ -225,10 +225,10 @@ namespace InventoryApp.Controllers.API
             catch (Exception ex)
             {
                 return GetInternalServerErrorResult("Sorry, there was an error processing your request. Please try again.");
-            }            
+            }
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("user/cart")]
         public async Task<IHttpActionResult> GetCart()
         {
@@ -243,7 +243,7 @@ namespace InventoryApp.Controllers.API
                 Expression<Func<Cart, object>> IncludeCategory = (category) => category.Categories;
                 includes.Add(IncludeProducts);
                 includes.Add(IncludeCategory);
-                
+
                 var userSelectedProducts = Repository<Cart>.
                     GetEntityListForQuery(x => x.UserId == LoggedInUserId, null, includes).Item1;
 
@@ -263,14 +263,156 @@ namespace InventoryApp.Controllers.API
                                 Price = product.Products.Price,
                                 OfferPrice = product.Products.OfferPrice,
                                 product.Products.MOQ,
-                                product.Products.Quantity,                                
-                                SelectedQuantity=product.Quantity,
+                                product.Products.Quantity,
+                                SelectedQuantity = product.Quantity,
                                 TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive).
                                 Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price })
                             }
                 });
 
-                return GetOkResult(Result);                
+                return GetOkResult(Result);
+            }
+            catch (Exception ex)
+            {
+                return GetInternalServerErrorResult("Sorry, there was an error processing your request. Please try again.");
+            }
+        }
+
+        [HttpPost]
+        [Route("user/placeorder")]
+        public async Task<IHttpActionResult> PlaceOrder(OrderModel orderModel)
+        {
+            JObject Result = null;
+
+            try
+            {
+                var LoggedInUserId = User.Identity.GetUserId();
+
+                Orders orders = new Orders
+                {
+                    CreatedOn = DateTime.Now,
+                    Discount = orderModel.OrderDiscount,
+                    OrderStatus = "Order Placed Successfully.",
+                    SubTotal = orderModel.OrderSubTotal,
+                    Total = orderModel.OrderTotal,
+                    UserId = LoggedInUserId
+                };
+
+                await Repository<Orders>.InsertEntity(orders, entity => { return entity.id; });
+
+                List<OrderDetails> orderItems = new List<OrderDetails>();
+                orderItems.AddRange(
+                    orderModel.orderDetailsModels.
+                    Select(x => new OrderDetails
+                    {
+                        OrderId = orders.id,
+                        Quantity = x.Quantity,
+                        CategoryId = x.CategoryId,
+                        Discount = x.Discount,
+                        Price = x.Price,
+                        TotalPrice = x.TotalPrice,
+                        ProductId = x.ProductId
+                    }));
+
+                await Repository<OrderDetails>.InsertMultipleEntities(orderItems);
+
+                Result = new JObject(
+                        new JProperty("message", "Order placed Successfully."),
+                        new JProperty("status", true)
+                    );
+
+                return GetOkResult(Result);
+            }
+            catch (Exception ex)
+            {
+                return GetInternalServerErrorResult("Sorry, there was an error processing your request. Please try again.");
+            }
+        }
+
+        [HttpGet]
+        [Route("user/orders")]
+        public async Task<IHttpActionResult> GetOrders()
+        {
+            JObject Result = null;
+
+            try
+            {
+                var LoggedInUserId = User.Identity.GetUserId();
+
+                List<Expression<Func<Orders, Object>>> includes = new List<Expression<Func<Orders, object>>>();
+                Expression<Func<Orders, object>> IncludeOrderDetails = (orderdetails) => orderdetails.OrderDetails;
+                includes.Add(IncludeOrderDetails);
+
+                var userOrders = Repository<Orders>.
+                    GetEntityListForQuery(x => x.UserId == LoggedInUserId, null, includes).Item1;
+
+                Result = JObject.FromObject(new
+                {
+                    status = true,
+                    Orders =
+                            from order in userOrders
+                            select new
+                            {
+                                Id = order.id,
+                                Products = order.OrderDetails.Count(),
+                                order.CreatedOn,
+                                order.Discount,
+                                order.OrderStatus,
+                                order.SubTotal,
+                                order.Total
+                            }
+                });
+
+                return GetOkResult(Result);
+            }
+            catch (Exception ex)
+            {
+                return GetInternalServerErrorResult("Sorry, there was an error processing your request. Please try again.");
+            }
+        }
+
+        [HttpGet]
+        [Route("user/orders/{orderId:int}/details")]
+        public async Task<IHttpActionResult> GetOrderDetails(int orderId)
+        {
+            JObject Result = null;
+
+            try
+            {
+                var LoggedInUserId = User.Identity.GetUserId();
+
+                List<Expression<Func<OrderDetails, Object>>> includes = new List<Expression<Func<OrderDetails, object>>>();
+                Expression<Func<OrderDetails, object>> IncludeProducts = (orderdetails) => orderdetails.Products;
+                Expression<Func<OrderDetails, object>> IncludeCategories = (orderdetails) => orderdetails.Categories;
+                includes.Add(IncludeProducts);
+                includes.Add(IncludeCategories);
+
+                var userOrders = Repository<OrderDetails>.
+                    GetEntityListForQuery(x => x.OrderId == orderId, null, includes).Item1;
+
+                Result = JObject.FromObject(new
+                {
+                    status = true,
+                    Products =
+                        from product in userOrders
+                        select new
+                        {
+                            Id = product.Products.id,
+                            Name = product.Products.Name,
+                            Category = product.Categories.Name,
+                            Brand = product.Products.Brand,
+                            Description = product.Products.Description,
+                            Type = product.Products.Type,
+                            Price = product.Products.Price,
+                            OfferPrice = product.Products.OfferPrice,
+                            product.Products.MOQ,
+                            product.Products.Quantity,
+                            TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive).
+                            Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price })
+                        }
+                });
+
+                return GetOkResult(Result);
             }
             catch (Exception ex)
             {
