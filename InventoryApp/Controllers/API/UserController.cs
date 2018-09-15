@@ -74,6 +74,8 @@ namespace InventoryApp.Controllers.API
             {
                 loJObjResult = JObject.FromObject(new
                 {
+                    status=true,
+                    FirstTimeLogin=false,
                     Categories =
                        from category in userCategories
 
@@ -96,6 +98,7 @@ namespace InventoryApp.Controllers.API
                 loJObjResult = JObject.FromObject(new
                 {
                     status = true,
+                    FirstTimeLogin = true,
                     Categories =
                         from category in categories
                         select new
