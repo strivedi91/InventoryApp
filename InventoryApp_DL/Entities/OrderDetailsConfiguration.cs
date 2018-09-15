@@ -28,6 +28,7 @@ namespace InventoryApp_DL.Entities
 
             Property(x => x.id).HasColumnName("id").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.OrderId).HasColumnName("OrderId").IsRequired();
+            Property(x => x.CategoryId).HasColumnName("CategoryId").IsRequired();
             Property(x => x.ProductId).HasColumnName("ProductId").IsRequired();
             Property(x => x.Quantity).HasColumnName("Quantity").IsRequired();
             Property(x => x.Price).HasColumnName("Price").IsRequired().HasPrecision(18,2);
@@ -36,6 +37,7 @@ namespace InventoryApp_DL.Entities
 
             // Foreign keys
             HasRequired(a => a.Orders).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId); // FK_OrderDetails_Order
+            HasRequired(a => a.Categories).WithMany(b => b.OrderDetails).HasForeignKey(c => c.CategoryId); // FK_OrderDetails_Categories
             HasRequired(a => a.Products).WithMany(b => b.OrderDetails).HasForeignKey(c => c.ProductId); // FK_OrderDetails_Products
             InitializePartial();
         }

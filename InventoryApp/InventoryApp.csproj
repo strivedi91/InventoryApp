@@ -255,6 +255,7 @@
     <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Helpers\Pager.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ApiModels\AddToCartModel.cs" />
     <Compile Include="Models\ApiModels\SaveUserPreferencesModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />

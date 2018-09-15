@@ -194,9 +194,88 @@ namespace InventoryApp.Controllers.API
 
         [HttpPost]
         [Route("addtocart")]
-        public async Task<IHttpActionResult> AddToCart()
+        public async Task<IHttpActionResult> AddToCart(AddToCartModel[] addToCartModel)
         {
-            return Ok();
+            JObject Result = null;
+
+            try
+            {
+                var LoggedInUserId = User.Identity.GetUserId();
+
+                List<Cart> cartItems = new List<Cart>();
+                cartItems.AddRange(
+                    addToCartModel.
+                    Select(x => new Cart
+                    {
+                        UserId = LoggedInUserId,
+                        OfferId = x.OfferId,
+                        Quantity=x.Quantity,
+                        ProductId = x.ProductId
+                    }));
+
+                await Repository<Cart>.InsertMultipleEntities(cartItems);
+
+                Result = new JObject(
+                        new JProperty("message", "User Cart Stored Successfully."),
+                        new JProperty("status", true)
+                    );
+
+                return GetOkResult(Result);
+            }
+            catch (Exception ex)
+            {
+                return GetInternalServerErrorResult("Sorry, there was an error processing your request. Please try again.");
+            }            
+        }
+
+        [HttpPost]
+        [Route("user/cart")]
+        public async Task<IHttpActionResult> GetCart()
+        {
+            JObject Result = null;
+
+            try
+            {
+                var LoggedInUserId = User.Identity.GetUserId();
+
+                List<Expression<Func<Cart, Object>>> includes = new List<Expression<Func<Cart, object>>>();
+                Expression<Func<Cart, object>> IncludeProducts = (product) => product.Products;
+                Expression<Func<Cart, object>> IncludeCategory = (category) => category.Categories;
+                includes.Add(IncludeProducts);
+                includes.Add(IncludeCategory);
+                
+                var userSelectedProducts = Repository<Cart>.
+                    GetEntityListForQuery(x => x.UserId == LoggedInUserId, null, includes).Item1;
+
+                Result = JObject.FromObject(new
+                {
+                    status = true,
+                    Products =
+                            from product in userSelectedProducts
+                            select new
+                            {
+                                Id = product.Products.id,
+                                Name = product.Products.Name,
+                                Category = product.Categories.Name,
+                                Brand = product.Products.Brand,
+                                Description = product.Products.Description,
+                                Type = product.Products.Type,
+                                Price = product.Products.Price,
+                                OfferPrice = product.Products.OfferPrice,
+                                product.Products.MOQ,
+                                product.Products.Quantity,                                
+                                SelectedQuantity=product.Quantity,
+                                TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive).
+                                Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price })
+                            }
+                });
+
+                return GetOkResult(Result);                
+            }
+            catch (Exception ex)
+            {
+                return GetInternalServerErrorResult("Sorry, there was an error processing your request. Please try again.");
+            }
         }
     }
 }

@@ -27,12 +27,14 @@ namespace InventoryApp_DL.Entities
             HasKey(x => x.id);
 
             Property(x => x.id).HasColumnName("id").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.CategoryId).HasColumnName("CategoryId").IsRequired();
             Property(x => x.ProductId).HasColumnName("ProductId").IsRequired();
             Property(x => x.OfferId).HasColumnName("OfferId").IsOptional();
             Property(x => x.UserId).HasColumnName("UserId").IsRequired().HasMaxLength(128);
             Property(x => x.Quantity).HasColumnName("Quantity").IsRequired();
 
             // Foreign keys
+            HasRequired(a => a.Categories).WithMany(b => b.Carts).HasForeignKey(c => c.CategoryId); // FK_Cart_Categories
             HasOptional(a => a.Products).WithMany(b => b.Carts).HasForeignKey(c => c.OfferId); // FK_Cart_Products
             HasRequired(a => a.AspNetUsers).WithMany(b => b.Carts).HasForeignKey(c => c.UserId); // FK_Cart_AspNetUsers
             InitializePartial();

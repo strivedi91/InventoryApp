@@ -19,6 +19,7 @@ namespace InventoryApp_DL.Entities
     public partial class Cart : InventoryApp_DL.Infrastructure.Entity
     {
         public int id { get; set; } // id (Primary key)
+        public int CategoryId { get; set; } // CategoryId
         public int ProductId { get; set; } // ProductId
         public int? OfferId { get; set; } // OfferId
         public string UserId { get; set; } // UserId
@@ -26,6 +27,7 @@ namespace InventoryApp_DL.Entities
 
         // Foreign keys
         public virtual AspNetUsers AspNetUsers { get; set; } //  FK_Cart_AspNetUsers
+        public virtual Categories Categories { get; set; } //  FK_Cart_Categories
         public virtual Products Products { get; set; } //  FK_Cart_Products
     }
 

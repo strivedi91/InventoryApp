@@ -20,6 +20,7 @@ namespace InventoryApp_DL.Entities
     {
         public int id { get; set; } // id (Primary key)
         public int OrderId { get; set; } // OrderId
+        public int CategoryId { get; set; } // CategoryId
         public int ProductId { get; set; } // ProductId
         public int Quantity { get; set; } // Quantity
         public decimal Price { get; set; } // Price
@@ -27,6 +28,7 @@ namespace InventoryApp_DL.Entities
         public decimal TotalPrice { get; set; } // TotalPrice
 
         // Foreign keys
+        public virtual Categories Categories { get; set; } //  FK_OrderDetails_Categories
         public virtual Orders Orders { get; set; } //  FK_OrderDetails_Order
         public virtual Products Products { get; set; } //  FK_OrderDetails_Products
     }

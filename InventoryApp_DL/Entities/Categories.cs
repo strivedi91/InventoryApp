@@ -27,7 +27,9 @@ namespace InventoryApp_DL.Entities
 
         // Reverse navigation
         public virtual ICollection<AspNetUserPreferences> AspNetUserPreferences { get; set; } // AspNetUserPreferences.FK_AspNetUserCategories_Categories
+        public virtual ICollection<Cart> Carts { get; set; } // Cart.FK_Cart_Categories
         public virtual ICollection<Offers> Offers { get; set; } // Offers.FK_Offers_Categories
+        public virtual ICollection<OrderDetails> OrderDetails { get; set; } // OrderDetails.FK_OrderDetails_Categories
         public virtual ICollection<Products> Products { get; set; } // Products.FK_Products_Categories
 
         public Categories()
@@ -36,7 +38,9 @@ namespace InventoryApp_DL.Entities
             IsDeleted = false;
             ParentId = 0;
             AspNetUserPreferences = new List<AspNetUserPreferences>();
+            Carts = new List<Cart>();
             Offers = new List<Offers>();
+            OrderDetails = new List<OrderDetails>();
             Products = new List<Products>();
             InitializePartial();
         }
