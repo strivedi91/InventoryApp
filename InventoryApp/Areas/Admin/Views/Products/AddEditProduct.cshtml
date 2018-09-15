@@ -168,7 +168,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <div class="row">
                     <div class="col-lg-3 col-md-5">
                         <label>
@@ -183,7 +183,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>*@
             <div class="form-group">
                 <div class="row">
                     <div class="col-lg-3 col-md-5">
@@ -289,37 +289,37 @@
 
         $('.dashboard-menu').height($(document).height());
 
-        $(document).ready(function () {
-            $('#fUpload').change(function () {
-                $("#imageValidDiv").hide();
-                debugger;
-                var fp = $("#fUpload");
-                var lg = fp[0].files.length; 
-                var items = fp[0].files;
+        //$(document).ready(function () {
+        //    $('#fUpload').change(function () {
+        //        $("#imageValidDiv").hide();
+        //        debugger;
+        //        var fp = $("#fUpload");
+        //        var lg = fp[0].files.length; 
+        //        var items = fp[0].files;
                 
-                if (lg > 0) {
-                    for (var i = 0; i < lg; i++) {
-                        var fileSize = items[i].size; 
-                        if (fileSize > 2097152) {
-                            $('#imageValidation').html('File size must not be more than 2 MB');
-                            $('#fUpload').val('');
-                            $("#imageValidDiv").show();
-                        }
+        //        if (lg > 0) {
+        //            for (var i = 0; i < lg; i++) {
+        //                var fileSize = items[i].size; 
+        //                if (fileSize > 2097152) {
+        //                    $('#imageValidation').html('File size must not be more than 2 MB');
+        //                    $('#fUpload').val('');
+        //                    $("#imageValidDiv").show();
+        //                }
                         
-                        var ext = items[i].name.split(".");
-                        ext = ext[ext.length - 1].toLowerCase();
+        //                var ext = items[i].name.split(".");
+        //                ext = ext[ext.length - 1].toLowerCase();
 
-                        var arrayExtensions = ["jpg", "jpeg", "png", "bmp", "gif", "JPG", "JPEG", "PNG"];
+        //                var arrayExtensions = ["jpg", "jpeg", "png", "bmp", "gif", "JPG", "JPEG", "PNG"];
 
-                        if (arrayExtensions.lastIndexOf(ext) == -1) {
-                            $('#imageValidation').html('Please upload only image type file.');
-                            $('#fUpload').val('');
-                            $("#imageValidDiv").show();
-                        }
-                    }
-                }
-            });
-        });
+        //                if (arrayExtensions.lastIndexOf(ext) == -1) {
+        //                    $('#imageValidation').html('Please upload only image type file.');
+        //                    $('#fUpload').val('');
+        //                    $("#imageValidDiv").show();
+        //                }
+        //            }
+        //        }
+        //    });
+        //});
         
     });
     function jsInteger(evt) {

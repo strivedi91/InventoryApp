@@ -14,6 +14,7 @@ using System.Web.Mvc;
 
 namespace InventoryApp.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ProductsController : Controller
     {
         string ProductImagePath = ConfigurationManager.AppSettings["ProductImagePath"].ToString();
@@ -190,7 +191,7 @@ namespace InventoryApp.Areas.Admin.Controllers
                     objTierPricing = getTierPricing(objProduct.id)
                 };
             }
-            
+
             var objCategories = Repository<Categories>.GetEntityListForQuery(x => x.IsDeleted == false).Item1.ToList();
 
             objProductsViewModel.objCategoryList.Add(new SelectListItem { Text = "-- Select --", Value = "0", Selected = true });
@@ -249,19 +250,19 @@ namespace InventoryApp.Areas.Admin.Controllers
                             await Repository<TierPricing>.InsertEntity(objTierPricing, entity => { return entity.Id; });
                         }
 
-                        string savepath = Path.Combine(Server.MapPath(ProductImagePath), objProduct.id.ToString());
-                        System.IO.Directory.CreateDirectory(savepath);
+                        //string savepath = Path.Combine(Server.MapPath(ProductImagePath), objProduct.id.ToString());
+                        //System.IO.Directory.CreateDirectory(savepath);
 
-                        for (int i = 0; i < Request.Files.Count; i++)
-                        {
-                            HttpPostedFileBase file = Request.Files[i];
-                            int fileSize = file.ContentLength;
-                            string fileName = file.FileName;
-                            string mimeType = file.ContentType;
-                            System.IO.Stream fileContent = file.InputStream;
+                        //for (int i = 0; i < Request.Files.Count; i++)
+                        //{
+                        //    HttpPostedFileBase file = Request.Files[i];
+                        //    int fileSize = file.ContentLength;
+                        //    string fileName = file.FileName;
+                        //    string mimeType = file.ContentType;
+                        //    System.IO.Stream fileContent = file.InputStream;
 
-                            file.SaveAs(savepath + "/" + fileName);
-                        }
+                        //    file.SaveAs(savepath + "/" + fileName);
+                        //}
 
                         TempData["SuccessMsg"] = "Product has been added successfully";
                     }
@@ -304,20 +305,20 @@ namespace InventoryApp.Areas.Admin.Controllers
                             await Repository<TierPricing>.InsertEntity(objTierPricing, entity => { return entity.Id; });
                         }
 
-                        string savepath = Path.Combine(Server.MapPath(ProductImagePath), objProduct.id.ToString());
-                        if (!Directory.Exists(savepath))
-                            System.IO.Directory.CreateDirectory(savepath);
+                        //string savepath = Path.Combine(Server.MapPath(ProductImagePath), objProduct.id.ToString());
+                        //if (!Directory.Exists(savepath))
+                        //    System.IO.Directory.CreateDirectory(savepath);
 
-                        for (int i = 0; i < Request.Files.Count; i++)
-                        {
-                            HttpPostedFileBase file = Request.Files[i];
-                            //int fileSize = file.ContentLength;
-                            string fileName = file.FileName;
-                            //string mimeType = file.ContentType;
-                            //System.IO.Stream fileContent = file.InputStream;
+                        //for (int i = 0; i < Request.Files.Count; i++)
+                        //{
+                        //    HttpPostedFileBase file = Request.Files[i];
+                        //    //int fileSize = file.ContentLength;
+                        //    string fileName = file.FileName;
+                        //    //string mimeType = file.ContentType;
+                        //    //System.IO.Stream fileContent = file.InputStream;
 
-                            file.SaveAs(savepath + "/" + fileName);
-                        }
+                        //    file.SaveAs(savepath + "/" + fileName);
+                        //}
 
                         TempData["SuccessMsg"] = "Product has been updated successfully";
                     }
@@ -352,6 +353,85 @@ namespace InventoryApp.Areas.Admin.Controllers
             }
 
             return this.Json(new ProductsViewModel { id = liSuccess });
+        }
+
+        [HttpPost]
+        public ActionResult FileUpload()
+        {
+            string outPutMessage = string.Empty;
+            bool isSuccess = false;
+            List<Tuple<string, string>> fileNameWithPath = new List<Tuple<string, string>>();
+            try
+            {
+                string imageFolderName = string.Empty;
+
+                if (Request != null
+                    && Request.Files != null
+                    && Request.Files.Count > 0)
+                {
+                    imageFolderName = Request.Files.Keys[0];
+                    for (int i = 0; i < Request.Files.Count; i++)
+                    {
+                        HttpPostedFileBase file = Request.Files[i];
+                        if (file != null)
+                        {
+
+                            string fileName = file.FileName;
+                            string path = Path.Combine(Server.MapPath(ProductImagePath), imageFolderName);
+                            
+                            if (!Directory.Exists(path))
+                            { Directory.CreateDirectory(path); }
+
+                            file.SaveAs(path + "\\" + fileName);
+
+                            fileNameWithPath.Add(new Tuple<string, string>(path + "\\" + fileName, fileName));
+
+                        }
+                    }
+                    isSuccess = true;
+                    outPutMessage = "File Uploaded Successfully!";
+                }
+                else
+                { outPutMessage = "No files selected."; }
+            }
+            catch (Exception ex)
+            { outPutMessage = ex.Message; }
+
+            return Json(new { isSuccess, outPutMessage, fileNameWithPath }, JsonRequestBehavior.AllowGet);
+        }
+        
+        public JsonResult getUploadedFile(int Id)
+        {
+            string path = Path.Combine(Server.MapPath(ProductImagePath), Id.ToString());
+            List<SelectListItem> fileNameWithPath = new List<SelectListItem>();
+            if (Directory.Exists(path))
+            {
+                DirectoryInfo info = new DirectoryInfo(path);
+                FileInfo[] files = info.GetFiles("*.*");
+
+                foreach (FileInfo file in files)
+                {
+                    SelectListItem item = new SelectListItem();
+                    string fileName = file.Name;
+                    item.Value = fileName;
+                    item.Text = path + "\\" + fileName;
+                    fileNameWithPath.Add(item);
+                }
+            }
+
+            return Json(new { fileNameWithPath }, JsonRequestBehavior.AllowGet);
+        }
+
+        public bool DeleteUploadedFile(int Id, string filename)
+        {
+            string path = Path.Combine(Server.MapPath(ProductImagePath), Id.ToString() , filename);
+            
+            if (System.IO.File.Exists(path))
+            {
+                System.IO.File.Delete(path);
+            }
+
+            return true;
         }
     }
 }

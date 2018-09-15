@@ -46,5 +46,202 @@
         $('#lnkProduct').addClass('active');
     });
 </script>
+<div class="modal fade" tabindex="-1" role="dialog" id="modelUploadProdImage">
+    <div class="modal-dialog">
+        <div class="modal-content white-box bg-white">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size:larger;">&times;</span></button>
+                <h4 class="modal-title">Upload Images</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12" id="divFiles">
+
+                </div>
+                <div class="col-sm-10 col-md-8 col-lg-8" style="margin-top:10px">
+                    <input type="file" id="fUpload" multiple class="form-control" />
+                    <label id="spnDocuments">(Only image type with max 2 MB size file allowed.)</label>
+                    <div class="required" id="imageValidDiv" style="display:none">
+                        <label id="imageValidation" class="field-validation-error">.</label>
+                    </div>
+                    <span class="text-danger" id="spnDocuments" style="display:none;"></span>
+                </div>
+                    
+
+                </div>
+            <div class="modal-footer">
+                <span class="text-danger right">*Upload will automatically save files</span>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hdnUploadProductId" />
+<script>
+    var loFileUploadUrl = '@Url.RouteUrl("Admin_default", new { controller = "Products", action = "FileUpload" })';
+    var loGetUploadedFileUrl = '@Url.RouteUrl("Admin_default", new { controller = "Products", action = "getUploadedFile" })';
+    var loDeleteUploadedFileUrl = '@Url.RouteUrl("Admin_default", new { controller = "Products", action = "DeleteUploadedFile" })';
+
+    function confirmDelete(id) {
+        $('#hdnId').val(id);
+        jQuery.noConflict();
+        (
+            function ($) {
+                $('#modelDeleteProd').modal('show');
+            }
+        )(jQuery);
+    }
+
+    function DeleteClick() {
+        jQuery.noConflict();
+        (
+            function ($) {
+                $('#modelDeleteProd').modal('hide');
+            }
+        )(jQuery);
+        var id = $('#hdnId').val();
+        DeleteCategory(id);
+    }
+</script>
+<script type="text/javascript">    
+
+    function uploadFile(prdId) {
+        
+        $("#hdnUploadProductId").val(prdId);
+        $("#imageValidDiv").hide();
+        $('#fUpload').val('');
+        $("#divFiles").html('');
+        $('#modelUploadProdImage').modal('show');
+        $.ajax({
+            url: loGetUploadedFileUrl,
+            type: "GET",
+            content: "application/json; charset=utf-8",
+            dataType: "json",
+            async: false,
+            data: {
+                Id : prdId,
+            },
+            success: function (result) {
+                
+                if (result) {
+                    for (var i = 0; i < result.fileNameWithPath.length; i++) {
+                        
+                        var deleteclick = "deleteFile(" + i +")";
+                        //var appendData = '<div class="col-md-3" style="display:inline-block; padding:0; margin:5px 20px;" ><img src="/Images/Product/' + prdId + "/" + result.fileNameWithPath[i].Value + '" /><br><a href="/Images/Product/' + prdId + "/" + result.fileNameWithPath[i].Value + '" target="_blank" style="color:#FF0078">View</a> <i style="float: right; cursor:pointer;" class="fa fa-close" onclick="deleteFile("' + result.fileNameWithPath[i].Value + '")"></i></div>';
+                        var appendData = "<div class='col-md-3' style='display:inline-block; padding:0; margin:5px 20px;' ><input type='hidden' value='" + result.fileNameWithPath[i].Value +"' id='imgName"+ i +"'><img src='/Images/Product/" + prdId + '/' + result.fileNameWithPath[i].Value + "' /><br><a href='/Images/Product/" + prdId + '/' + result.fileNameWithPath[i].Value + "' target='_blank' style='color:#FF0078'>View</a> <i style='float: right; cursor:pointer;' class='fa fa-close' onclick='"+ deleteclick + "')'></i></div>";
+                        $("#divFiles").append(appendData);
+                    }
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (errorThrown === "abort") {
+                    return;
+                }
+                else {
+                    alert(errorThrown);
+                }
+            }
+        });
+    }
+
+    function deleteFile(imageNameId) {
+        debugger
+        var imageName = $("#imgName" + imageNameId).val();
+        $.ajax({
+            type: "POST",
+            url: loDeleteUploadedFileUrl,
+            content: "application/json; charset=utf-8",
+            //dataType: "json",
+            data: {
+                Id: $("#hdnUploadProductId").val(),
+                filename: imageName
+            },
+            success: function (lodata) {
+                if (lodata !== null) {
+                    var prdId = $("#hdnUploadProductId").val();
+                    uploadFile(prdId);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (errorThrown === "abort") {
+                    return;
+                }
+                else {
+                    alert(errorThrown);
+                }
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $('#fUpload').change(function () {
+            var fp = $("#fUpload");
+            var lg = fp[0].files.length;
+            var items = fp[0].files;
+            var fileData = new FormData();
+            var isValidAllFiles = true;
+            if (lg > 0) {
+                for (var i = 0; i < lg; i++) {
+                    var fileSize = items[i].size;
+                    var ext = items[i].name.split(".");
+                    ext = ext[ext.length - 1].toLowerCase();
+
+                    var arrayExtensions = ["jpg", "jpeg", "png", "bmp", "gif", "JPG", "JPEG", "PNG"];
+
+                    if (fileSize > 2097152) {
+                        $('#imageValidation').html('File size must not be more than 2 MB');
+                        $('#fUpload').val('');
+                        $("#imageValidDiv").show();
+                        isValidAllFiles = false;
+                    }
+                    else if (arrayExtensions.lastIndexOf(ext) == -1) {
+                        $('#imageValidation').html('Please upload only image type file.');
+                        $('#fUpload').val('');
+                        $("#imageValidDiv").show();
+                        isValidAllFiles = false;
+                    }
+                    else {
+                        fileData.append($("#hdnUploadProductId").val(), items[i]);
+                    }
+                }
+                if (isValidAllFiles) {
+                    // Adding one more key to FormData object
+                    fileData.append('username', 'Manas', 0);
+                    $.ajax({
+                        url: loFileUploadUrl,
+                        type: "POST",
+                        contentType: false, // Not to set any content header
+                        processData: false, // Not to process data
+                        async: false,
+                        data: fileData,
+                        success: function (result) {
+                            if (result.isSuccess) {
+                                for (var i = 0; i < result.fileNameWithPath.length; i++) {
+                                    var deleteclick = "deleteFile(" + i + ")";
+                                    //var appendData = "<div class='col-md-3' style='display:inline-block; padding:0; margin:5px 20px;' ><img src='/Images/Product/" + $('#hdnUploadProductId').val() + '/' + result.fileNameWithPath[i].Item2 + "' /><br><a href='/Images/Product/" + $('#hdnUploadProductId').val() + '/' + result.fileNameWithPath[i].Item2 + "' target='_blank' style='color:#FF0078'>View</a> <i style='float: right; cursor:pointer;' class='fa fa-close' onclick='deleteFile('" + result.fileNameWithPath[i].Item2 + "')'></i></div>";
+                                    var appendData = "<div class='col-md-3' style='display:inline-block; padding:0; margin:5px 20px;' ><input type='hidden' value='" + result.fileNameWithPath[i].Item2 + "' id='imgName" + i + "'><img src='/Images/Product/" + $('#hdnUploadProductId').val() + '/' + result.fileNameWithPath[i].Item2 + "' /><br><a href='/Images/Product/" + $('#hdnUploadProductId').val() + '/' + result.fileNameWithPath[i].Item2 + "' target='_blank' style='color:#FF0078'>View</a> <i style='float: right; cursor:pointer;' class='fa fa-close' onclick='" + deleteclick + "')'></i></div>";
+                                    $("#divFiles").append(appendData);
+                                }
+
+                            } else {
+                                $("#spnDocuments").css("display", "block");
+                                $('#spnDocuments').html(result.outPutMessage);
+                            }
+
+                            $('#fUpload').val('');
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            if (errorThrown === "abort") {
+                                return;
+                            }
+                            else {
+                                alert(errorThrown);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+</script>
 
 

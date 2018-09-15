@@ -46,32 +46,33 @@
             </thead>
             @foreach (var prod in Model.loProductList)
             {
-            <tr>
-                <td>@prod.id</td>
-                <td>@prod.Name</td>
-                @*<td>@prod.Description</td>*@
-                <td>@prod.Type</td>
-                <td>@prod.Brand</td>
-                <td>@prod.Price</td>
-                <td>@prod.OfferPrice</td>
-                <td>@prod.Quantity</td>
-                <td>@prod.MOQ</td>
-                <td>@prod.CategoryName</td>
-                @*<td>
-                    @if (prod.IsActive)
-                    {
-                        <input checked type="checkbox" disabled />
-                    }
-                    else
-                    {
-                        <input type="checkbox" disabled />
-                    }
-                </td>*@
-                <td>
-                    <a href="@Url.Action("AddEditProduct", "Products", new { Id = prod.id })" title="Edit"><i class="fa fa-pencil-square-o" style="font-size: 1.5em;"></i></a>
-                    <a href=javascript:void(0); onclick="confirmDelete(@prod.id)" title="Delete"><i class="fa fa-close" style="color:#23527C; font-size:1.5em;"></i></a>
-                </td>
-            </tr>
+                <tr>
+                    <td>@prod.id</td>
+                    <td>@prod.Name</td>
+                    @*<td>@prod.Description</td>*@
+                    <td>@prod.Type</td>
+                    <td>@prod.Brand</td>
+                    <td>@prod.Price</td>
+                    <td>@prod.OfferPrice</td>
+                    <td>@prod.Quantity</td>
+                    <td>@prod.MOQ</td>
+                    <td>@prod.CategoryName</td>
+                    @*<td>
+                            @if (prod.IsActive)
+                            {
+                                <input checked type="checkbox" disabled />
+                            }
+                            else
+                            {
+                                <input type="checkbox" disabled />
+                            }
+                        </td>*@
+                    <td>
+                        <a href="@Url.Action("AddEditProduct", "Products", new { Id = prod.id })" title="Edit"><i class="fa fa-pencil-square-o" style="font-size: 1.5em;"></i></a>
+                        <a href=javascript:void(0); onclick="confirmDelete(@prod.id)" title="Delete"><i class="fa fa-close" style="color:#23527C; font-size:1.5em;"></i></a>
+                        <a href=javascript:void(0); onclick="uploadFile(@prod.id)" title="Upload File"><i class="fa fa-upload" style="color:#23527C; font-size:1.5em;"></i></a>
+                    </td>
+                </tr>
             }
         </table>
     </div>
@@ -115,29 +116,6 @@ else
         </div>
     </div>
 </div>
-
-<script>
-    function confirmDelete(id) {
-        $('#hdnId').val(id);
-        jQuery.noConflict();
-        (
-            function ($) {
-                $('#modelDeleteProd').modal('show');
-            }
-        )(jQuery);
-    }
-
-    function DeleteClick() {
-        jQuery.noConflict();
-        (
-            function ($) {
-            $('#modelDeleteProd').modal('hide');
-        }
-        )(jQuery);
-        var id = $('#hdnId').val();
-        DeleteCategory(id);
-    }
-</script>
 <script type="text/javascript">
     $(document).ready(function () {
         GetPager($("#hdnTotalRec").val(), $("#hdnPageIndex").val());

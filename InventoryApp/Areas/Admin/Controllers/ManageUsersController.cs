@@ -16,6 +16,7 @@ using System.Web.Mvc;
 
 namespace InventoryApp.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ManageUsersController : Controller
     {
         private ApplicationSignInManager _signInManager;
