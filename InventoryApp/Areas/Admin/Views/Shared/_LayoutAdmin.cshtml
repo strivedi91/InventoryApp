@@ -37,7 +37,7 @@
 
         <div class="collapse navbar-collapse" id="navbarsExample04">
             <ul class="navbar-nav ml-auto">
-                @using (Html.BeginForm("LogOff", "Account", new { area = "" }, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right", @style = "padding:0px !important;margin-right:0px !important" }))
+                @using (Html.BeginForm("Login", "Account", new { area = "" }, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right", @style = "padding:0px !important;margin-right:0px !important" }))
                 {
                     @Html.AntiForgeryToken()
                     <li class="nav-item dropdown">
