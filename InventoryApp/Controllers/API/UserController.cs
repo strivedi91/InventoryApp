@@ -93,7 +93,7 @@ namespace InventoryApp.Controllers.API
                 List<Expression<Func<Categories, Object>>> includesforProduct = new List<Expression<Func<Categories, object>>>();
                 Expression<Func<Categories, object>> IncludeProduct = (product) => product.Products;
                 includesforProduct.Add(IncludeProduct);
-                var categories = Repository<Categories>.GetEntityListForQuery(x => x.IsActive == true, null, includesforProduct).Item1;
+                var categories = Repository<Categories>.GetEntityListForQuery(x => x.IsActive == true && x.IsDeleted == false, null, includesforProduct).Item1;
 
                 loJObjResult = JObject.FromObject(new
                 {
