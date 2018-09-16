@@ -1,0 +1,20 @@
+﻿@model  InventoryApp.Areas.Admin.Models.OrderDetailsModel
+
+@{
+    ViewBag.Title = "Order Details";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<section>
+    <div class="section-title">
+        <h2>Order Details</h2>
+    </div>    
+    <div id="orderDetails">
+        @Html.Partial("_OrderDetails", Model)
+    </div>   
+</section>
+<script>
+    $(document).ready(function () {
+        $(".menu-item a").removeClass("active");
+        $('#lnkManageOrders').addClass('active');
+    });
+</script>

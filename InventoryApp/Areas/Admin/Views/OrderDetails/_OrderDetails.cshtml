@@ -1,0 +1,33 @@
+﻿@model InventoryApp.Areas.Admin.Models.OrderDetailsModel
+<div class="table-responsive dash-table">
+    <table class="table table-bordered bg-white">
+        <thead>
+            <tr class="heading">
+                <th>Name</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Brand</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Discount</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        @foreach (var prod in Model.Products)
+        {
+            <tr>
+                <td>@prod.Name</td>
+                <td>@prod.Description</td>
+                <td>@prod.Category</td>
+                <td>@prod.Type</td>
+                <td>@prod.Brand</td>
+                <td>@prod.Price</td>
+                <td>@prod.Quantity</td>
+                <td>@prod.Discount</td>
+                <td>@prod.TotalPrice</td>
+                }
+            </tr>
+        }
+    </table>
+</div>
