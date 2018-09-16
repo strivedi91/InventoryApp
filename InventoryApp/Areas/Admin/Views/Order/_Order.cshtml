@@ -11,7 +11,7 @@
                     <th>Product Count</th>                    
                     <th id="sortType" onclick="getOrderbyCategoryList('CreatedOn', 'sortType');" class="heading-text sorting">CreatedOn</th>
                     <th id="sortBrand" onclick="getOrderbyCategoryList('Discount', 'sortBrand');" class="heading-text sorting">Discount</th>
-                    <th id="sortPrice" onclick="getOrderbyCategoryList('OrderStatus', 'sortPrice');" class="heading-text sorting">OrderStatus</th>
+                    <th id="sortPrice" onclick="getOrderbyCategoryList('OrderStatus', 'sortPrice');" class="heading-text sorting">Order Status</th>
                     <th id="sortOfferPrice" onclick="getOrderbyCategoryList('SubTotal', 'sortOfferPrice');" class="heading-text sorting">SubTotal</th>
                     <th id="sortQuantity" onclick="getOrderbyCategoryList('Total', 'sortQuantity');" class="heading-text sorting">Total</th>                    
                 </tr>
@@ -21,7 +21,7 @@
                 <tr>
                     <td>@prod.id</td>
                     <td>                       
-                        <a href="@Url.Action("Index", "OrderDetails", new { Id = prod.id })" style="text-decoration:none"> @prod.ProductCount </a>
+                        <a href="@Url.Action("Index", "OrderDetails", new { Id = prod.id })" style="text-decoration:none"> @prod.ProductCount Items</a>
                     </td>                     
                     <td>@prod.CreatedOn.ToShortDateString()</td>
                     <td>@prod.Discount</td>
