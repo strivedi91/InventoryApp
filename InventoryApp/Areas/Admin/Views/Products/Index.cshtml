@@ -58,16 +58,25 @@
 
                 </div>
                 <div class="col-sm-10 col-md-8 col-lg-8" style="margin-top:10px">
-                    <input type="file" id="fUpload" multiple class="form-control" />
+                    <div class="col-lg-4  uploadButton">
+                        <div class="btn border-pink btnFileUpload">
+                            <label>
+                                UPLOAD PRODUCT PHOTOS <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                                <input type="file" id="fUpload" multiple class="custom-file-input" />
+                            </label>
+                        </div>
+                    </div>
+
+
                     <label id="spnDocuments">(Only image type with max 2 MB size file allowed.)</label>
                     <div class="required" id="imageValidDiv" style="display:none">
                         <label id="imageValidation" class="field-validation-error">.</label>
                     </div>
                     <span class="text-danger" id="spnDocuments" style="display:none;"></span>
                 </div>
-                    
 
-                </div>
+
+            </div>
             <div class="modal-footer">
                 <span class="text-danger right">*Upload will automatically save files</span>
             </div>
@@ -101,10 +110,10 @@
         DeleteCategory(id);
     }
 </script>
-<script type="text/javascript">    
+<script type="text/javascript">
 
     function uploadFile(prdId) {
-        
+
         $("#hdnUploadProductId").val(prdId);
         $("#imageValidDiv").hide();
         $('#fUpload').val('');
@@ -117,16 +126,16 @@
             dataType: "json",
             async: false,
             data: {
-                Id : prdId,
+                Id: prdId,
             },
             success: function (result) {
-                
+
                 if (result) {
                     for (var i = 0; i < result.fileNameWithPath.length; i++) {
-                        
-                        var deleteclick = "deleteFile(" + i +")";
+
+                        var deleteclick = "deleteFile(" + i + ")";
                         //var appendData = '<div class="col-md-3" style="display:inline-block; padding:0; margin:5px 20px;" ><img src="/Images/Product/' + prdId + "/" + result.fileNameWithPath[i].Value + '" /><br><a href="/Images/Product/' + prdId + "/" + result.fileNameWithPath[i].Value + '" target="_blank" style="color:#FF0078">View</a> <i style="float: right; cursor:pointer;" class="fa fa-close" onclick="deleteFile("' + result.fileNameWithPath[i].Value + '")"></i></div>';
-                        var appendData = "<div class='col-md-3' style='display:inline-block; padding:0; margin:5px 20px;' ><input type='hidden' value='" + result.fileNameWithPath[i].Value +"' id='imgName"+ i +"'><img src='/Images/Product/" + prdId + '/' + result.fileNameWithPath[i].Value + "' /><br><a href='/Images/Product/" + prdId + '/' + result.fileNameWithPath[i].Value + "' target='_blank' style='color:#FF0078'>View</a> <i style='float: right; cursor:pointer;' class='fa fa-close' onclick='"+ deleteclick + "')'></i></div>";
+                        var appendData = "<div class='col-md-3' style='display:inline-block; padding:0; margin:5px 20px;' ><input type='hidden' value='" + result.fileNameWithPath[i].Value + "' id='imgName" + i + "'><img src='/Images/Product/" + prdId + '/' + result.fileNameWithPath[i].Value + "' /><br><a href='/Images/Product/" + prdId + '/' + result.fileNameWithPath[i].Value + "' target='_blank' style='color:#FF0078'>View</a> <i style='float: right; cursor:pointer;' class='fa fa-close' onclick='" + deleteclick + "')'></i></div>";
                         $("#divFiles").append(appendData);
                     }
                 }
