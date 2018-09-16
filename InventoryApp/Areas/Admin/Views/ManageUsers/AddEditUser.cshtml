@@ -30,7 +30,7 @@
 
         var selected;
         selected = chkArray.join(',');
-        
+        console.log(selected);
         $('#hdnDocumentTypes').val(selected);
 
         var form = $("#frmAddEditUser");
@@ -111,6 +111,21 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-5">
                         <label>
+                            Secondory Phone Number
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.TextBoxFor(m => m.SecondaryPhoneNumber, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Phone Number", @maxlength = "15", @autofocus = "autofocus", @tabindex = "3", @id = "txtPhone2" })
+                        <div class="required">
+                            @Html.ValidationMessageFor(m => m.SecondaryPhoneNumber)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
                             Address
                         </label>
                     </div>
@@ -152,7 +167,7 @@
                         </label>
                     </div>
                     <div class="col-lg-5 col-md-7">
-                        @Html.TextBoxFor(m => m.PaymentDate, new { @placeholder = "Payment Date", @tabindex = "7", @class = "form-control placeholder-no-fix", @type="Date" })
+                        @Html.TextBoxFor(m => m.PaymentDate, new { @placeholder = "Payment Date", @tabindex = "7", @class = "form-control placeholder-no-fix", @type = "Date" })
 
                     </div>
                 </div>
@@ -184,11 +199,24 @@
                     <div class="col-lg-5 col-md-7">
                         @foreach (var item in Model.loDocumentTypeList)
                         {
-                            <input id="chk@(item.Id)" class="docChk"
-                                   type="checkbox" tabindex="9"
-                                   value="@item.Id"
-                                   checked="@item.IsAdded" />
-                            @item.Name <br />
+                            if (item.Name == "Adhar Card" || item.Name == "Adhaar Card")
+                            {
+                                <input id="chk@(item.Id)" class="docChk"
+                                       type="checkbox" tabindex="9"
+                                       value="@item.Id"
+                                       checked="checked"
+                                       disabled />
+                                @item.Name
+                            }
+                            else
+                            {
+                                <input id="chk@(item.Id)" class="docChk"
+                                       type="checkbox" tabindex="9"
+                                       value="@item.Id"
+                                       checked="@item.IsAdded" />
+                                @item.Name
+
+                            } <br />
                         }
                     </div>
                 </div>

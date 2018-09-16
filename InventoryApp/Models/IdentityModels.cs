@@ -14,6 +14,8 @@ namespace InventoryApp.Models
 
         public string Address { get; set; }
 
+        public string SecondaryPhone { get; set; }
+
         public decimal DepositAmount { get; set; }
 
         public int MembershipDuration { get; set; }

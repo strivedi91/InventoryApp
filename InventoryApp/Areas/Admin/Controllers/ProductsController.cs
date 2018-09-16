@@ -188,6 +188,7 @@ namespace InventoryApp.Areas.Admin.Controllers
                     MOQ = objProduct.MOQ,
                     CategoryId = objProduct.CategoryId,
                     IsActive = objProduct.IsActive,
+                    MinimumSellingPrice = objProduct.MinimumSellingPrice,
                     objTierPricing = getTierPricing(objProduct.id)
                 };
             }
@@ -231,6 +232,7 @@ namespace InventoryApp.Areas.Admin.Controllers
                         objProduct.MOQ = foProduct.MOQ;
                         objProduct.CategoryId = foProduct.CategoryId.GetValueOrDefault();
                         objProduct.IsActive = foProduct.IsActive;
+                        objProduct.MinimumSellingPrice = foProduct.MinimumSellingPrice;
                         await Repository<Products>.InsertEntity(objProduct, entity => { return entity.id; });
 
                         string[] lstTierPricing = foProduct.lstTierPircing.Split(',');
@@ -279,6 +281,7 @@ namespace InventoryApp.Areas.Admin.Controllers
                         objProduct.MOQ = foProduct.MOQ;
                         objProduct.CategoryId = foProduct.CategoryId.GetValueOrDefault();
                         objProduct.IsActive = foProduct.IsActive;
+                        objProduct.MinimumSellingPrice = foProduct.MinimumSellingPrice;
                         await Repository<Products>.UpdateEntity(objProduct, (entity) => { return entity.id; });
 
                         var objTierPrice = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == objProduct.id && x.IsDeleted == false).Item1;

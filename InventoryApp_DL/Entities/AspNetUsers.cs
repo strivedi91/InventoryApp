@@ -38,6 +38,7 @@ namespace InventoryApp_DL.Entities
         public string UserName { get; set; } // UserName
         public bool IsActive { get; set; } // IsActive
         public bool IsDeleted { get; set; } // IsDeleted
+        public string SecondaryPhone { get; set; } // SecondaryPhone
 
         // Reverse navigation
         public virtual ICollection<AspNetRoles> AspNetRoles { get; set; } // Many to many mapping

@@ -42,6 +42,8 @@ namespace InventoryApp.Areas.Admin.Models
         [Required(ErrorMessage = "Price should not be empty.")]
         public decimal? Price { get; set; }
 
+        public decimal? MinimumSellingPrice { get; set; }
+
         public decimal? OfferPrice { get; set; }
 
         [Required(ErrorMessage = "Quantity name should not be empty.")]

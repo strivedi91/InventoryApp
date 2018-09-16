@@ -41,6 +41,9 @@ namespace InventoryApp.Areas.Admin.Models
         [StringLength(10, ErrorMessage = "The Phone must contains 10 characters", MinimumLength = 10)]
         public string PhoneNumber { get; set; }
 
+        [StringLength(10, ErrorMessage = "The Phone must contains 10 characters", MinimumLength = 10)]
+        public string SecondaryPhoneNumber { get; set; }
+
         public string stSearch { get; set; }
         public int inPageIndex { get; set; }
         public int inPageSize { get; set; }

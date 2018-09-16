@@ -30,6 +30,7 @@ namespace InventoryApp_DL.Entities
         public int CategoryId { get; set; } // CategoryId
         public bool IsActive { get; set; } // IsActive
         public bool IsDeleted { get; set; } // IsDeleted
+        public decimal? MinimumSellingPrice { get; set; } // MinimumSellingPrice
 
         // Reverse navigation
         public virtual ICollection<AspNetUserPreferences> AspNetUserPreferences { get; set; } // AspNetUserPreferences.FK_AspNetUserPreferences_Products

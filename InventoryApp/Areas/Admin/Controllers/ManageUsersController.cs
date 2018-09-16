@@ -168,6 +168,7 @@ namespace InventoryApp.Areas.Admin.Controllers
                     Name = objUser.Name,
                     Email = objUser.Email,
                     PhoneNumber = objUser.PhoneNumber,
+                    SecondaryPhoneNumber = objUser.SecondaryPhone,
                     Address = objUser.Address,
                     DepositAmount = objUser.DepositAmount,
                     PaymentDate = objUser.PaymentDate,
@@ -223,6 +224,7 @@ namespace InventoryApp.Areas.Admin.Controllers
                             Name = loUserViewModel.Name,
                             Email = loUserViewModel.Email,
                             PhoneNumber = loUserViewModel.PhoneNumber,
+                            SecondaryPhone = loUserViewModel.SecondaryPhoneNumber,
                             Address = loUserViewModel.Address,
                             DepositAmount = loUserViewModel.DepositAmount,
                             PaymentDate = loUserViewModel.PaymentDate,
@@ -234,7 +236,7 @@ namespace InventoryApp.Areas.Admin.Controllers
                         var result = await UserManager.CreateAsync(user, password);
                         if (result.Succeeded)
                         {
-                            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                            //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
                             sendPasswordEmail(user, password);
 
@@ -263,6 +265,7 @@ namespace InventoryApp.Areas.Admin.Controllers
                         objUser.Name = loUserViewModel.Name;
                         objUser.Email = loUserViewModel.Email;
                         objUser.PhoneNumber = loUserViewModel.PhoneNumber;
+                        objUser.SecondaryPhone = loUserViewModel.SecondaryPhoneNumber;
                         objUser.Address = loUserViewModel.Address;
                         objUser.DepositAmount = loUserViewModel.DepositAmount;
                         objUser.PaymentDate = loUserViewModel.PaymentDate;
@@ -419,7 +422,7 @@ namespace InventoryApp.Areas.Admin.Controllers
 
                 return EmailHelper.sendEmail(lsToMails, lsFrom, lsSubject, lsEmailBody);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return false;
             }
