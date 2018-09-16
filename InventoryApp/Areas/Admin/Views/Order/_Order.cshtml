@@ -1,0 +1,63 @@
+﻿@model InventoryApp.Areas.Admin.Models.OrderModel
+
+@if (Model != null && Model.loOrderList.Count > 0)
+{
+    <div class="table-responsive dash-table">
+        <table class="table table-bordered bg-white">
+            <thead>
+                <tr class="heading">
+                    @Html.Hidden("hdnPageIndex", Model.inPageIndex)
+                    <th id="sortID" onclick="getOrderbyCategoryList('id', 'sortID');" class="heading-text sorting">id</th>
+                    <th>Product Count</th>                    
+                    <th id="sortType" onclick="getOrderbyCategoryList('CreatedOn', 'sortType');" class="heading-text sorting">CreatedOn</th>
+                    <th id="sortBrand" onclick="getOrderbyCategoryList('Discount', 'sortBrand');" class="heading-text sorting">Discount</th>
+                    <th id="sortPrice" onclick="getOrderbyCategoryList('OrderStatus', 'sortPrice');" class="heading-text sorting">OrderStatus</th>
+                    <th id="sortOfferPrice" onclick="getOrderbyCategoryList('SubTotal', 'sortOfferPrice');" class="heading-text sorting">SubTotal</th>
+                    <th id="sortQuantity" onclick="getOrderbyCategoryList('Total', 'sortQuantity');" class="heading-text sorting">Total</th>                    
+                </tr>
+            </thead>
+            @foreach (var prod in Model.loOrderList)
+            {
+                <tr>
+                    <td>@prod.id</td>
+                    <td>                       
+                        <a href="@Url.Action("Index", "OrderDetails", new { Id = prod.id })" style="text-decoration:none"> @prod.ProductCount </a>
+                    </td>                     
+                    <td>@prod.CreatedOn.ToShortDateString()</td>
+                    <td>@prod.Discount</td>
+                    <td>@prod.OrderStatus</td>
+                    <td>@prod.SubTotal</td>
+                    <td>@prod.Total</td>                    
+                </tr>
+            }
+        </table>
+    </div>
+    if (@Model.inRecordCount > 10)
+    {
+        <div class="showing">
+            <span>
+                Page @(Model.inPageIndex) out of
+                @((Model.inRecordCount + 10 - 1) / 10)
+            </span>
+            <div class="pull-right">
+                @Html.Hidden("hdnTotalRec", @Model.inRecordCount)
+                <div id="divPager"></div>
+            </div>
+        </div>
+    }
+    @Html.Hidden("hdnId", "")
+}
+else
+{
+    <div class="table-responsive dash-table">
+        <div id="divItemListNoRecord" class="alert alert-warning" align="center">
+            <h4><i class="fa fa-warning"></i> No Record Found </h4>
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        GetPager($("#hdnTotalRec").val(), $("#hdnPageIndex").val());
+    });
+</script>
+

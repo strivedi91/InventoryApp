@@ -13,7 +13,7 @@ namespace InventoryApp.Areas.Admin.Controllers
     public class OrderDetailsController : Controller
     {
         // GET: Admin/OrderDetails
-        public ActionResult Index(int OrderId)
+        public ActionResult Index(int Id)
         {
             List<Expression<Func<OrderDetails, Object>>> includes = new List<Expression<Func<OrderDetails, object>>>();
             Expression<Func<OrderDetails, object>> IncludeProducts = (orderdetails) => orderdetails.Products;
@@ -22,7 +22,7 @@ namespace InventoryApp.Areas.Admin.Controllers
             includes.Add(IncludeCategories);
 
             var userOrders = Repository<OrderDetails>.
-                GetEntityListForQuery(x => x.OrderId == OrderId, null, includes).Item1;
+                GetEntityListForQuery(x => x.OrderId == Id, null, includes).Item1;
 
             List<ProductModel> productModels = new List<ProductModel>();
             OrderDetailsModel orderDetails = new OrderDetailsModel();

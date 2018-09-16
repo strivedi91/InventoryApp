@@ -31,9 +31,9 @@ function refeshList(foId, pageIndex) {
     
     var stSortField = "";
     var lsStatus = parseInt($('#hdnStatus').val());
-    var lsSearch = $('#txtSearch').val().trim();
-    var lsOriginalSearch = $('#txtSearch').val().trim();
-    var lsSearch = lsSearch.replace(/'/g, "''");
+    var lsSearch = "";//$('#txtSearch').val().trim();
+    var lsOriginalSearch = "";//$('#txtSearch').val().trim();
+    lsSearch = lsSearch.replace(/'/g, "''");
     lsSearch = encodeURIComponent(lsSearch);
     if (foId == "aHrefNext") {
         $('#hdnPageIndex').val(pageIndex);
@@ -44,21 +44,20 @@ function refeshList(foId, pageIndex) {
     else if (foId == "load") {
         pageIndex = 1;
     }
-    else if (foId == "Id ASC" || foId == "Id DESC" || foId == "CharityName ASC" || foId == "CharityName DESC") {
+    else if (foId == "Id ASC" || foId == "Id DESC" || foId == "CreatedOn ASC" || foId == "CreatedOn DESC" || foId == "Discount ASC" || foId == "Discount DESC" || foId == "OrderStatus ASC" || foId == "OrderStatus DESC" || foId == "SubTotal ASC" || foId == "SubTotal DESC" || foId == "Total ASC" || foId == "Total DESC") {
         pageIndex = parseInt($('#hdnPageIndex').val());
     }
     
     $.ajax({
         type: "POST",
-        url: lsgetCharityList,
+        url: lsgetOrderList,
         content: "application/json; charset=utf-8",
         dataType: "html",
         data: {
             inPageIndex: pageIndex,
             inPageSize: 10,
             stSortColumn: $('#hdnOrder').val(),
-            stSearch: lsSearch,
-            STATUS: lsStatus
+            stSearch: lsSearch
         },
         success: function (lodata) {
             
@@ -66,13 +65,12 @@ function refeshList(foId, pageIndex) {
                 var divSOReleased = $('#companylist');
                 divSOReleased.html('');
                 divSOReleased.html(lodata);
-                $('#hdnPageIndex').val(pageIndex);
-                //SetPaging();
+                $('#hdnPageIndex').val(pageIndex);                
                 $('.dashboard-menu').height('100%');
                 $('.dashboard-menu').height($(document).height());
                 setSortingArrow();
-                $('#txtSearch').val(lsOriginalSearch);
-                $('#txtSearch').focus();
+                //$('#txtSearch').val(lsOriginalSearch);
+                //$('#txtSearch').focus();
             }
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -88,7 +86,7 @@ function refeshList(foId, pageIndex) {
         }
     });
 }
-function getOrderbyCompanyList(foOrderedField, tdID) {
+function getOrderbyCategoryList(foOrderedField, tdID) {
     var foFieldwithOrder = "";
     $('#hdnSortingOnColumn').val(tdID);
 
