@@ -1,8 +1,39 @@
-﻿@{
+﻿@model InventoryApp.Areas.Admin.Models.DashboardModel
+@{
     ViewBag.Title = "Home";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<div class="jumbotron">
-    
-</div>
+<section>
+    <div class="section-title">
+        <h2>Dashboard</h2>
+    </div>
+    <div class="white-box bg-white">
+        <div class="box-title">OVERVIEW</div>
+        <div class="overview-listing">
+            <div class="row">
+                <div class="col-md-3 col-sm-3">
+                    <img src="~/assets/images/user.png">
+                    <h6>Sellers</h6>
+                    <h2>@Model.SellerCount</h2>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    <img src="~/assets/images/icon2.png">
+                    <h6>Categories</h6>
+                    <h2>@Model.CategoryCount</h2>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    <img src="~/assets/images/icon3.png">
+                    <h6>Products</h6>
+                    <h2>@Model.ProductCount</h2>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    <img src="~/assets/images/wallet.png">
+                    <h6>Orders</h6>
+                    <h2>@Model.OrderCount</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>

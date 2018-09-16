@@ -258,6 +258,7 @@
     <Compile Include="Models\ApiModels\AddToCartModel.cs" />
     <Compile Include="Models\ApiModels\PlaceOrderModel.cs" />
     <Compile Include="Models\ApiModels\SaveUserPreferencesModel.cs" />
+    <Compile Include="Areas\Admin\Models\DashboardModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
