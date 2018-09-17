@@ -12,6 +12,7 @@ namespace InventoryApp.Areas.Admin.Models
     {
         public ProductsModel()
         {
+            objCategoryList = new List<SelectListItem>();
             loProductList = new List<ProductsViewModel>();
         }
 
@@ -19,12 +20,14 @@ namespace InventoryApp.Areas.Admin.Models
         public int inPageIndex { get; set; }
         public Pager Pager { get; set; }
 
+        public List<SelectListItem> objCategoryList { get; set; }
         public List<ProductsViewModel> loProductList { get; set; }
     }
 
     public class ProductsViewModel
     {
-        public ProductsViewModel() {
+        public ProductsViewModel()
+        {
             objCategoryList = new List<SelectListItem>();
         }
 
@@ -61,6 +64,8 @@ namespace InventoryApp.Areas.Admin.Models
         public bool IsDeleted { get; set; }
 
         public string stSearch { get; set; }
+
+        public int inFilterCategory { get; set; }
 
         public int inPageIndex { get; set; }
 

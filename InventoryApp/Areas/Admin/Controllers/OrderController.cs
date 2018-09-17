@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -19,7 +20,7 @@ namespace InventoryApp.Areas.Admin.Controllers
         {
             OrderViewModel foRequest = new OrderViewModel();
             foRequest.stSortColumn = "ID ASC";
-            return View("~/Areas/Admin/Views/Order/Index.cshtml", getOrderList(foRequest)); 
+            return View("~/Areas/Admin/Views/Order/Index.cshtml", getOrderList(foRequest));
         }
 
         public ActionResult searchProducts(OrderViewModel foSearchRequest)
@@ -48,9 +49,9 @@ namespace InventoryApp.Areas.Admin.Controllers
             Expression<Func<Orders, bool>> expression = null;
 
             List<Expression<Func<Orders, Object>>> includes = new List<Expression<Func<Orders, object>>>();
-            Expression<Func<Orders, object>> IncludeProducts = (orderdetails) => orderdetails.OrderDetails;            
+            Expression<Func<Orders, object>> IncludeProducts = (orderdetails) => orderdetails.OrderDetails;
             includes.Add(IncludeProducts);
-            
+
 
             //if (!string.IsNullOrEmpty(foRequest.stSearch))
             //{
@@ -99,7 +100,7 @@ namespace InventoryApp.Areas.Admin.Controllers
                         break;
                     case "Total ASC":
                         orderingFunc = q => q.OrderBy(s => s.Total);
-                        break;                    
+                        break;
                 }
             }
 
@@ -110,6 +111,13 @@ namespace InventoryApp.Areas.Admin.Controllers
             objOrderViewModel.inRecordCount = objProducts.Item2;
             objOrderViewModel.inPageIndex = foRequest.inPageIndex;
             objOrderViewModel.Pager = new Pager(objProducts.Item2, foRequest.inPageIndex);
+
+            #region Order Status DDl
+            objOrderViewModel.loOrdeStatusList.Add(new SelectListItem { Text = Enums.GetEnumDescription((Enums.OrderStatus.OrderPlaced)), Value = Enums.GetEnumDescription((Enums.OrderStatus.OrderPlaced)) });
+            objOrderViewModel.loOrdeStatusList.Add(new SelectListItem { Text = Enums.GetEnumDescription((Enums.OrderStatus.InProcess)), Value = Enums.GetEnumDescription((Enums.OrderStatus.InProcess)) });
+            objOrderViewModel.loOrdeStatusList.Add(new SelectListItem { Text = Enums.GetEnumDescription((Enums.OrderStatus.Dispatched)), Value = Enums.GetEnumDescription((Enums.OrderStatus.Dispatched)) });
+            objOrderViewModel.loOrdeStatusList.Add(new SelectListItem { Text = Enums.GetEnumDescription((Enums.OrderStatus.DeliveredCompleted)), Value = Enums.GetEnumDescription((Enums.OrderStatus.DeliveredCompleted)) });
+            #endregion
 
             if (objProducts.Item1.Count > 0)
             {
@@ -129,6 +137,24 @@ namespace InventoryApp.Areas.Admin.Controllers
             }
 
             return objOrderViewModel;
+        }
+
+        public async Task<JsonResult> updateOrderStatus(int fiOrderId, string fsOrderStatus)
+        {
+            bool flgIsSuccess = false;
+            try
+            {
+                Orders objOrder = Repository<Orders>.GetEntityListForQuery(x => x.id == fiOrderId).Item1.FirstOrDefault();
+                objOrder.OrderStatus = fsOrderStatus;
+                await Repository<Orders>.UpdateEntity(objOrder, (entity) => { return entity.id; });
+                flgIsSuccess = true;
+            }
+            catch
+            {
+                flgIsSuccess = false;
+            }
+
+            return Json(flgIsSuccess, JsonRequestBehavior.AllowGet);
         }
 
     }

@@ -256,6 +256,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Helpers\Pager.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -491,8 +492,8 @@
     <Content Include="Areas\Admin\Views\Products\_Products.cshtml" />
     <Content Include="Areas\Admin\Views\Products\AddEditProduct.cshtml" />
     <Content Include="Areas\Admin\Views\Products\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\OrderDetails\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\OrderDetails\_OrderDetails.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\OrderDetails\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\OrderDetails\_OrderDetails.cshtml" />
     <Content Include="Areas\Admin\Views\Order\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Order\_Order.cshtml" />
     <None Include="Properties\PublishProfiles\inventory.sachintrivedi.com - Web Deploy.pubxml" />

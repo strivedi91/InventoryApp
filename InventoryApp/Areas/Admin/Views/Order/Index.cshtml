@@ -8,20 +8,14 @@
     <div class="section-title">
         <h2>Orders</h2>
     </div>
-    @*<form style="padding-top:0px">        
-        <div class="white-box bg-white space">
-            <div class="row">
-                <div class="col-lg-5">
-                </div>
-                <div class="col-lg-5">
-                    <input type="text" class="form-control" id="txtSearch" maxlength="100" placeholder="Search by seller name ..." onkeypress="userSearch(event);">
-                </div>
-                <div class="col-lg-2">
-                    <button type="button" id="btnSearch" class="btn btn-gradient" onclick="search();">Search</button>
-                </div>
-            </div>
-        </div>
-    </form>*@
+    <div class="alert alert-success" style="display:none;" id="alertSuccessMsg">
+        <a class="close" data-dismiss="alert">&times;</a>
+        <span>Order Status updated successfully!</span>
+    </div>
+    <div class="alert alert-danger" style="display:none;" id="alertErrorMsg">
+        <a class="close" data-dismiss="alert">&times;</a>
+        <span>Something goes wrong! please try after some time.</span>
+    </div>
     <div id="companylist">
         @Html.Partial("_Order", Model)
     </div>
@@ -31,9 +25,10 @@
     @Html.Hidden("hdnStatus", "0")
 
     <script type="text/javascript">
-        var lsgetOrderList = '@Url.RouteUrl("Admin_default", new { controller = "Order", action = "searchProducts" })';        
+        var lsgetOrderList = '@Url.RouteUrl("Admin_default", new { controller = "Order", action = "searchProducts" })';
+        var lsUpdateOrderStatusUrl = '@Url.RouteUrl("Admin_default", new { controller = "Order", action = "updateOrderStatus" })';
     </script>
-    <script src="@Url.Content("~/Areas/Admin/assets/scripts/Order.js?ver=1.3")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Areas/Admin/assets/scripts/Order.js?ver=1.4")" type="text/javascript"></script>
 </section>
 <script>
     $(document).ready(function () {

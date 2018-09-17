@@ -25,9 +25,9 @@
                     </td>                     
                     <td>@prod.CreatedOn.ToShortDateString()</td>
                     <td>@prod.Discount</td>
-                    <td>@prod.OrderStatus</td>
+                    <td>@Html.DropDownList("ddlOrdeStatus_" + prod.id , Model.loOrdeStatusList, prod.OrderStatus, new { @class = "form-control placeholder-no-fix", @onchange = "updateOrderStatus(" + prod.id + ", this)" })</td>
                     <td>@prod.SubTotal</td>
-                    <td>@prod.Total</td>                    
+                    <td>@prod.Total</td>
                 </tr>
             }
         </table>

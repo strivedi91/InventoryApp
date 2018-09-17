@@ -11,6 +11,10 @@ function userSearch(e) {
     }
 }
 
+$('#ddlFilterCategory').change(function () {
+    refeshList();
+});
+
 function search() {
     var stSearch = "";
     var stToDate = "";
@@ -23,6 +27,7 @@ function refeshList(foId,pageIndex) {
 
     var stSortField = "";
     var lsSearch = $('#txtSearch').val().trim();
+    var liFilterCategory = $('#ddlFilterCategory').val();
     var lsOriginalSearch = $('#txtSearch').val().trim();
     lsSearch = encodeURIComponent(lsSearch);
 
@@ -43,7 +48,8 @@ function refeshList(foId,pageIndex) {
             inPageIndex: pageIndex,
             inPageSize: 10,
             stSortColumn: $('#hdnOrder').val(),
-            stSearch: lsSearch
+            stSearch: lsSearch,
+            inFilterCategory: liFilterCategory,
         },
         success: function (lodata) {
             if (lodata !== null) {
@@ -54,6 +60,7 @@ function refeshList(foId,pageIndex) {
                 //SetPaging();
                 setSortingArrow();
                 $('#txtSearch').val(lsOriginalSearch);
+                $('#ddlFilterCategory').val(liFilterCategory);
                 $('#txtSearch').focus();
             }
         },

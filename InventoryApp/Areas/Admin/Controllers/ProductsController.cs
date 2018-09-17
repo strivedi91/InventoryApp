@@ -23,6 +23,7 @@ namespace InventoryApp.Areas.Admin.Controllers
         {
             ProductsViewModel foRequest = new ProductsViewModel();
             foRequest.stSortColumn = "ID ASC";
+
             return View("~/Areas/Admin/Views/Products/Index.cshtml", getProductsList(foRequest));
         }
 
@@ -52,11 +53,18 @@ namespace InventoryApp.Areas.Admin.Controllers
 
             Expression<Func<Products, bool>> expression = null;
 
-            if (!string.IsNullOrEmpty(foRequest.stSearch))
+            if (!string.IsNullOrEmpty(foRequest.stSearch) && foRequest.inFilterCategory > 0)
+            {
+                foRequest.stSearch = foRequest.stSearch.Replace("%20", " ");
+                expression = x => x.Name.ToLower().Contains(foRequest.stSearch.ToLower()) && x.CategoryId == foRequest.inFilterCategory && x.IsDeleted == false;
+            }
+            else if (!string.IsNullOrEmpty(foRequest.stSearch))
             {
                 foRequest.stSearch = foRequest.stSearch.Replace("%20", " ");
                 expression = x => x.Name.ToLower().Contains(foRequest.stSearch.ToLower()) && x.IsDeleted == false;
             }
+            else if (foRequest.inFilterCategory > 0)
+                expression = x => x.CategoryId == foRequest.inFilterCategory && x.IsDeleted == false;
             else
                 expression = x => x.IsDeleted == false;
 
@@ -135,6 +143,15 @@ namespace InventoryApp.Areas.Admin.Controllers
             objProductsViewModel.inPageIndex = foRequest.inPageIndex;
             objProductsViewModel.Pager = new Pager(objProducts.Item2, foRequest.inPageIndex);
 
+            #region Category DDl
+            var objCategories = Repository<Categories>.GetEntityListForQuery(x => x.IsDeleted == false).Item1.ToList();
+
+            foreach (var Category in objCategories)
+            {
+                objProductsViewModel.objCategoryList.Add(new SelectListItem { Text = Category.Name, Value = Category.Id.ToString(), Selected = false });
+            }
+            #endregion
+
             if (objProducts.Item1.Count > 0)
             {
                 foreach (var prod in objProducts.Item1)
@@ -169,7 +186,6 @@ namespace InventoryApp.Areas.Admin.Controllers
         public ActionResult AddEditProduct(int? id)
         {
             ProductsViewModel objProductsViewModel = new ProductsViewModel();
-
 
             if (id != null && id > 0)
             {
@@ -381,7 +397,7 @@ namespace InventoryApp.Areas.Admin.Controllers
 
                             string fileName = file.FileName;
                             string path = Path.Combine(Server.MapPath(ProductImagePath), imageFolderName);
-                            
+
                             if (!Directory.Exists(path))
                             { Directory.CreateDirectory(path); }
 
@@ -402,7 +418,7 @@ namespace InventoryApp.Areas.Admin.Controllers
 
             return Json(new { isSuccess, outPutMessage, fileNameWithPath }, JsonRequestBehavior.AllowGet);
         }
-        
+
         public JsonResult getUploadedFile(int Id)
         {
             string path = Path.Combine(Server.MapPath(ProductImagePath), Id.ToString());
@@ -427,8 +443,8 @@ namespace InventoryApp.Areas.Admin.Controllers
 
         public bool DeleteUploadedFile(int Id, string filename)
         {
-            string path = Path.Combine(Server.MapPath(ProductImagePath), Id.ToString() , filename);
-            
+            string path = Path.Combine(Server.MapPath(ProductImagePath), Id.ToString(), filename);
+
             if (System.IO.File.Exists(path))
             {
                 System.IO.File.Delete(path);

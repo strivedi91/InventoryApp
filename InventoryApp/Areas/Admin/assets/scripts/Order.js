@@ -25,7 +25,6 @@ function statusSearch(val) {
     refeshList("load");
 }
 function refeshList(foId, pageIndex) {
-    debugger
     if (pageIndex == undefined)
         pageIndex = 0;
     
@@ -86,6 +85,39 @@ function refeshList(foId, pageIndex) {
         }
     });
 }
+
+function updateOrderStatus(fiOrderId, ele) {
+    $.ajax({
+        type: "GET",
+        url: lsUpdateOrderStatusUrl,
+        content: "application/json; charset=utf-8",
+        dataType: "json",
+        data: {
+            fiOrderId: fiOrderId,
+            fsOrderStatus: $(ele).val()
+        },
+        success: function (Result) {
+            debugger
+            if (Result == true || Result == 'true') {
+                $('#alertSuccessMsg').show();
+                $('#alertErrorMsg').hide();
+            }
+            else {
+                $('#alertSuccessMsg').hide();
+                $('#alertErrorMsg').show();
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            if (errorThrown == "abort") {
+                return;
+            }
+            else {
+                alert(errorThrown);
+            }
+        }
+    });
+}
+
 function getOrderbyCategoryList(foOrderedField, tdID) {
     var foFieldwithOrder = "";
     $('#hdnSortingOnColumn').val(tdID);
