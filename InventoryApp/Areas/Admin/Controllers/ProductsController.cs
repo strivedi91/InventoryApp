@@ -146,6 +146,8 @@ namespace InventoryApp.Areas.Admin.Controllers
             #region Category DDl
             var objCategories = Repository<Categories>.GetEntityListForQuery(x => x.IsDeleted == false).Item1.ToList();
 
+            objProductsViewModel.objCategoryList.Add(new SelectListItem { Text = "-- Select --", Value = "0", Selected = true });
+
             foreach (var Category in objCategories)
             {
                 objProductsViewModel.objCategoryList.Add(new SelectListItem { Text = Category.Name, Value = Category.Id.ToString(), Selected = false });
