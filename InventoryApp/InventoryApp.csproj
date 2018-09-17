@@ -261,6 +261,7 @@
     <Compile Include="Helpers\Pager.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApiModels\AddToCartModel.cs" />
+    <Compile Include="Models\ApiModels\AuthenticationResponse.cs" />
     <Compile Include="Models\ApiModels\PlaceOrderModel.cs" />
     <Compile Include="Models\ApiModels\SaveUserPreferencesModel.cs" />
     <Compile Include="Areas\Admin\Models\DashboardModel.cs" />

@@ -4,12 +4,16 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
+using InventoryApp.Models;
 using InventoryApp.Models.ApiModels;
 using InventoryApp_DL.Entities;
 using InventoryApp_DL.Repositories;
 using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace InventoryApp.Controllers.API
@@ -419,5 +423,38 @@ namespace InventoryApp.Controllers.API
                 return GetInternalServerErrorResult("Sorry, there was an error processing your request. Please try again.");
             }
         }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("Login")]
+        public async Task<IHttpActionResult> LoginUser(LoginViewModel model)
+        {            
+            JObject Result = null;
+
+            var request = HttpContext.Current.Request;
+            var tokenServiceUrl = request.Url.GetLeftPart(UriPartial.Authority) + request.ApplicationPath + "/Authenticate";
+            using (var client = new HttpClient())
+            {
+                var requestParams = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("grant_type", "password"),
+                new KeyValuePair<string, string>("username", model.Email),
+                new KeyValuePair<string, string>("password", model.Password)
+            };
+                var requestParamsFormUrlEncoded = new FormUrlEncodedContent(requestParams);
+                var tokenServiceResponse = await client.PostAsync(tokenServiceUrl, requestParamsFormUrlEncoded);
+                var responseString = await tokenServiceResponse.Content.ReadAsStringAsync();                
+                var authenticationResponse = JsonConvert.DeserializeObject<AuthenticationResponse>(responseString.ToString());
+
+                Result = JObject.FromObject(new
+                {
+                    status = true,
+                    message = "Authentication Successfull !",
+                    result = authenticationResponse
+                });
+            }
+            return GetOkResult(Result);
+        }
+
     }
 }
