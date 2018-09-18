@@ -9,10 +9,14 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using InventoryApp.Models;
+using InventoryApp.Filters;
 
 namespace InventoryApp.Controllers
 {
     [Authorize]
+    [ETag]
+    [CompressFilter]
+    [WhitespaceFilter]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
