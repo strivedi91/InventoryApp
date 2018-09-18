@@ -90,7 +90,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = true,
                         message = "",
-                        Result = JObject.FromObject(new
+                        PreferenceResult = JObject.FromObject(new
                         {
                             FirstTimeLogin = false,
                             Categories =
@@ -115,7 +115,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = true,
                         message = "",
-                        Result = JObject.FromObject(new
+                        PreferenceResult = JObject.FromObject(new
                         {
                             FirstTimeLogin = true,
                             Categories =
@@ -138,7 +138,7 @@ namespace InventoryApp.Controllers.API
                 {
                     status = false,
                     message = "Sorry, there was an error processing your request. Please try again !",
-                    Result = ""
+                    PreferenceResult = ""
                 });
                 return GetOkResult(Result);
             }
@@ -167,7 +167,7 @@ namespace InventoryApp.Controllers.API
                 {
                     status = true,
                     message = "",
-                    Result = JObject.FromObject(new
+                    ProductResult = JObject.FromObject(new
                     {
 
                         Products =
@@ -197,7 +197,7 @@ namespace InventoryApp.Controllers.API
                 {
                     status = false,
                     message = "Sorry, there was an error processing your request. Please try again !",
-                    Result = ""
+                    ProductResult = ""
                 });
                 return GetOkResult(loJObjResult);
             }
@@ -223,7 +223,7 @@ namespace InventoryApp.Controllers.API
                 {
                     status = true,
                     message = "",
-                    Result = JObject.FromObject(new
+                    ProductResult = JObject.FromObject(new
                     {
                         Products =
                        from product in products
@@ -251,7 +251,7 @@ namespace InventoryApp.Controllers.API
                 {
                     status = false,
                     message = "Sorry, there was an error processing your request. Please try again !",
-                    Result = ""
+                    ProductResult = ""
                 });
                 return GetOkResult(loJObjResult);
             }
@@ -556,7 +556,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = true,
                         message = "Authentication Successfull !",
-                        result = authenticationResponse
+                        LoginResult = authenticationResponse
                     });
                 }
                 return GetOkResult(Result);
@@ -568,7 +568,7 @@ namespace InventoryApp.Controllers.API
                 {
                     status = false,
                     message = "Invalid Login Attempt, Please try correct username and password !",
-                    Result = ""
+                    LoginResult = ""
                 });
                 return GetOkResult(Result);
             }

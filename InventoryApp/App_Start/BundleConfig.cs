@@ -28,6 +28,18 @@ namespace InventoryApp
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
            "~/Scripts/jquery-ui-{version}.js"));
+
+            bundles.Add(new StyleBundle("~/bundles/assetsCss").IncludeDirectory(
+           "~/assets/css","*.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/assetsJs")
+                .IncludeDirectory("~/assets/js", "*.js")
+                .IncludeDirectory("~/assets/scripts", "*.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/ScriptsJs")
+                .Include("~/Scripts/jquery.validate.js")
+                .Include("~/Scripts/jquery.validate.unobtrusive.js")
+                .Include("~/Scripts/CommonFunctions.js"));
         }
     }
 }
