@@ -493,10 +493,10 @@
     <Content Include="Areas\Admin\Views\Products\_Products.cshtml" />
     <Content Include="Areas\Admin\Views\Products\AddEditProduct.cshtml" />
     <Content Include="Areas\Admin\Views\Products\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Products\OrderDetails\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Products\OrderDetails\_OrderDetails.cshtml" />
     <Content Include="Areas\Admin\Views\Order\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Order\_Order.cshtml" />
+    <Content Include="Areas\Admin\Views\OrderDetails\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\OrderDetails\_OrderDetails.cshtml" />
     <None Include="Properties\PublishProfiles\inventory.sachintrivedi.com - Web Deploy.pubxml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Scripts\jquery-2.1.4.min.map" />
