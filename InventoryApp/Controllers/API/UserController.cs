@@ -30,6 +30,11 @@ namespace InventoryApp.Controllers.API
             try
             {
                 var LoggedInUserId = User.Identity.GetUserId();
+
+                var UserPreferences = Repository<AspNetUserPreferences>.GetEntityListForQuery(x => x.UserId == LoggedInUserId);
+
+                Repository<AspNetUserPreferences>.DeleteRange(UserPreferences.Item1);
+
                 List<AspNetUserPreferences> listUserCategories = new List<AspNetUserPreferences>();
                 listUserCategories.AddRange(
                     saveUserPreferencesModel.
@@ -207,6 +212,7 @@ namespace InventoryApp.Controllers.API
         [Route("category/{Id:int}/products")]
         public async Task<IHttpActionResult> GetProductsByCategoryId(int Id)
         {
+            var LoggedinUser = User.Identity.GetUserId();
             JObject loJObjResult = null;
             try
             {
@@ -214,8 +220,10 @@ namespace InventoryApp.Controllers.API
                 List<Expression<Func<Products, Object>>> includes = new List<Expression<Func<Products, object>>>();
                 Expression<Func<Products, object>> IncludeCategories = (category) => category.Categories;
                 Expression<Func<Products, object>> IncludeTierPricing = (pricing) => pricing.TierPricings;
+                Expression<Func<Products, object>> IncludeUserPreferences = (userPreferences) => userPreferences.AspNetUserPreferences;
                 includes.Add(IncludeCategories);
                 includes.Add(IncludeTierPricing);
+                includes.Add(IncludeUserPreferences);
 
                 var products = Repository<Products>.GetEntityListForQuery(x => x.IsActive && x.CategoryId == Id, null, includes).Item1;
 
@@ -225,7 +233,7 @@ namespace InventoryApp.Controllers.API
                     message = "",
                     ProductResult = JObject.FromObject(new
                     {
-                        Products =
+                       Products =
                        from product in products
                        select new
                        {
@@ -239,7 +247,8 @@ namespace InventoryApp.Controllers.API
                            OfferPrice = product.OfferPrice,
                            product.MOQ,
                            product.Quantity,
-                           TierPricing = product.TierPricings.Select(x => new { x.QtyTo, x.QtyFrom, x.Price })
+                           TierPricing = product.TierPricings.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
+                           selected = product.AspNetUserPreferences.Where(x => x.UserId == LoggedinUser).Count() >= 1 ? true : false
                        }
                     })
                 });
@@ -493,7 +502,7 @@ namespace InventoryApp.Controllers.API
                 Result = JObject.FromObject(new
                 {
                     status = true,
-                    message="",
+                    message = "",
                     Result = JObject.FromObject(new
                     {
                         Products =
