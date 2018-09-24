@@ -9,6 +9,13 @@ namespace InventoryApp.Models.ApiModels
     {
         public int ProductId { get; set; }
         public int OfferId { get; set; }
-        public int Quantity { get; set; }        
+        public int Quantity { get; set; }
+        public int CategoryId { get; set; }
+    }
+
+    public class UpdateCartModel
+    {
+        public int CartId { get; set; }
+        public int Quantity { get; set; }
     }
 }
