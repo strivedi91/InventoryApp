@@ -91,6 +91,9 @@ namespace InventoryApp.Controllers.API
             {
                 try
                 {
+                    var existingPref = Repository<AspNetUserPreferences>.GetEntityListForQuery(x => x.UserId == LoggedInUserId).Item1;
+                    Repository<AspNetUserPreferences>.DeleteRange(existingPref);
+
                     List<AspNetUserPreferences> listUserCategories = new List<AspNetUserPreferences>();
                     listUserCategories.AddRange(
                         saveUserPreferencesModel.SavePreferences.
@@ -500,6 +503,65 @@ namespace InventoryApp.Controllers.API
             }
         }
 
+
+        [HttpGet]
+        [Route("user/checkout")]
+        public async Task<IHttpActionResult> Checkout()
+        {
+            IEnumerable<string> headerValues = Request.Headers.GetValues("UserId");
+            var LoggedInUserId = headerValues.FirstOrDefault();
+            JObject Result = null;
+            if (LoggedInUserId != null)
+            {
+                try
+                {
+
+                    List<Expression<Func<Cart, Object>>> includes = new List<Expression<Func<Cart, object>>>();
+                    Expression<Func<Cart, object>> IncludeProducts = (product) => product.Products;
+                    Expression<Func<Cart, object>> IncludeCategory = (category) => category.Categories;
+                    includes.Add(IncludeProducts);
+                    includes.Add(IncludeCategory);
+
+                    var userSelectedProducts = Repository<Cart>.
+                        GetEntityListForQuery(x => x.UserId == LoggedInUserId, null, includes).Item1;
+
+                    Result = JObject.FromObject(new
+                    {
+                        status = true,
+                        message = "",
+                        Result = JObject.FromObject(new
+                        {
+                            TotalAmount = userSelectedProducts.Sum(x => x.Quantity * x.Products.Price),
+                            ShippingAddress= Repository<AspNetUsers>.GetEntityListForQuery(x=>x.Id==LoggedInUserId).Item1.First()?.Address
+                        })
+                    });
+                    return GetOkResult(Result);
+                }
+                catch (Exception ex)
+                {
+                    Result = JObject.FromObject(new
+                    {
+                        status = false,
+                        message = "Sorry, there was an error processing your request. Please try again !",
+                        GetCartResult = ""
+                    });
+                    return GetOkResult(Result);
+                }
+            }
+            else
+            {
+                Result = JObject.FromObject(new
+                {
+                    status = false,
+                    message = "Unauthorized",
+                    GetCartResult = ""
+                });
+                return GetOkResult(Result);
+            }
+        }
+
+
+
         [HttpPost]
         [Route("user/cart/update")]
         public async Task<IHttpActionResult> UpdateCart(UpdateCartModel addToCartModel)
@@ -826,7 +888,7 @@ namespace InventoryApp.Controllers.API
                 authenticationResponse.EmailAddress = userDetails.Email;
                 authenticationResponse.Name = userDetails.Name;
                 authenticationResponse.FirstTimeLogin = userDetails.AspNetUserPreferences.Count() > 0 ? false : true;
-
+                authenticationResponse.Address = userDetails.Address;
             }
 
             JObject Result = null;
