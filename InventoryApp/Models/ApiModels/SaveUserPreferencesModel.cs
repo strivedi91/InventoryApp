@@ -5,6 +5,11 @@ using System.Web;
 
 namespace InventoryApp.Models.ApiModels
 {
+    public class SavePreferencesModels
+    {
+        public SaveUserPreferencesModel[] SavePreferences { get; set; }
+    }
+
     public class SaveUserPreferencesModel
     {
         public int CategoryId { get; set; }
