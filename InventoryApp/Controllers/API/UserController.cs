@@ -32,6 +32,7 @@ namespace InventoryApp.Controllers.API
             JObject Result = null;
             if (LoggedInUserId != null)
             {
+<<<<<<< HEAD
                 try
                 {
                     List<Expression<Func<Categories, Object>>> includesforProduct = new List<Expression<Func<Categories, object>>>();
@@ -39,6 +40,18 @@ namespace InventoryApp.Controllers.API
                     includesforProduct.Add(IncludeProduct);
                     var categories = Repository<Categories>.GetEntityListForQuery(x => x.IsActive == true && x.IsDeleted == false, null, includesforProduct).Item1;
                     Result = JObject.FromObject(new
+=======
+                var LoggedInUserId = User.Identity.GetUserId();
+
+                var UserPreferences = Repository<AspNetUserPreferences>.GetEntityListForQuery(x => x.UserId == LoggedInUserId);
+
+                Repository<AspNetUserPreferences>.DeleteRange(UserPreferences.Item1);
+
+                List<AspNetUserPreferences> listUserCategories = new List<AspNetUserPreferences>();
+                listUserCategories.AddRange(
+                    saveUserPreferencesModel.
+                    Select(x => new AspNetUserPreferences
+>>>>>>> 22fdf8d34de0c710184aaa802c209dbb235b213d
                     {
                         status = true,
                         message = "",
@@ -304,19 +317,35 @@ namespace InventoryApp.Controllers.API
         [Route("category/{Id:int}/products")]
         public async Task<IHttpActionResult> GetProductsByCategoryId(int Id)
         {
+<<<<<<< HEAD
             IEnumerable<string> headerValues = Request.Headers.GetValues("UserId");
             var LoggedInUserId = headerValues.FirstOrDefault();
             JObject Result = null;
             if (LoggedInUserId != null)
+=======
+            var LoggedinUser = User.Identity.GetUserId();
+            JObject loJObjResult = null;
+            try
+>>>>>>> 22fdf8d34de0c710184aaa802c209dbb235b213d
             {
                 try
                 {
 
+<<<<<<< HEAD
                     List<Expression<Func<Products, Object>>> includes = new List<Expression<Func<Products, object>>>();
                     Expression<Func<Products, object>> IncludeCategories = (category) => category.Categories;
                     Expression<Func<Products, object>> IncludeTierPricing = (pricing) => pricing.TierPricings;
                     includes.Add(IncludeCategories);
                     includes.Add(IncludeTierPricing);
+=======
+                List<Expression<Func<Products, Object>>> includes = new List<Expression<Func<Products, object>>>();
+                Expression<Func<Products, object>> IncludeCategories = (category) => category.Categories;
+                Expression<Func<Products, object>> IncludeTierPricing = (pricing) => pricing.TierPricings;
+                Expression<Func<Products, object>> IncludeUserPreferences = (userPreferences) => userPreferences.AspNetUserPreferences;
+                includes.Add(IncludeCategories);
+                includes.Add(IncludeTierPricing);
+                includes.Add(IncludeUserPreferences);
+>>>>>>> 22fdf8d34de0c710184aaa802c209dbb235b213d
 
                     var products = Repository<Products>.GetEntityListForQuery(x => x.IsActive && x.CategoryId == Id, null, includes).Item1;
                     var userSelectedProducts = Repository<AspNetUserPreferences>.
@@ -353,12 +382,35 @@ namespace InventoryApp.Controllers.API
                 {
                     Result = JObject.FromObject(new
                     {
+<<<<<<< HEAD
                         status = false,
                         message = "Sorry, there was an error processing your request. Please try again !",
                         ProductResult = ""
                     });
                     return GetOkResult(Result);
                 }
+=======
+                       Products =
+                       from product in products
+                       select new
+                       {
+                           Id = product.id,
+                           Name = product.Name,
+                           Category = product.Categories.Name,
+                           Brand = product.Brand,
+                           Description = product.Description,
+                           Type = product.Type,
+                           Price = product.Price,
+                           OfferPrice = product.OfferPrice,
+                           product.MOQ,
+                           product.Quantity,
+                           TierPricing = product.TierPricings.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
+                           selected = product.AspNetUserPreferences.Where(x => x.UserId == LoggedinUser).Count() >= 1 ? true : false
+                       }
+                    })
+                });
+                return GetOkResult(loJObjResult);
+>>>>>>> 22fdf8d34de0c710184aaa802c209dbb235b213d
             }
             else
             {
@@ -753,6 +805,13 @@ namespace InventoryApp.Controllers.API
                     var userOrders = Repository<OrderDetails>.
                         GetEntityListForQuery(x => x.OrderId == orderId, null, includes).Item1;
 
+<<<<<<< HEAD
+=======
+                Result = JObject.FromObject(new
+                {
+                    status = true,
+                    message = "",
+>>>>>>> 22fdf8d34de0c710184aaa802c209dbb235b213d
                     Result = JObject.FromObject(new
                     {
                         status = true,
