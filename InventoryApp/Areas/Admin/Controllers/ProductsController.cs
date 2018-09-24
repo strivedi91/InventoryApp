@@ -53,18 +53,43 @@ namespace InventoryApp.Areas.Admin.Controllers
 
             Expression<Func<Products, bool>> expression = null;
 
-            if (!string.IsNullOrEmpty(foRequest.stSearch) && foRequest.inFilterCategory > 0)
+            if (!string.IsNullOrEmpty(foRequest.stSearch) && foRequest.inFilterCategory > 0 && !string.IsNullOrEmpty(foRequest.stSearchQuantity))
+            {
+                int quantity = Convert.ToInt32(foRequest.stSearchQuantity);
+                foRequest.stSearch = foRequest.stSearch.Replace("%20", " ");
+                expression = x => x.Name.ToLower().Contains(foRequest.stSearch.ToLower()) && x.CategoryId == foRequest.inFilterCategory && x.Quantity <= quantity && x.IsDeleted == false;
+            }
+            else if (!string.IsNullOrEmpty(foRequest.stSearch) && foRequest.inFilterCategory > 0)
             {
                 foRequest.stSearch = foRequest.stSearch.Replace("%20", " ");
                 expression = x => x.Name.ToLower().Contains(foRequest.stSearch.ToLower()) && x.CategoryId == foRequest.inFilterCategory && x.IsDeleted == false;
             }
-            else if (!string.IsNullOrEmpty(foRequest.stSearch))
+            else if (!string.IsNullOrEmpty(foRequest.stSearch) && !string.IsNullOrEmpty(foRequest.stSearchQuantity))
             {
+                int quantity = Convert.ToInt32(foRequest.stSearchQuantity);
+                foRequest.stSearch = foRequest.stSearch.Replace("%20", " ");
+                expression = x => x.Name.ToLower().Contains(foRequest.stSearch.ToLower()) && x.Quantity <= quantity && x.IsDeleted == false;
+            }
+            else if (foRequest.inFilterCategory > 0 && !string.IsNullOrEmpty(foRequest.stSearchQuantity))
+            {
+                int quantity = Convert.ToInt32(foRequest.stSearchQuantity);
+                expression = x => x.CategoryId == foRequest.inFilterCategory && x.Quantity <=quantity && x.IsDeleted == false;
+            }
+            else if (!string.IsNullOrEmpty(foRequest.stSearch))
+            {                
                 foRequest.stSearch = foRequest.stSearch.Replace("%20", " ");
                 expression = x => x.Name.ToLower().Contains(foRequest.stSearch.ToLower()) && x.IsDeleted == false;
             }
             else if (foRequest.inFilterCategory > 0)
+            {
                 expression = x => x.CategoryId == foRequest.inFilterCategory && x.IsDeleted == false;
+            }
+
+            else if (!string.IsNullOrEmpty(foRequest.stSearchQuantity))
+            {
+                int quantity = Convert.ToInt32(foRequest.stSearchQuantity);
+                expression = x => x.Quantity <= quantity && x.IsDeleted == false;
+            }
             else
                 expression = x => x.IsDeleted == false;
 

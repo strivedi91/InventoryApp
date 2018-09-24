@@ -13,6 +13,8 @@ namespace InventoryApp.Areas.Admin.Models
         {
             loOrderList = new List<OrderViewModel>();
             loOrdeStatusList = new List<SelectListItem>();
+            loCategoryList = new List<SelectListItem>();
+            loSellerList = new List<SelectListItem>();
         }
 
         public Int64 inRecordCount { get; set; }
@@ -22,6 +24,8 @@ namespace InventoryApp.Areas.Admin.Models
         public List<SelectListItem> loOrdeStatusList { get; set; }
 
         public List<OrderViewModel> loOrderList { get; set; }
+        public List<SelectListItem> loCategoryList { get; set; }
+        public List<SelectListItem> loSellerList { get; set; }
     }
 
     public class OrderViewModel
@@ -51,5 +55,13 @@ namespace InventoryApp.Areas.Admin.Models
         public string stSortColumn { get; set; }
 
         public Int64 inRowNumber { get; set; }
+
+        public string lsFromDate { get; set; }
+
+        public string lsToDate { get; set; }
+
+        public int inFilterCategory { get; set; }
+
+        public string inFilterSeller { get; set; }
     }
 }

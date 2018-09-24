@@ -28,5 +28,19 @@
                 <td>@prod.TotalPrice</td>               
             </tr>
         }
+            <tfoot>
+                <tr>
+                    <td colspan="8" style="text-align: right;font-weight: bold; height:40px">Sub Total</td>
+                    <td style="height:40px; text-align:right">@Model.SubTotal</td>
+                </tr>
+                <tr>
+                    <td colspan="8" style="text-align: right;font-weight: bold;height:40px">Discount</td>
+                    <td style="height:40px; text-align:right">@Model.Discount</td>
+                </tr>
+                <tr>
+                    <td colspan="8" style="text-align: right;font-weight: bold;height:40px">Total</td>
+                    <td style="height:40px; text-align:right">@Model.Total</td>
+                </tr>
+            </tfoot>
     </table>
 </div>

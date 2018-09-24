@@ -29,6 +29,7 @@ function refeshList(foId,pageIndex) {
     var lsSearch = $('#txtSearch').val().trim();
     var liFilterCategory = $('#ddlFilterCategory').val();
     var lsOriginalSearch = $('#txtSearch').val().trim();
+    var lsSearchQuantity = $('#txtSearchQuantity').val().trim();
     lsSearch = encodeURIComponent(lsSearch);
 
     lsSearch = lsSearch.replace(/'/g, "''");
@@ -49,6 +50,7 @@ function refeshList(foId,pageIndex) {
             inPageSize: 10,
             stSortColumn: $('#hdnOrder').val(),
             stSearch: lsSearch,
+            stSearchQuantity: lsSearchQuantity,
             inFilterCategory: liFilterCategory,
         },
         success: function (lodata) {
@@ -147,4 +149,14 @@ function DeleteCategory(fiCategoryId) {
                 }
             }
         });
+}
+function jsInteger(evt) {
+    var charCode = (evt.which) ? evt.which : event.keyCode;
+    if (charCode == 46)
+        return false;
+    if (charCode != 46 && charCode > 31
+        && (charCode < 48 || charCode > 57))
+        return false;
+
+    return true;
 }

@@ -8,6 +8,9 @@ namespace InventoryApp.Areas.Admin.Models
     public class OrderDetailsModel
     {
         public List<ProductModel> Products { get; set; }
+        public decimal Discount { get; set; }
+        public decimal SubTotal { get; set; }
+        public decimal Total { get; set; }
     }
 
     public class ProductModel

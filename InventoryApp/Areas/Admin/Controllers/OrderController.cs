@@ -52,14 +52,34 @@ namespace InventoryApp.Areas.Admin.Controllers
             Expression<Func<Orders, object>> IncludeProducts = (orderdetails) => orderdetails.OrderDetails;
             includes.Add(IncludeProducts);
 
+            DateTime? ldFromDate = null;
+            if (!string.IsNullOrEmpty(foRequest.lsFromDate))
+                ldFromDate = Convert.ToDateTime(foRequest.lsFromDate + " 00:00:01");
 
-            //if (!string.IsNullOrEmpty(foRequest.stSearch))
-            //{
-            //    foRequest.stSearch = foRequest.stSearch.Replace("%20", " ");
-            //    expression = x => x.id == Convert.ToInt32 foRequest.stSearch;
-            //}
-            //else
-            //    expression = x => x.IsDeleted == false;
+            DateTime? ldToDate = null;
+            if (!string.IsNullOrEmpty(foRequest.lsToDate))
+                ldToDate = Convert.ToDateTime(foRequest.lsToDate + " 23:59:59");
+
+            if(!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsFromDate) && !string.IsNullOrEmpty(foRequest.lsToDate))
+                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller;
+
+            else if (!string.IsNullOrEmpty(foRequest.lsFromDate) && !string.IsNullOrEmpty(foRequest.lsToDate))
+                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate;            
+
+            else if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsFromDate))
+                expression = x => x.CreatedOn >= ldFromDate && x.UserId == foRequest.inFilterSeller;
+
+            else if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsToDate))
+                expression = x => x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller;
+
+            else if(!string.IsNullOrEmpty(foRequest.inFilterSeller))
+                expression = x => x.UserId == foRequest.inFilterSeller;
+
+            else if (!string.IsNullOrEmpty(foRequest.lsFromDate))
+                expression = x => x.CreatedOn >= ldFromDate;
+
+            else if (!string.IsNullOrEmpty(foRequest.lsToDate))
+                expression = x => x.CreatedOn <= ldToDate;
 
             if (!string.IsNullOrEmpty(foRequest.stSortColumn))
             {
@@ -111,6 +131,28 @@ namespace InventoryApp.Areas.Admin.Controllers
             objOrderViewModel.inRecordCount = objProducts.Item2;
             objOrderViewModel.inPageIndex = foRequest.inPageIndex;
             objOrderViewModel.Pager = new Pager(objProducts.Item2, foRequest.inPageIndex);
+                        
+            #region Category DDl
+            var objCategories = Repository<Categories>.GetEntityListForQuery(x => x.IsDeleted == false).Item1.ToList();
+
+            objOrderViewModel.loCategoryList.Add(new SelectListItem { Text = "-- Select --", Value = "0", Selected = true });
+
+            foreach (var Category in objCategories)
+            {
+                objOrderViewModel.loCategoryList.Add(new SelectListItem { Text = Category.Name, Value = Category.Id.ToString(), Selected = false });
+            }
+            #endregion
+
+            #region Seller DDl
+            var objSeller = Repository<AspNetUsers>.GetEntityListForQuery(x => x.IsDeleted == false).Item1.ToList();
+            
+            objOrderViewModel.loSellerList.Add(new SelectListItem { Text = "-- Select --", Value = "", Selected = true });
+
+            foreach (var user in objSeller)
+            {   
+                objOrderViewModel.loSellerList.Add(new SelectListItem { Text = user.Name, Value = user.Id.ToString(), Selected = false });
+            }
+            #endregion
 
             #region Order Status DDl
             objOrderViewModel.loOrdeStatusList.Add(new SelectListItem { Text = Enums.GetEnumDescription((Enums.OrderStatus.OrderPlaced)), Value = Enums.GetEnumDescription((Enums.OrderStatus.OrderPlaced)) });
@@ -138,6 +180,7 @@ namespace InventoryApp.Areas.Admin.Controllers
 
             return objOrderViewModel;
         }
+
 
         public async Task<JsonResult> updateOrderStatus(int fiOrderId, string fsOrderStatus)
         {

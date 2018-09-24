@@ -65,6 +65,8 @@ namespace InventoryApp.Areas.Admin.Models
 
         public string stSearch { get; set; }
 
+        public string stSearchQuantity { get; set; }
+
         public int inFilterCategory { get; set; }
 
         public int inPageIndex { get; set; }

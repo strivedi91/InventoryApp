@@ -39,11 +39,16 @@ namespace InventoryApp.Areas.Admin.Controllers
                     Type = product.Products.Type,
                     Category = product.Categories.Name,
                     Quantity = product.Quantity
-                };
-
+                };                
                 productModels.Add(productsModel);
             }
+
             orderDetails.Products = productModels;
+
+            Orders objOrder = Repository<Orders>.GetEntityListForQuery(x => x.id == Id).Item1.FirstOrDefault();
+            orderDetails.SubTotal = objOrder.SubTotal;
+            orderDetails.Total = objOrder.Total;
+            orderDetails.Discount = objOrder.Discount;
             return View(orderDetails);
         }
     }

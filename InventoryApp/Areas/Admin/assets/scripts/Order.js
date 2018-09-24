@@ -2,10 +2,10 @@
     setSortingArrow();
     $('#txtSearch').focus();
 });
+
 function userSearch(e) {
 
-    if (e.which == 13) {
-        debugger
+    if (e.which === 13) {
         e.preventDefault();
         $(this).blur();
         $('#btnSearch').focus().click();
@@ -14,18 +14,23 @@ function userSearch(e) {
 
 function search() {
     var stSearch = "";
-    var stToDate = "";
-    if ($('#txtSearch').val() != "") {
-        stSearch = $('#txtSearch').val();
+    if ($('#txtFromDate').val() !== "") {
+        stSearch = $('#txtFromDate').val();
     }
-    refeshList(stSearch);
-}
-function statusSearch(val) {
-    $('#hdnStatus').val(val);
     refeshList("load");
 }
+
+$('#ddlFilterCategory').change(function () {
+    refeshList("load");
+});
+
+$('#ddlFilterSeller').change(function () {
+    refeshList("load");
+});
+
+
 function refeshList(foId, pageIndex) {
-    if (pageIndex == undefined)
+    if (pageIndex === undefined)
         pageIndex = 0;
     
     var stSortField = "";
@@ -34,16 +39,22 @@ function refeshList(foId, pageIndex) {
     var lsOriginalSearch = "";//$('#txtSearch').val().trim();
     lsSearch = lsSearch.replace(/'/g, "''");
     lsSearch = encodeURIComponent(lsSearch);
-    if (foId == "aHrefNext") {
+
+    var liFilterCategory = $('#ddlFilterCategory').val();
+    var liFilterSeller = $('#ddlFilterSeller').val();
+    var lsFromdate = $('#txtFromDate').val().trim();
+    var lsTodate = $('#txtToDate').val().trim();
+
+    if (foId === "aHrefNext") {
         $('#hdnPageIndex').val(pageIndex);
     }
-    else if (foId == "aHrefPrev") {
+    else if (foId === "aHrefPrev") {
         $('#hdnPageIndex').val(pageIndex);
     }
-    else if (foId == "load") {
+    else if (foId === "load") {
         pageIndex = 1;
     }
-    else if (foId == "Id ASC" || foId == "Id DESC" || foId == "CreatedOn ASC" || foId == "CreatedOn DESC" || foId == "Discount ASC" || foId == "Discount DESC" || foId == "OrderStatus ASC" || foId == "OrderStatus DESC" || foId == "SubTotal ASC" || foId == "SubTotal DESC" || foId == "Total ASC" || foId == "Total DESC") {
+    else if (foId === "Id ASC" || foId === "Id DESC" || foId === "CreatedOn ASC" || foId === "CreatedOn DESC" || foId === "Discount ASC" || foId === "Discount DESC" || foId === "OrderStatus ASC" || foId === "OrderStatus DESC" || foId === "SubTotal ASC" || foId === "SubTotal DESC" || foId === "Total ASC" || foId === "Total DESC") {
         pageIndex = parseInt($('#hdnPageIndex').val());
     }
     
@@ -56,7 +67,11 @@ function refeshList(foId, pageIndex) {
             inPageIndex: pageIndex,
             inPageSize: 10,
             stSortColumn: $('#hdnOrder').val(),
-            stSearch: lsSearch
+            stSearch: lsSearch,
+            lsFromDate: lsFromdate,
+            lsToDate: lsTodate,
+            inFilterCategory: liFilterCategory,
+            inFilterSeller: liFilterSeller
         },
         success: function (lodata) {
             
@@ -76,7 +91,7 @@ function refeshList(foId, pageIndex) {
             
             $('#txtSearch').val(lsOriginalSearch);
             $('#txtSearch').focus();
-            if (errorThrown == "abort") {
+            if (errorThrown === "abort") {
                 return;
             }
             else {
@@ -98,7 +113,7 @@ function updateOrderStatus(fiOrderId, ele) {
         },
         success: function (Result) {
             debugger
-            if (Result == true || Result == 'true') {
+            if (Result === true || Result === 'true') {
                 $('#alertSuccessMsg').show();
                 $('#alertErrorMsg').hide();
             }
@@ -108,7 +123,7 @@ function updateOrderStatus(fiOrderId, ele) {
             }
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            if (errorThrown == "abort") {
+            if (errorThrown === "abort") {
                 return;
             }
             else {
@@ -122,7 +137,7 @@ function getOrderbyCategoryList(foOrderedField, tdID) {
     var foFieldwithOrder = "";
     $('#hdnSortingOnColumn').val(tdID);
 
-    if ($('#hdnOrder').val() == "") {
+    if ($('#hdnOrder').val() === "") {
         $('#hdnOrder').val(foOrderedField + " ASC");
         foFieldwithOrder = foOrderedField + " ASC";
         $('#hdnOrder').val(foFieldwithOrder);
@@ -130,7 +145,7 @@ function getOrderbyCategoryList(foOrderedField, tdID) {
 
     }
     else {
-        if ($('#hdnOrder').val() == (foOrderedField + " ASC")) {
+        if ($('#hdnOrder').val() === (foOrderedField + " ASC")) {
             foFieldwithOrder = foOrderedField + " DESC";
             $('#hdnOrder').val(foFieldwithOrder);
             $('#hdnSortingDirection').val("DESC");
@@ -152,10 +167,10 @@ function setSortingArrow() {
     if (sortTD != "") {
         $('#' + sortTD).removeClass("sorting");
         if (sortDirection != null) {
-            if (sortDirection.toUpperCase() == "ASC") {
+            if (sortDirection.toUpperCase() === "ASC") {
                 $('#' + sortTD).addClass("sorting_asc");
             }
-            else if (sortDirection.toUpperCase() == "DESC") {
+            else if (sortDirection.toUpperCase() === "DESC") {
                 $('#' + sortTD).addClass("sorting_desc");
             }
         }
