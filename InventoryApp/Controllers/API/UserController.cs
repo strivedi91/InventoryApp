@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using InventoryApp.Helpers;
 using InventoryApp.Models;
 using InventoryApp.Models.ApiModels;
 using InventoryApp_DL.Entities;
@@ -141,7 +142,6 @@ namespace InventoryApp.Controllers.API
                 return GetOkResult(Result);
             }
         }
-
 
         [HttpGet]
         [Route("user/getpreferences")]
@@ -444,7 +444,6 @@ namespace InventoryApp.Controllers.API
             {
                 try
                 {
-
                     List<Expression<Func<Cart, Object>>> includes = new List<Expression<Func<Cart, object>>>();
                     Expression<Func<Cart, object>> IncludeProducts = (product) => product.Products;
                     Expression<Func<Cart, object>> IncludeCategory = (category) => category.Categories;
@@ -507,7 +506,6 @@ namespace InventoryApp.Controllers.API
             }
         }
 
-
         [HttpGet]
         [Route("user/checkout")]
         public async Task<IHttpActionResult> Checkout()
@@ -519,7 +517,6 @@ namespace InventoryApp.Controllers.API
             {
                 try
                 {
-
                     List<Expression<Func<Cart, Object>>> includes = new List<Expression<Func<Cart, object>>>();
                     Expression<Func<Cart, object>> IncludeProducts = (product) => product.Products;
                     Expression<Func<Cart, object>> IncludeCategory = (category) => category.Categories;
@@ -533,7 +530,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = true,
                         message = "",
-                        Result = JObject.FromObject(new
+                        CheckoutResult = JObject.FromObject(new
                         {
                             TotalAmount = userSelectedProducts.Sum(x => x.Quantity * x.Products.Price),
                             ShippingAddress = Repository<AspNetUsers>.GetEntityListForQuery(x => x.Id == LoggedInUserId).Item1.First()?.Address
@@ -547,7 +544,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = false,
                         message = "Sorry, there was an error processing your request. Please try again !",
-                        GetCartResult = ""
+                        CheckoutResult = ""
                     });
                     return GetOkResult(Result);
                 }
@@ -558,13 +555,11 @@ namespace InventoryApp.Controllers.API
                 {
                     status = false,
                     message = "Unauthorized",
-                    GetCartResult = ""
+                    CheckoutResult = ""
                 });
                 return GetOkResult(Result);
             }
         }
-
-
 
         [HttpPost]
         [Route("user/cart/update")]
@@ -661,7 +656,6 @@ namespace InventoryApp.Controllers.API
             }
         }
 
-
         [HttpPost]
         [Route("user/placeorder")]
         public async Task<IHttpActionResult> PlaceOrder(OrderModel orderModel)
@@ -673,13 +667,24 @@ namespace InventoryApp.Controllers.API
             {
                 try
                 {
+
+                    List<Expression<Func<Cart, Object>>> includes = new List<Expression<Func<Cart, object>>>();
+                    Expression<Func<Cart, object>> IncludeProducts = (product) => product.Products;
+                    Expression<Func<Cart, object>> IncludeCategory = (category) => category.Categories;
+                    includes.Add(IncludeProducts);
+                    includes.Add(IncludeCategory);
+
+                    var userSelectedProducts = Repository<Cart>.
+                        GetEntityListForQuery(x => x.UserId == LoggedInUserId, null, includes).Item1;
+
+
                     Orders orders = new Orders
                     {
                         CreatedOn = DateTime.Now,
-                        Discount = orderModel.OrderDiscount,
-                        OrderStatus = "Order Placed Successfully.",
-                        SubTotal = orderModel.OrderSubTotal,
-                        Total = orderModel.OrderTotal,
+                        Discount = userSelectedProducts.Sum(x => x.Quantity * x.Products.Price) - userSelectedProducts.Sum(x => x.Quantity * Convert.ToDecimal(x.Products?.OfferPrice)),
+                        OrderStatus = Enums.GetEnumDescription((Enums.OrderStatus.OrderPlaced)),
+                        SubTotal = userSelectedProducts.Sum(x => x.Quantity * x.Products.Price),
+                        Total = userSelectedProducts.Sum(x => x.Quantity * Convert.ToDecimal(x.Products?.OfferPrice)),
                         UserId = LoggedInUserId
                     };
 
@@ -687,19 +692,21 @@ namespace InventoryApp.Controllers.API
 
                     List<OrderDetails> orderItems = new List<OrderDetails>();
                     orderItems.AddRange(
-                        orderModel.orderDetailsModels.
+                        userSelectedProducts.
                         Select(x => new OrderDetails
                         {
                             OrderId = orders.id,
                             Quantity = x.Quantity,
                             CategoryId = x.CategoryId,
-                            Discount = x.Discount,
-                            Price = x.Price,
-                            TotalPrice = x.TotalPrice,
+                            Discount = 0,
+                            Price = x.Products.Price,
+                            TotalPrice = x.Products.Price,
                             ProductId = x.ProductId
                         }));
 
                     await Repository<OrderDetails>.InsertMultipleEntities(orderItems);
+
+                    await Repository<Cart>.DeleteRange(userSelectedProducts);
 
                     Result = JObject.FromObject(new
                     {
@@ -743,8 +750,6 @@ namespace InventoryApp.Controllers.API
             {
                 try
                 {
-
-
                     List<Expression<Func<Orders, Object>>> includes = new List<Expression<Func<Orders, object>>>();
                     Expression<Func<Orders, object>> IncludeOrderDetails = (orderdetails) => orderdetails.OrderDetails;
                     includes.Add(IncludeOrderDetails);
@@ -809,7 +814,6 @@ namespace InventoryApp.Controllers.API
             {
                 try
                 {
-
                     List<Expression<Func<OrderDetails, Object>>> includes = new List<Expression<Func<OrderDetails, object>>>();
                     Expression<Func<OrderDetails, object>> IncludeProducts = (orderdetails) => orderdetails.Products;
                     Expression<Func<OrderDetails, object>> IncludeCategories = (orderdetails) => orderdetails.Categories;
@@ -838,9 +842,7 @@ namespace InventoryApp.Controllers.API
                                 Price = product.Products.Price,
                                 OfferPrice = product.Products.OfferPrice,
                                 product.Products.MOQ,
-                                product.Products.Quantity,
-                                TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive).
-                                Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price })
+                                product.Products.Quantity                                
                             }
                         })
                     });

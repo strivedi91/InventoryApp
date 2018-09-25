@@ -560,7 +560,7 @@ namespace InventoryApp_DL.Repositories
 
         #region Public Static Methods
 
-        public static async void DeleteRange(IEnumerable<TEntity> entities)
+        public static async Task DeleteRange(IEnumerable<TEntity> entities)
         {
             using (IDataContextAsync dataContext = new DataContext.DataContext())
             {
