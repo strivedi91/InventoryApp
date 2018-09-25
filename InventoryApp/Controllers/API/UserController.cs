@@ -91,8 +91,12 @@ namespace InventoryApp.Controllers.API
             {
                 try
                 {
-                    var existingPref = Repository<AspNetUserPreferences>.GetEntityListForQuery(x => x.UserId == LoggedInUserId).Item1;
-                    Repository<AspNetUserPreferences>.DeleteRange(existingPref);
+                    int category = saveUserPreferencesModel.SavePreferences.FirstOrDefault().CategoryId;
+                    var existingPref = Repository<AspNetUserPreferences>.GetEntityListForQuery(x => x.UserId == LoggedInUserId && x.CategoryId == category).Item1;
+                    if (existingPref != null)
+                    {
+                        Repository<AspNetUserPreferences>.DeleteRange(existingPref);
+                    }
 
                     List<AspNetUserPreferences> listUserCategories = new List<AspNetUserPreferences>();
                     listUserCategories.AddRange(
@@ -110,7 +114,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = true,
                         message = "Preferences Saved Successfully !",
-                        Result = ""
+                        SavePreferencesResult = ""
                     });
 
                     return GetOkResult(Result);
@@ -532,7 +536,7 @@ namespace InventoryApp.Controllers.API
                         Result = JObject.FromObject(new
                         {
                             TotalAmount = userSelectedProducts.Sum(x => x.Quantity * x.Products.Price),
-                            ShippingAddress= Repository<AspNetUsers>.GetEntityListForQuery(x=>x.Id==LoggedInUserId).Item1.First()?.Address
+                            ShippingAddress = Repository<AspNetUsers>.GetEntityListForQuery(x => x.Id == LoggedInUserId).Item1.First()?.Address
                         })
                     });
                     return GetOkResult(Result);
