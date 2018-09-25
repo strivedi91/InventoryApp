@@ -25,7 +25,7 @@ namespace InventoryApp_DL.Entities
         public decimal Discount { get; set; } // Discount
         public decimal Total { get; set; } // Total
         public string OrderStatus { get; set; } // OrderStatus
-
+        public string ShippingAddress { get; set; }
         // Reverse navigation
         public virtual ICollection<OrderDetails> OrderDetails { get; set; } // OrderDetails.FK_OrderDetails_Order
 

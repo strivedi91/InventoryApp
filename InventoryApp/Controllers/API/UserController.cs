@@ -685,7 +685,8 @@ namespace InventoryApp.Controllers.API
                         OrderStatus = Enums.GetEnumDescription((Enums.OrderStatus.OrderPlaced)),
                         SubTotal = userSelectedProducts.Sum(x => x.Quantity * x.Products.Price),
                         Total = userSelectedProducts.Sum(x => x.Quantity * Convert.ToDecimal(x.Products?.OfferPrice)),
-                        UserId = LoggedInUserId
+                        UserId = LoggedInUserId,
+                        ShippingAddress = orderModel.ShippingAddress
                     };
 
                     await Repository<Orders>.InsertEntity(orders, entity => { return entity.id; });
@@ -842,7 +843,7 @@ namespace InventoryApp.Controllers.API
                                 Price = product.Products.Price,
                                 OfferPrice = product.Products.OfferPrice,
                                 product.Products.MOQ,
-                                product.Products.Quantity                                
+                                product.Products.Quantity
                             }
                         })
                     });
