@@ -762,7 +762,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = true,
                         message = "",
-                        Result = JObject.FromObject(new
+                        OrderResult = JObject.FromObject(new
                         {
 
                             Orders =
@@ -787,7 +787,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = false,
                         message = "Sorry, there was an error processing your request. Please try again !",
-                        Result = ""
+                        OrderResult = ""
                     });
                     return GetOkResult(Result);
                 }
@@ -828,7 +828,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = true,
                         message = "",
-                        Result = JObject.FromObject(new
+                        OrderDetailsResult = JObject.FromObject(new
                         {
                             Products =
                             from product in userOrders
@@ -855,7 +855,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = false,
                         message = "Sorry, there was an error processing your request. Please try again !",
-                        Result = ""
+                        OrderDetailsResult = ""
                     });
                     return GetOkResult(Result);
                 }
@@ -866,7 +866,7 @@ namespace InventoryApp.Controllers.API
                 {
                     status = false,
                     message = "Unauthorized",
-                    OrderResult = ""
+                    OrderDetailsResult = ""
                 });
                 return GetOkResult(Result);
             }
