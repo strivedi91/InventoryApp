@@ -278,7 +278,8 @@ namespace InventoryApp.Controllers.API
                                     product.Products.MOQ,
                                     product.Products.Quantity,
                                     TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive).
-                                    Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price })
+                                    Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
+                                    IsInCart = Repository<Cart>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false
                                 }
                         })
                     });
@@ -322,8 +323,10 @@ namespace InventoryApp.Controllers.API
                     List<Expression<Func<Products, Object>>> includes = new List<Expression<Func<Products, object>>>();
                     Expression<Func<Products, object>> IncludeCategories = (category) => category.Categories;
                     Expression<Func<Products, object>> IncludeTierPricing = (pricing) => pricing.TierPricings;
+                    Expression<Func<Products, object>> IncludeCart = (pricing) => pricing.Carts;
                     includes.Add(IncludeCategories);
                     includes.Add(IncludeTierPricing);
+                    includes.Add(IncludeCart);
 
                     var products = Repository<Products>.GetEntityListForQuery(x => x.IsActive && x.CategoryId == Id, null, includes).Item1;
                     var userSelectedProducts = Repository<AspNetUserPreferences>.
@@ -350,7 +353,8 @@ namespace InventoryApp.Controllers.API
                                product.MOQ,
                                product.Quantity,
                                TierPricing = product.TierPricings.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
-                               IsSelected = userSelectedProducts.Contains(product.id)
+                               IsSelected = userSelectedProducts.Contains(product.id),
+                               IsInCart = product.Carts.Where(x => x.UserId == LoggedInUserId).Count() > 0 ? true : false
                            }
                         })
                     });
@@ -775,7 +779,8 @@ namespace InventoryApp.Controllers.API
                                     order.Discount,
                                     order.OrderStatus,
                                     order.SubTotal,
-                                    order.Total
+                                    order.Total,
+                                    order.ShippingAddress
                                 }
                         })
                     });
@@ -868,6 +873,53 @@ namespace InventoryApp.Controllers.API
                     status = false,
                     message = "Unauthorized",
                     OrderDetailsResult = ""
+                });
+                return GetOkResult(Result);
+            }
+        }
+
+        [HttpPost]
+        [Route("user/changepassword")]
+        public async Task<IHttpActionResult> ChangePassword(ChangePasswordViewModel changePasswordViewModel)
+        {
+            IEnumerable<string> headerValues = Request.Headers.GetValues("UserId");
+            var LoggedInUserId = headerValues.FirstOrDefault();
+            JObject Result = null;
+            if (LoggedInUserId != null)
+            {
+                try
+                {
+                    var manager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                    var signinManager = Request.GetOwinContext().GetUserManager<ApplicationSignInManager>();
+                    var user = manager.FindById(LoggedInUserId);
+
+                    var result = await manager.ChangePasswordAsync(LoggedInUserId, changePasswordViewModel.OldPassword, changePasswordViewModel.NewPassword);
+                    Result = JObject.FromObject(new
+                    {
+                        status = result.Succeeded ? true : false,
+                        message = result.Errors.Count() == 0 ? "Password Changed Successfully!" : result.Errors.FirstOrDefault(),
+                        ChangePasswordResult = ""
+                    });
+                    return GetOkResult(Result);
+                }
+                catch (Exception ex)
+                {
+                    Result = JObject.FromObject(new
+                    {
+                        status = false,
+                        message = "Sorry, there was an error processing your request. Please try again !",
+                        ChangePasswordResult = ""
+                    });
+                    return GetOkResult(Result);
+                }
+            }
+            else
+            {
+                Result = JObject.FromObject(new
+                {
+                    status = false,
+                    message = "Unauthorized",
+                    ChangePasswordResult = ""
                 });
                 return GetOkResult(Result);
             }
