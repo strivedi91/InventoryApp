@@ -322,8 +322,10 @@ namespace InventoryApp.Controllers.API
                     List<Expression<Func<Products, Object>>> includes = new List<Expression<Func<Products, object>>>();
                     Expression<Func<Products, object>> IncludeCategories = (category) => category.Categories;
                     Expression<Func<Products, object>> IncludeTierPricing = (pricing) => pricing.TierPricings;
+                    Expression<Func<Products, object>> IncludeCart = (pricing) => pricing.Carts;
                     includes.Add(IncludeCategories);
                     includes.Add(IncludeTierPricing);
+                    includes.Add(IncludeCart);
 
                     var products = Repository<Products>.GetEntityListForQuery(x => x.IsActive && x.CategoryId == Id, null, includes).Item1;
                     var userSelectedProducts = Repository<AspNetUserPreferences>.
@@ -350,7 +352,8 @@ namespace InventoryApp.Controllers.API
                                product.MOQ,
                                product.Quantity,
                                TierPricing = product.TierPricings.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
-                               IsSelected = userSelectedProducts.Contains(product.id)
+                               IsSelected = userSelectedProducts.Contains(product.id),
+                               IsInCart = product.Carts.Where(x => x.UserId == LoggedInUserId).Count() > 0 ? true : false 
                            }
                         })
                     });
