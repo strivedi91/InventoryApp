@@ -716,7 +716,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = true,
                         message = "Order placed successfully !",
-                        OrderResult = ""
+                        PlaceOrderResult = ""
                     });
                     return GetOkResult(Result);
                 }
@@ -726,7 +726,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = false,
                         message = "Sorry, there was an error processing your request. Please try again !",
-                        OrderResult = ""
+                        PlaceOrderResult = ""
                     });
                     return GetOkResult(Result);
                 }
@@ -846,7 +846,8 @@ namespace InventoryApp.Controllers.API
                                 Price = product.Products.Price,
                                 OfferPrice = product.Products.OfferPrice,
                                 product.Products.MOQ,
-                                product.Products.Quantity
+                                product.Products.Quantity,
+                                OrderedQuantity = product.Quantity
                             }
                         })
                     });

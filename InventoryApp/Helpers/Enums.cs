@@ -21,8 +21,11 @@ namespace InventoryApp.Helpers
             [Description("Dispatched")]
             Dispatched = 2,
 
-            [Description("Delivered/Completed")]
-            DeliveredCompleted = 3
+            [Description("Delivered")]
+            DeliveredCompleted = 3,
+
+            [Description("Cancelled")]
+            Cancelled = 3
         }
         #endregion
 
