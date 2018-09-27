@@ -19,19 +19,32 @@
     <form>
         <div class="white-box bg-white space">
             <div class="row">
-                <div class="col-lg-3">
-                    @Html.DropDownList("ddlFilterCategory", Model.loCategoryList, new { @class = "form-control placeholder-no-fix" })
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-4" style="text-align:right; padding-left:0px"><label style="padding-top:10px;">Category:</label> </div>
+                        <div class="col-md-8">@Html.DropDownList("ddlFilterCategory", Model.loCategoryList, new { @class = "form-control placeholder-no-fix" })</div>
+                    </div>
                 </div>
-                <div class="col-lg-3">
-                    @Html.DropDownList("ddlFilterSeller", Model.loSellerList, new { @class = "form-control placeholder-no-fix" })
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-4" style="text-align:right;"><label style="padding-top:10px;">Seller:</label></div>
+                        <div class="col-md-8">@Html.DropDownList("ddlFilterSeller", Model.loSellerList, new { @class = "form-control placeholder-no-fix" })</div>
+                    </div>
                 </div>
-                <div class="col-lg-2">
-                    <input type="date" id="txtFromDate" class="form-control" name="from" placeholder="Start Date">
+                <div class="col-md-12"><br /></div>
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-4" style="text-align:right; padding-left:0px"><label style="padding-top:10px;">From Date:</label></div>
+                        <div class="col-md-8"><input type="date" id="txtFromDate" class="form-control" name="from" placeholder="Start Date"></div>
+                    </div>
                 </div>
-                <div class="col-lg-2">
-                    <input type="date" id="txtToDate" class="form-control" name="to" placeholder="End Date">
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-4" style="text-align:right;"><label style="padding-top:10px;">To Date:</label> </div>
+                        <div class="col-md-8"><input type="date" id="txtToDate" class="form-control" name="to" placeholder="End Date"></div>
+                    </div>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-md-2">
                     <button type="button" id="btnSearch" class="btn btn-gradient" title="Search" onclick="search();">Search</button>
                 </div>
             </div>
@@ -54,6 +67,6 @@
 <script>
     $(document).ready(function () {
         $(".menu-item a").removeClass("active");
-        $('#lnkManageSellers').addClass('active');
+        $('#lnkManageOrders').addClass('active');
     });
 </script>
