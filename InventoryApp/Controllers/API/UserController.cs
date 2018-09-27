@@ -278,7 +278,8 @@ namespace InventoryApp.Controllers.API
                                     product.Products.MOQ,
                                     product.Products.Quantity,
                                     TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive).
-                                    Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price })
+                                    Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
+                                    IsInCart = Repository<Cart>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false
                                 }
                         })
                     });
