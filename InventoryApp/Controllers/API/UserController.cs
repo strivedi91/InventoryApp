@@ -895,7 +895,7 @@ namespace InventoryApp.Controllers.API
                     var result = await manager.ChangePasswordAsync(LoggedInUserId, changePasswordViewModel.OldPassword, changePasswordViewModel.NewPassword);
                     Result = JObject.FromObject(new
                     {
-                        status = true,
+                        status = result.Succeeded ? true : false,
                         message = result.Errors.Count() == 0 ? "Password Changed Successfully!" : result.Errors.FirstOrDefault(),
                         ChangePasswordResult = ""
                     });
