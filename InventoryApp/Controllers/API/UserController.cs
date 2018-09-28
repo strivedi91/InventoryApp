@@ -878,6 +878,56 @@ namespace InventoryApp.Controllers.API
             }
         }
 
+
+        [HttpGet]
+        [Route("user/orders/{orderId:int}/cancel")]
+        public async Task<IHttpActionResult> CancelOrder(int orderId)
+        {
+            IEnumerable<string> headerValues = Request.Headers.GetValues("UserId");
+            var LoggedInUserId = headerValues.FirstOrDefault();
+            JObject Result = null;
+            if (LoggedInUserId != null)
+            {
+                try
+                {
+                    var userOrders = Repository<Orders>.
+                        GetEntityListForQuery(x => x.id == orderId, null, null).Item1.FirstOrDefault();
+
+                    userOrders.OrderStatus = Enums.GetEnumDescription((Enums.OrderStatus.Cancelled));
+
+                    await Repository<Orders>.UpdateEntity(userOrders, entity => { return entity.id; });
+
+                    Result = JObject.FromObject(new
+                    {
+                        status = true,
+                        message = "Order Cancelled Successfully !",
+                        CancelOrderResult = ""                        
+                    });
+                    return GetOkResult(Result);
+                }
+                catch (Exception ex)
+                {
+                    Result = JObject.FromObject(new
+                    {
+                        status = false,
+                        message = "Sorry, there was an error processing your request. Please try again !",
+                        CancelOrderResult = ""
+                    });
+                    return GetOkResult(Result);
+                }
+            }
+            else
+            {
+                Result = JObject.FromObject(new
+                {
+                    status = false,
+                    message = "Unauthorized",
+                    CancelOrderResult = ""
+                });
+                return GetOkResult(Result);
+            }
+        }
+
         [HttpPost]
         [Route("user/changepassword")]
         public async Task<IHttpActionResult> ChangePassword(ChangePasswordViewModel changePasswordViewModel)
