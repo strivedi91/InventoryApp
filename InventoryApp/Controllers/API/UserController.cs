@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
@@ -279,7 +281,8 @@ namespace InventoryApp.Controllers.API
                                     product.Products.Quantity,
                                     TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive).
                                     Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
-                                    IsInCart = Repository<Cart>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false
+                                    IsInCart = Repository<Cart>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false,
+                                    Images = GetProductImagesById(product.Products.id)
                                 }
                         })
                     });
@@ -306,6 +309,21 @@ namespace InventoryApp.Controllers.API
                 });
                 return GetOkResult(Result);
             }
+        }
+
+        private string[] GetProductImagesById(int productId)
+        {
+            string ProductImagePath = ConfigurationManager.AppSettings["ProductImagePath"].ToString();
+            string path = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath(ProductImagePath), productId.ToString());
+            if (Directory.Exists(path))
+            {
+                return Directory.GetFiles(path);
+            }
+            else
+            {
+                return new string[] { };
+            }
+
         }
 
         [HttpGet]
@@ -354,7 +372,8 @@ namespace InventoryApp.Controllers.API
                                product.Quantity,
                                TierPricing = product.TierPricings.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                IsSelected = userSelectedProducts.Contains(product.id),
-                               IsInCart = product.Carts.Where(x => x.UserId == LoggedInUserId).Count() > 0 ? true : false
+                               IsInCart = product.Carts.Where(x => x.UserId == LoggedInUserId).Count() > 0 ? true : false,
+                               Images = GetProductImagesById(product.id)
                            }
                         })
                     });
@@ -901,7 +920,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = true,
                         message = "Order Cancelled Successfully !",
-                        CancelOrderResult = ""                        
+                        CancelOrderResult = ""
                     });
                     return GetOkResult(Result);
                 }
