@@ -49,7 +49,7 @@ namespace InventoryApp.Areas.Admin.Models
 
         public decimal? OfferPrice { get; set; }
 
-        [Required(ErrorMessage = "Quantity name should not be empty.")]
+        [Required(ErrorMessage = "Quantity should not be empty.")]
         public int? Quantity { get; set; }
 
         public int? MOQ { get; set; }

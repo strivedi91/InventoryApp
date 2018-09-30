@@ -24,7 +24,16 @@ namespace InventoryApp.Areas.Admin.Controllers
                 CategoryCount = objCategories.Item2,
                 OrderCount = objOrders.Item2,
                 ProductCount = objProducts.Item2,
-                SellerCount = objUsers.Item2
+                SellerCount = objUsers.Item2,
+                TodayOrderCount = objOrders.Item1.Where(x=>x.CreatedOn.Date == DateTime.Now.Date).Count(),
+                YesterdayOrderCount = objOrders.Item1.Where(x => x.CreatedOn.Date == DateTime.Now.AddDays(-1).Date).Count(),
+                CurrentMonthOrderCount = objOrders.Item1.Where(x => x.CreatedOn.Month == DateTime.Now.Month).Count(),
+                LastMonthOrderCount = objOrders.Item1.Where(x => x.CreatedOn.Month == DateTime.Now.AddMonths(-1).Month).Count(),
+                TodayOrderPayment = objOrders.Item1.Where(x => x.CreatedOn.Date == DateTime.Now.Date).Sum(x=>x.Total),
+                YesterdayOrderPayment = objOrders.Item1.Where(x => x.CreatedOn.Date == DateTime.Now.AddDays(-1).Date).Sum(x => x.Total),
+                CurrentMonthOrderPayment = objOrders.Item1.Where(x => x.CreatedOn.Month == DateTime.Now.Month).Sum(x => x.Total),
+                LastMonthOrderPayment = objOrders.Item1.Where(x => x.CreatedOn.Month == DateTime.Now.AddMonths(-1).Month).Sum(x => x.Total),
+                TotalPayment = objOrders.Item1.Sum(x => x.Total),
             });
         }
     }

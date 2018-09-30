@@ -8,7 +8,7 @@
         <h2>Products</h2>
     </div>
     <form style="padding-top:0px;">
-        <div class="add-card ">
+        <div style="padding-top:0px;" class="add-card ">
             <div class="btn-block">
                 <a href="@Url.RouteUrl("Admin_default", new { action = "AddEditProduct", controller = "Products" })" class="btn toggle">Add New Product <i class="fa fa-plus-square-o" aria-hidden="true"></i></a>
             </div>
@@ -16,17 +16,21 @@
 
         <div class="white-box bg-white space">
             <div class="row">
-                <div class="col-lg-4">
+                <div class="col-lg-5">
                     @Html.DropDownList("ddlFilterCategory", Model.objCategoryList, new { @class = "form-control placeholder-no-fix" })
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-5">
                     <input type="text" class="form-control" id="txtSearch" maxlength="100" placeholder="Search by Product name ..." onkeypress="userSearch(event);">
                 </div>
-                <div class="col-lg-2">
+                <div class="col-md-12"><br /></div>
+                <div class="col-lg-4">
                     <input type="text" class="form-control" id="txtSearchQuantity" maxlength="3" placeholder="Search by Quantity ..." onkeypress="return jsInteger(event);">
                 </div>
-                <div class="col-lg-2">
+                <div class="col-lg-2" style="text-align:right;">
                     <button type="button" id="btnSearch" class="btn btn-gradient" onclick="search();">Search</button>
+                </div>
+                <div class="col-md-2" style="text-align:left;">
+                    <a href="javascript:void();" id="btnClear" class="btn btn-gradient" title="Clear" onclick="clearFilter();">Clear</a>
                 </div>
             </div>
         </div>
@@ -41,7 +45,7 @@
         var lsSearchProductsUrl = '@Url.RouteUrl("Admin_default", new { controller = "Products", action = "searchProducts" })';
         var lsDeleteProductUrl = '@Url.RouteUrl("Admin_default", new { controller = "Products", action = "DeleteProduct" })';
     </script>
-    <script src="@Url.Content("~/Areas/Admin/assets/scripts/Products.js?ver=1.5")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Areas/Admin/assets/scripts/Products.js?ver=1.8")" type="text/javascript"></script>
 </section>
 
 <script>

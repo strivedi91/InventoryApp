@@ -49,6 +49,10 @@ namespace InventoryApp.Areas.Admin.Controllers
             orderDetails.SubTotal = objOrder.SubTotal;
             orderDetails.Total = objOrder.Total;
             orderDetails.Discount = objOrder.Discount;
+            orderDetails.SellerName = Repository<AspNetUsers>.GetEntityListForQuery(x => x.Id == objOrder.UserId).Item1.Select(y=>y.Name).FirstOrDefault();
+            orderDetails.Date = objOrder.CreatedOn.Date.ToShortDateString();
+            orderDetails.Address = objOrder.ShippingAddress;
+            orderDetails.Status = objOrder.OrderStatus;
             return View(orderDetails);
         }
     }

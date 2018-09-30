@@ -13,24 +13,87 @@
         <div class="overview-listing">
             <div class="row">
                 <div class="col-md-3 col-sm-3">
-                    <img src="~/assets/images/user.png">
+                    @*<img src="~/assets/images/user.png">*@
                     <h6>Sellers</h6>
-                    <h2>@Model.SellerCount</h2>
+                    <h2><a style="color:#FE0B75" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "ManageUsers" })">@Model.SellerCount</a> </h2>
                 </div>
                 <div class="col-md-3 col-sm-3">
-                    <img src="~/assets/images/icon2.png">
+                    @*<img src="~/assets/images/icon2.png">*@
                     <h6>Categories</h6>
-                    <h2>@Model.CategoryCount</h2>
+                    <h2><a style="color:#FE0B75" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Category" })">@Model.CategoryCount </a></h2>
                 </div>
                 <div class="col-md-3 col-sm-3">
-                    <img src="~/assets/images/icon3.png">
+                    @*<img src="~/assets/images/icon3.png">*@
                     <h6>Products</h6>
-                    <h2>@Model.ProductCount</h2>
+                    <h2><a style="color:#FE0B75" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Products" })">@Model.ProductCount </a> </h2>
                 </div>
                 <div class="col-md-3 col-sm-3">
-                    <img src="~/assets/images/wallet.png">
-                    <h6>Orders</h6>
-                    <h2>@Model.OrderCount</h2>
+                    @*<img src="~/assets/images/wallet.png">*@
+                    <h6>Total</h6>
+                    <h2><a style="color:#FE0B75" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Order" })">@Model.OrderCount </a> </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12"><br /></div>
+    <div class="white-box bg-white">
+        <div class="box-title">ORDERS</div>
+        <div class="overview-listing">
+            <div class="row">
+
+                <div class="col-md-3 col-sm-3">
+                    @*<img src="~/assets/images/wallet.png">*@
+                    <h6>Today</h6>
+                    <h2>@Model.TodayOrderCount</h2>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    @*<img src="~/assets/images/wallet.png">*@
+                    <h6>Yesterday</h6>
+                    <h2>@Model.YesterdayOrderCount</h2>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    @*<img src="~/assets/images/wallet.png">*@
+                    <h6>Current Month</h6>
+                    <h2>@Model.CurrentMonthOrderCount</h2>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    @*<img src="~/assets/images/wallet.png">*@
+                    <h6>Last Month</h6>
+                    <h2>@Model.LastMonthOrderCount</h2>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12"><br /></div>
+    <div class="white-box bg-white">
+        <div class="box-title">PAYMENT</div>
+        <div class="overview-listing">
+            <div class="row">
+                <div class="col-md-3 col-sm-3">
+                    @*<img src="~/assets/images/wallet.png">*@
+                    <h6>Today</h6>
+                    <h2>@Model.TodayOrderPayment</h2>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    @*<img src="~/assets/images/wallet.png">*@
+                    <h6>Yesterday</h6>
+                    <h2>@Model.YesterdayOrderPayment</h2>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    @*<img src="~/assets/images/wallet.png">*@
+                    <h6>Current Month</h6>
+                    <h2>@Model.CurrentMonthOrderPayment</h2>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    @*<img src="~/assets/images/wallet.png">*@
+                    <h6>Last Month</h6>
+                    <h2>@Model.LastMonthOrderPayment</h2>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    @*<img src="~/assets/images/wallet.png">*@
+                    <h6>Total</h6>
+                    <h2>@Model.TotalPayment</h2>
                 </div>
             </div>
         </div>

@@ -23,6 +23,13 @@ function search() {
     }
     refeshList(stSearch);
 }
+function clearFilter() {
+
+    $('#txtSearch').val('');
+    $('#txtSearchQuantity').val('');
+    $('#ddlFilterCategory').val('0');
+    refeshList("load");
+}
 function refeshList(foId,pageIndex) {
 
     var stSortField = "";

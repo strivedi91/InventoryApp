@@ -28,6 +28,19 @@ $('#ddlFilterSeller').change(function () {
     refeshList("load");
 });
 
+$('#ddlFilterStatus').change(function () {
+    refeshList("load");
+});
+
+function clearFilter() {
+    
+    $('#txtFromDate').val('');
+    $('#txtToDate').val('');
+    $('#ddlFilterCategory').val('0');
+    $('#ddlFilterSeller').val('');
+    $('#ddlFilterStatus').val('');
+    refeshList("load");
+}
 
 function refeshList(foId, pageIndex) {
     if (pageIndex === undefined)
@@ -42,6 +55,7 @@ function refeshList(foId, pageIndex) {
 
     var liFilterCategory = $('#ddlFilterCategory').val();
     var liFilterSeller = $('#ddlFilterSeller').val();
+    var lsFilterStatus = $('#ddlFilterStatus').val();
     var lsFromdate = $('#txtFromDate').val().trim();
     var lsTodate = $('#txtToDate').val().trim();
 
@@ -71,6 +85,7 @@ function refeshList(foId, pageIndex) {
             lsFromDate: lsFromdate,
             lsToDate: lsTodate,
             inFilterCategory: liFilterCategory,
+            OrderStatus: lsFilterStatus,
             inFilterSeller: liFilterSeller
         },
         success: function (lodata) {
@@ -112,7 +127,6 @@ function updateOrderStatus(fiOrderId, ele) {
             fsOrderStatus: $(ele).val()
         },
         success: function (Result) {
-            debugger
             if (Result === true || Result === 'true') {
                 $('#alertSuccessMsg').show();
                 $('#alertErrorMsg').hide();
