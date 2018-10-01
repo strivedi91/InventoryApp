@@ -182,7 +182,7 @@ namespace InventoryApp.Controllers.API
                                        Id = category.Categories.Id,
                                        Name = category.Categories.Name,
                                        ProductCount = Repository<Products>.GetEntityListForQuery(x => x.CategoryId == category.CategoryId && x.IsActive == true).Item1.Select(x => x.id).Count(),
-                                       SelectedProductCount = Repository<AspNetUserPreferences>.GetEntityListForQuery(x => x.CategoryId == category.CategoryId).Item1.Count()
+                                       SelectedProductCount = Repository<AspNetUserPreferences>.GetEntityListForQuery(x => x.CategoryId == category.CategoryId && x.UserId == LoggedInUserId).Item1.Count()
                                    }
                             })
                         });
