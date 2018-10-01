@@ -1026,7 +1026,7 @@ namespace InventoryApp.Controllers.API
 
                 Result = JObject.FromObject(new
                 {
-                    status = true,
+                    status = authenticationResponse.UserId != null ? true : false,
                     message = authenticationResponse.UserId != null ? "Authentication Successfull !" : "Invalid Login Attempt !",
                     LoginResult = authenticationResponse
                 });
