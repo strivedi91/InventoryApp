@@ -257,6 +257,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\CommonFunctions.cs" />
     <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Helpers\Pager.cs" />
@@ -453,6 +454,18 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\Product\1\campaign7.png" />
+    <Content Include="Images\Product\1\fpage.jpg" />
+    <Content Include="Images\Product\1\www.YTS.AM.jpg" />
+    <Content Include="Images\Product\21\campaign1.png" />
+    <Content Include="Images\Product\21\campaign2.png" />
+    <Content Include="Images\Product\21\campaign3.png" />
+    <Content Include="Images\Product\21\campaign9.png" />
+    <Content Include="Images\Product\22\campaign4.png" />
+    <Content Include="Images\Product\3\campaign5.png" />
+    <Content Include="Images\Product\4\campaign8.png" />
+    <Content Include="Images\Product\4\campaign9.png" />
+    <Content Include="Images\Product\4\oval-3.png" />
     <Content Include="Scripts\autoNumeric.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\bootstrap-switch\bootstrap-switch.min.js" />
@@ -498,6 +511,7 @@
     <Content Include="Areas\Admin\Views\Order\_Order.cshtml" />
     <Content Include="Areas\Admin\Views\OrderDetails\Index.cshtml" />
     <Content Include="Areas\Admin\Views\OrderDetails\_OrderDetails.cshtml" />
+    <None Include="Properties\PublishProfiles\app.thegodam.com - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\inventory.sachintrivedi.com - Web Deploy.pubxml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Scripts\jquery-2.1.4.min.map" />
@@ -680,7 +694,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Images\Product\" />
     <Folder Include="Views\Pager\" />
   </ItemGroup>
   <ItemGroup>

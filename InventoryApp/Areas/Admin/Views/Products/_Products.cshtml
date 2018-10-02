@@ -52,8 +52,8 @@
                     @*<td>@prod.Description</td>*@
                     <td>@prod.Type</td>
                     <td>@prod.Brand</td>
-                    <td>@prod.Price</td>
-                    <td>@prod.OfferPrice</td>
+                    <td>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(Convert.ToDecimal(prod.Price))</td>
+                    <td>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(Convert.ToDecimal(prod.OfferPrice))</td>
                     <td>@prod.Quantity</td>
                     <td>@prod.MOQ</td>
                     <td>@prod.CategoryName</td>

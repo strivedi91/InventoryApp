@@ -24,10 +24,10 @@
                         <a href="@Url.Action("Index", "OrderDetails", new { Id = prod.id })" style="text-decoration:none"> @prod.ProductCount Items</a>
                     </td>                     
                     <td>@prod.CreatedOn.ToShortDateString()</td>
-                    <td>@prod.Discount</td>
+                    <td>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(prod.Discount)</td>
                     <td>@Html.DropDownList("ddlOrdeStatus_" + prod.id , Model.loOrdeStatusList, new { @class = "form-control placeholder-no-fix", @onchange = "updateOrderStatus(" + prod.id + ", this)" })</td>
-                    <td>@prod.SubTotal</td>
-                    <td>@prod.Total</td>
+                    <td>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(prod.SubTotal)</td>
+                    <td>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(prod.Total)</td>
                 </tr>
                 <script>
                     $('#ddlOrdeStatus_' + @prod.id ).val('@prod.OrderStatus');

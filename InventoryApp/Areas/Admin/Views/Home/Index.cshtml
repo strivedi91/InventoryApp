@@ -73,27 +73,27 @@
                 <div class="col-md-3 col-sm-3">
                     @*<img src="~/assets/images/wallet.png">*@
                     <h6>Today</h6>
-                    <h2>@Model.TodayOrderPayment</h2>
+                    <h2>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(Model.TodayOrderPayment)</h2>
                 </div>
                 <div class="col-md-3 col-sm-3">
                     @*<img src="~/assets/images/wallet.png">*@
                     <h6>Yesterday</h6>
-                    <h2>@Model.YesterdayOrderPayment</h2>
+                    <h2>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(Model.YesterdayOrderPayment)</h2>
                 </div>
                 <div class="col-md-3 col-sm-3">
                     @*<img src="~/assets/images/wallet.png">*@
                     <h6>Current Month</h6>
-                    <h2>@Model.CurrentMonthOrderPayment</h2>
+                    <h2>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(Model.CurrentMonthOrderPayment)</h2>
                 </div>
                 <div class="col-md-3 col-sm-3">
                     @*<img src="~/assets/images/wallet.png">*@
                     <h6>Last Month</h6>
-                    <h2>@Model.LastMonthOrderPayment</h2>
+                    <h2>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(Model.LastMonthOrderPayment)</h2>
                 </div>
                 <div class="col-md-3 col-sm-3">
                     @*<img src="~/assets/images/wallet.png">*@
                     <h6>Total</h6>
-                    <h2>@Model.TotalPayment</h2>
+                    <h2>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(Model.TotalPayment)</h2>
                 </div>
             </div>
         </div>

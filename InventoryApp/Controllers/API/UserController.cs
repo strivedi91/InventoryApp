@@ -313,12 +313,32 @@ namespace InventoryApp.Controllers.API
 
         private string[] GetProductImagesById(int productId)
         {
+
             string ProductImagePath = ConfigurationManager.AppSettings["ProductImagePath"].ToString();
-            string path = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath(ProductImagePath), productId.ToString());
-            if (Directory.Exists(path))
+
+            string path = Path.Combine((System.Web.Hosting.HostingEnvironment.ApplicationHost.ToString() + ProductImagePath), productId.ToString());
+
+            string Productpath = Path.Combine(HttpContext.Current.Server.MapPath(ProductImagePath), productId.ToString());
+            
+            if (Directory.Exists(Productpath))
             {
-                return Directory.GetFiles(path);
+                DirectoryInfo info = new DirectoryInfo(Productpath);
+                FileInfo[] files = info.GetFiles("*.*");
+
+                List<string> ProductImages = new List<string>();
+                
+                foreach (FileInfo file in files)
+                {
+                    string fileName = file.Name;
+                    ProductImages.Add(Url.Content(ProductImagePath) + productId.ToString() + "//" + fileName);
+                }
+                return ProductImages.ToArray();
             }
+            
+            //if (Directory.Exists(path))
+            //{
+            //    return Directory.GetFiles(path);
+            //}
             else
             {
                 return new string[] { };

@@ -22,24 +22,24 @@
                 <td>@prod.Category</td>
                 <td>@prod.Type</td>
                 <td>@prod.Brand</td>
-                <td>@prod.Price</td>
+                <td>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(prod.Price)</td>
                 <td>@prod.Quantity</td>
-                <td>@prod.Discount</td>
-                <td>@prod.TotalPrice</td>               
+                <td>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(prod.Discount)</td>
+                <td>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(prod.TotalPrice)</td>               
             </tr>
         }
             <tfoot>
                 <tr>
                     <td colspan="8" style="text-align: right;font-weight: bold; height:40px">Sub Total</td>
-                    <td style="height:40px; text-align:right">@Model.SubTotal</td>
+                    <td style="height:40px; text-align:right">@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(Model.SubTotal)</td>
                 </tr>
                 <tr>
                     <td colspan="8" style="text-align: right;font-weight: bold;height:40px">Discount</td>
-                    <td style="height:40px; text-align:right">@Model.Discount</td>
+                    <td style="height:40px; text-align:right">@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(Model.Discount)</td>
                 </tr>
                 <tr>
                     <td colspan="8" style="text-align: right;font-weight: bold;height:40px">Total</td>
-                    <td style="height:40px; text-align:right">@Model.Total</td>
+                    <td style="height:40px; text-align:right">@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(Model.Total)</td>
                 </tr>
             </tfoot>
     </table>
