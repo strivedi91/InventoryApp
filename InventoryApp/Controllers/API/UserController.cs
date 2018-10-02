@@ -521,7 +521,7 @@ namespace InventoryApp.Controllers.API
                                     SelectedQuantity = product.Quantity,
                                     TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive).
                                     Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
-                                    Images = GetProductImagesById(product.id)
+                                    Images = GetProductImagesById(product.Products.id)
                                 }
                         })
                     });
