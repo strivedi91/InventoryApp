@@ -330,7 +330,7 @@ namespace InventoryApp.Controllers.API
                 foreach (FileInfo file in files)
                 {
                     string fileName = file.Name;
-                    ProductImages.Add(Url.Content(ProductImagePath) + productId.ToString() + "//" + fileName);
+                    ProductImages.Add(Url.Content(ProductImagePath) + productId.ToString() + "/" + fileName);
                 }
                 return ProductImages.ToArray();
             }
@@ -520,7 +520,8 @@ namespace InventoryApp.Controllers.API
                                     product.Products?.Quantity,
                                     SelectedQuantity = product.Quantity,
                                     TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive).
-                                    Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price })
+                                    Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
+                                    Images = GetProductImagesById(product.id)
                                 }
                         })
                     });
@@ -819,7 +820,8 @@ namespace InventoryApp.Controllers.API
                                     order.OrderStatus,
                                     order.SubTotal,
                                     order.Total,
-                                    order.ShippingAddress
+                                    order.ShippingAddress,
+                                    Images = getProductImages(order.id)
                                 }
                         })
                     });
@@ -846,6 +848,24 @@ namespace InventoryApp.Controllers.API
                 });
                 return GetOkResult(Result);
             }
+        }
+
+        public string[] getProductImages(int OrderId)
+        {
+            var orderDetail = Repository<OrderDetails>.GetEntityListForQuery(x => x.OrderId == OrderId).Item1;
+            List<string> orderedItemImages = new List<string>();
+            foreach(var orderItem in orderDetail)
+            {
+                string[] stProdImaged = GetProductImagesById(orderItem.ProductId);
+                if(stProdImaged.Count() > 0)
+                {
+                    foreach(string image in stProdImaged)
+                    {
+                        orderedItemImages.Add(image);
+                    }                    
+                }
+            }
+            return orderedItemImages.ToArray();
         }
 
         [HttpGet]
@@ -888,7 +908,8 @@ namespace InventoryApp.Controllers.API
                                 OfferPrice = product.Products.OfferPrice,
                                 product.Products.MOQ,
                                 product.Products.Quantity,
-                                OrderedQuantity = product.Quantity
+                                OrderedQuantity = product.Quantity,
+                                Images = GetProductImagesById(product.id)
                             }
                         })
                     });
