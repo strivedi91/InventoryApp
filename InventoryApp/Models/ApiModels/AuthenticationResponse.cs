@@ -12,5 +12,6 @@ namespace InventoryApp.Models.ApiModels
         public string EmailAddress { get; set; }
         public bool FirstTimeLogin { get; set; }
         public string Address { get; set; }
+        public int CartCount { get; set; }
     }
 }

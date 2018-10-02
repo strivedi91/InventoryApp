@@ -820,7 +820,7 @@ namespace InventoryApp.Controllers.API
                                     order.OrderStatus,
                                     order.SubTotal,
                                     order.Total,
-                                    order.ShippingAddress,
+                                    ShippingAddress = string.IsNullOrEmpty(order.ShippingAddress) ? "" : order.ShippingAddress,
                                     Images = getProductImages(order.id)
                                 }
                         })
@@ -909,7 +909,7 @@ namespace InventoryApp.Controllers.API
                                 product.Products.MOQ,
                                 product.Products.Quantity,
                                 OrderedQuantity = product.Quantity,
-                                Images = GetProductImagesById(product.id)
+                                Images = GetProductImagesById(product.Products.id)
                             }
                         })
                     });
@@ -1059,6 +1059,7 @@ namespace InventoryApp.Controllers.API
                 authenticationResponse.Name = userDetails.Name;
                 authenticationResponse.FirstTimeLogin = userDetails.AspNetUserPreferences.Count() > 0 ? false : true;
                 authenticationResponse.Address = userDetails.Address;
+                authenticationResponse.CartCount = Repository<Cart>.GetEntityListForQuery(x => x.UserId == userDetails.Id).Item2;
             }
 
             JObject Result = null;
