@@ -1124,7 +1124,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = true,
                         message = "Item added to wish list !",
-                        addToWishListResult = ""
+                        AddWishListResult = ""
                     });
 
                     return GetOkResult(Result);
@@ -1135,7 +1135,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = false,
                         message = "Sorry, there was an error processing your request. Please try again !",
-                        addToWishListResult = ""
+                        AddWishListResult = ""
                     });
                     return GetOkResult(Result);
                 }
@@ -1146,7 +1146,7 @@ namespace InventoryApp.Controllers.API
                 {
                     status = false,
                     message = "Unauthorized",
-                    addToWishListResult = ""
+                    AddWishListResult = ""
                 });
                 return GetOkResult(Result);
             }
@@ -1176,7 +1176,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = true,
                         message = "",
-                        Result = JObject.FromObject(new
+                        WishListResult = JObject.FromObject(new
                         {
 
                             Products =
@@ -1208,7 +1208,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = false,
                         message = "Sorry, there was an error processing your request. Please try again !",
-                        getWishListResult = ""
+                        WishListResult = ""
                     });
                     return GetOkResult(Result);
                 }
@@ -1219,7 +1219,7 @@ namespace InventoryApp.Controllers.API
                 {
                     status = false,
                     message = "Unauthorized",
-                    getWishListResult = ""
+                    WishListResult = ""
                 });
                 return GetOkResult(Result);
             }
@@ -1243,7 +1243,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = true,
                         message = "Item Removed !",
-                        deleteWishListResult = ""
+                        DeleteWishListResult = ""
                     });
 
                     return GetOkResult(Result);
@@ -1254,7 +1254,7 @@ namespace InventoryApp.Controllers.API
                     {
                         status = false,
                         message = "Sorry, there was an error processing your request. Please try again !",
-                        deleteWishListResult = ""
+                        DeleteWishListResult = ""
                     });
                     return GetOkResult(Result);
                 }
@@ -1263,9 +1263,9 @@ namespace InventoryApp.Controllers.API
             {
                 Result = JObject.FromObject(new
                 {
-                    status = false,
+                    status = false, 
                     message = "Unauthorized",
-                    deleteWishListResult = ""
+                    DeleteWishListResult = ""
                 });
                 return GetOkResult(Result);
             }
