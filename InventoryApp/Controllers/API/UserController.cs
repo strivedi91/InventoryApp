@@ -1099,5 +1099,176 @@ namespace InventoryApp.Controllers.API
                 _signInManager = value;
             }
         }
+
+        [HttpPost]
+        [Route("user/addtowishlist")]
+        public async Task<IHttpActionResult> addToWishList(AddToWishListModel foRequest)
+        {
+            IEnumerable<string> headerValues = Request.Headers.GetValues("UserId");
+            var LoggedInUserId = headerValues.FirstOrDefault();
+            JObject Result = null;
+            if (LoggedInUserId != null)
+            {
+                try
+                {
+                    var newWishList = new WishList
+                    {
+                        CategoryId = foRequest.CategoryId,
+                        ProductId = foRequest.ProductId,
+                        UserId = LoggedInUserId
+                    };
+
+                    await Repository<WishList>.InsertEntity(newWishList, entity => { return entity.Id; });
+
+                    Result = JObject.FromObject(new
+                    {
+                        status = true,
+                        message = "Item added to wish list !",
+                        addToWishListResult = ""
+                    });
+
+                    return GetOkResult(Result);
+                }
+                catch (Exception ex)
+                {
+                    Result = JObject.FromObject(new
+                    {
+                        status = false,
+                        message = "Sorry, there was an error processing your request. Please try again !",
+                        addToWishListResult = ""
+                    });
+                    return GetOkResult(Result);
+                }
+            }
+            else
+            {
+                Result = JObject.FromObject(new
+                {
+                    status = false,
+                    message = "Unauthorized",
+                    addToWishListResult = ""
+                });
+                return GetOkResult(Result);
+            }
+        }
+
+        [HttpGet]
+        [Route("user/wishlist")]
+        public async Task<IHttpActionResult> getWishList()
+        {
+            IEnumerable<string> headerValues = Request.Headers.GetValues("UserId");
+            var LoggedInUserId = headerValues.FirstOrDefault();
+            JObject Result = null;
+            if (LoggedInUserId != null)
+            {
+                try
+                {
+                    List<Expression<Func<WishList, Object>>> includes = new List<Expression<Func<WishList, object>>>();
+                    Expression<Func<WishList, object>> IncludeProducts = (product) => product.Products;
+                    Expression<Func<WishList, object>> IncludeCategory = (category) => category.Categories;
+                    includes.Add(IncludeProducts);
+                    includes.Add(IncludeCategory);
+
+                    var userSelectedProducts = Repository<WishList>.
+                        GetEntityListForQuery(x => x.UserId == LoggedInUserId, null, includes).Item1;
+
+                    Result = JObject.FromObject(new
+                    {
+                        status = true,
+                        message = "",
+                        Result = JObject.FromObject(new
+                        {
+
+                            Products =
+                                from product in userSelectedProducts
+                                select new
+                                {
+                                    WishListId = product.Id,
+                                    ProductId = product.Products?.id,
+                                    ProductName = product.Products?.Name,
+                                    Category = product.Categories?.Name,
+                                    Brand = product.Products?.Brand,
+                                    Description = product.Products?.Description,
+                                    Type = product.Products?.Type,
+                                    Price = product.Products?.Price,
+                                    OfferPrice = product.Products?.OfferPrice,
+                                    product.Products?.MOQ,
+                                    product.Products?.Quantity,
+                                    TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive).
+                                    Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
+                                    Images = GetProductImagesById(product.Products.id)
+                                }
+                        })
+                    });
+                    return GetOkResult(Result);
+                }
+                catch (Exception ex)
+                {
+                    Result = JObject.FromObject(new
+                    {
+                        status = false,
+                        message = "Sorry, there was an error processing your request. Please try again !",
+                        getWishListResult = ""
+                    });
+                    return GetOkResult(Result);
+                }
+            }
+            else
+            {
+                Result = JObject.FromObject(new
+                {
+                    status = false,
+                    message = "Unauthorized",
+                    getWishListResult = ""
+                });
+                return GetOkResult(Result);
+            }
+        }
+
+        [HttpDelete]
+        [Route("user/wishlist/delete/{Id:int}")]
+        public async Task<IHttpActionResult> deleteWishList(int Id)
+        {
+            IEnumerable<string> headerValues = Request.Headers.GetValues("UserId");
+            var LoggedInUserId = headerValues.FirstOrDefault();
+            JObject Result = null;
+            if (LoggedInUserId != null)
+            {
+                try
+                {
+                    var WishListItem = Repository<WishList>.GetEntityListForQuery(x => x.Id == Id).Item1.FirstOrDefault();
+                    await Repository<WishList>.DeleteEntity(WishListItem, entity => { return entity.Id; });
+
+                    Result = JObject.FromObject(new
+                    {
+                        status = true,
+                        message = "Item Removed !",
+                        deleteWishListResult = ""
+                    });
+
+                    return GetOkResult(Result);
+                }
+                catch (Exception ex)
+                {
+                    Result = JObject.FromObject(new
+                    {
+                        status = false,
+                        message = "Sorry, there was an error processing your request. Please try again !",
+                        deleteWishListResult = ""
+                    });
+                    return GetOkResult(Result);
+                }
+            }
+            else
+            {
+                Result = JObject.FromObject(new
+                {
+                    status = false,
+                    message = "Unauthorized",
+                    deleteWishListResult = ""
+                });
+                return GetOkResult(Result);
+            }
+        }
     }
 }

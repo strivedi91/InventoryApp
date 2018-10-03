@@ -262,6 +262,7 @@
     <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Helpers\Pager.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ApiModels\AddToWishListModel.cs" />
     <Compile Include="Models\ApiModels\AddToCartModel.cs" />
     <Compile Include="Models\ApiModels\AuthenticationResponse.cs" />
     <Compile Include="Models\ApiModels\PlaceOrderModel.cs" />
