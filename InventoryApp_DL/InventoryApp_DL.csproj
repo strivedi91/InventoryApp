@@ -149,6 +149,12 @@
     <Compile Include="Entities\TierPricingConfiguration.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\WishList.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\WishListConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
     <Compile Include="Infrastructure\Entity.cs" />
     <Compile Include="Infrastructure\IEntityIdentifier.cs" />
     <Compile Include="Infrastructure\IObjectState.cs" />

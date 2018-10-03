@@ -31,6 +31,7 @@ namespace InventoryApp_DL.Entities
         public virtual ICollection<Offers> Offers { get; set; } // Offers.FK_Offers_Categories
         public virtual ICollection<OrderDetails> OrderDetails { get; set; } // OrderDetails.FK_OrderDetails_Categories
         public virtual ICollection<Products> Products { get; set; } // Products.FK_Products_Categories
+        public virtual ICollection<WishList> WishLists { get; set; } // WishList.FK__WishList__Catego__19DFD96B
 
         public Categories()
         {
@@ -42,6 +43,7 @@ namespace InventoryApp_DL.Entities
             Offers = new List<Offers>();
             OrderDetails = new List<OrderDetails>();
             Products = new List<Products>();
+            WishLists = new List<WishList>();
             InitializePartial();
         }
         partial void InitializePartial();
