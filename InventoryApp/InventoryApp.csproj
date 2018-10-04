@@ -559,7 +559,6 @@
     <Content Include="Areas\Admin\Views\Order\_Order.cshtml" />
     <Content Include="Areas\Admin\Views\OrderDetails\Index.cshtml" />
     <Content Include="Areas\Admin\Views\OrderDetails\_OrderDetails.cshtml" />
-    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Admin\Views\Suggestion\Index.cshtml" />
     <None Include="Properties\PublishProfiles\app.thegodam.com - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\inventory.sachintrivedi.com - Web Deploy.pubxml" />
