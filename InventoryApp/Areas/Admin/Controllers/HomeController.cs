@@ -17,7 +17,8 @@ namespace InventoryApp.Areas.Admin.Controllers
             (List<AspNetUsers>, int) objUsers = Repository<AspNetUsers>.GetEntityListForQuery(null);
             (List<Products>, int) objProducts = Repository<Products>.GetEntityListForQuery(null);
             (List<Categories>, int) objCategories = Repository<Categories>.GetEntityListForQuery(null);
-            (List<Orders>, int) objOrders = Repository<Orders>.GetEntityListForQuery(null);
+            string cancelOrder = Helpers.Enums.GetEnumDescription((Helpers.Enums.OrderStatus.Cancelled));
+            (List<Orders>, int) objOrders = Repository<Orders>.GetEntityListForQuery(x=>x.OrderStatus != cancelOrder);
 
             return View(new DashboardModel
             {

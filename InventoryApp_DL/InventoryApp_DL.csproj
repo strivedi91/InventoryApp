@@ -143,6 +143,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\Suggestions.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SuggestionsConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\TierPricing.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
