@@ -43,7 +43,7 @@ function refeshList(foId,pageIndex) {
     if (foId === "load") {
         pageIndex = 1;
     }
-    else if (foId === "Name ASC" || foId === "Name DESC" || foId === "ID ASC" || foId === "ID DESC") {
+    else if (foId === "Name ASC" || foId === "Name DESC" || foId === "ID ASC" || foId === "ID DESC" || foId === "Type ASC" || foId === "Type DESC" || foId === "Brand ASC" || foId === "Brand DESC" || foId === "Price ASC" || foId === "Price DESC" || foId === "Quantity ASC" || foId === "Quantity DESC" || foId === "CategoryId ASC" || foId === "CategoryId DESC") {
         pageIndex = parseInt($('#hdnPageIndex').val());
     }
     

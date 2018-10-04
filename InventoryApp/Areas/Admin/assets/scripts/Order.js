@@ -68,7 +68,7 @@ function refeshList(foId, pageIndex) {
     else if (foId === "load") {
         pageIndex = 1;
     }
-    else if (foId === "Id ASC" || foId === "Id DESC" || foId === "CreatedOn ASC" || foId === "CreatedOn DESC" || foId === "Discount ASC" || foId === "Discount DESC" || foId === "OrderStatus ASC" || foId === "OrderStatus DESC" || foId === "SubTotal ASC" || foId === "SubTotal DESC" || foId === "Total ASC" || foId === "Total DESC") {
+    else if (foId === "ID ASC" || foId === "ID DESC" || foId === "CreatedOn ASC" || foId === "CreatedOn DESC" || foId === "Discount ASC" || foId === "Discount DESC" || foId === "OrderStatus ASC" || foId === "OrderStatus DESC" || foId === "SubTotal ASC" || foId === "SubTotal DESC" || foId === "Total ASC" || foId === "Total DESC") {
         pageIndex = parseInt($('#hdnPageIndex').val());
     }
     
