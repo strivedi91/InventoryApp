@@ -48,6 +48,7 @@ namespace InventoryApp_DL.Entities
         public virtual ICollection<AspNetUserPreferences> AspNetUserPreferences { get; set; } // AspNetUserPreferences.FK_AspNetUserCategories_AspNetUsers
         public virtual ICollection<Cart> Carts { get; set; } // Cart.FK_Cart_AspNetUsers
         public virtual ICollection<Orders> Orders { get; set; } // Orders.FK_Orders_AspNetUsers
+        public virtual ICollection<Suggestions> Suggestions { get; set; } // Suggestions.FK__Suggestio__UserI__29221CFB
         public virtual ICollection<WishList> WishLists { get; set; } // WishList.FK__WishList__UserId__1BC821DD
 
         public AspNetUsers()
@@ -60,6 +61,7 @@ namespace InventoryApp_DL.Entities
             AspNetUserPreferences = new List<AspNetUserPreferences>();
             Carts = new List<Cart>();
             Orders = new List<Orders>();
+            Suggestions = new List<Suggestions>();
             WishLists = new List<WishList>();
             AspNetRoles = new List<AspNetRoles>();
             InitializePartial();

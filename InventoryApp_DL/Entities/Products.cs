@@ -37,7 +37,7 @@ namespace InventoryApp_DL.Entities
         public virtual ICollection<Cart> Carts { get; set; } // Cart.FK_Cart_Products
         public virtual ICollection<Offers> Offers { get; set; } // Offers.FK_Offers_Products
         public virtual ICollection<OrderDetails> OrderDetails { get; set; } // OrderDetails.FK_OrderDetails_Products
-        public virtual ICollection<Suggestions> Suggestions { get; set; } // Suggestions.FK__Suggestio__Produ__2180FB33
+        public virtual ICollection<Suggestions> Suggestions { get; set; } // Suggestions.FK__Suggestio__Produ__282DF8C2
         public virtual ICollection<TierPricing> TierPricings { get; set; } // TierPricing.FK_TierPricing_Products
         public virtual ICollection<WishList> WishLists { get; set; } // WishList.FK__WishList__Produc__1AD3FDA4
 

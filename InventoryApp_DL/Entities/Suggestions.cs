@@ -20,10 +20,12 @@ namespace InventoryApp_DL.Entities
     {
         public int Id { get; set; } // Id (Primary key)
         public int ProductId { get; set; } // ProductId
+        public string UserId { get; set; } // UserId
         public string Suggestion { get; set; } // Suggestion
 
         // Foreign keys
-        public virtual Products Products { get; set; } //  FK__Suggestio__Produ__2180FB33
+        public virtual AspNetUsers AspNetUsers { get; set; } //  FK__Suggestio__UserI__29221CFB
+        public virtual Products Products { get; set; } //  FK__Suggestio__Produ__282DF8C2
     }
 
 }
