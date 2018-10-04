@@ -272,6 +272,7 @@ namespace InventoryApp.Controllers.API
                                     Id = product.Products.id,
                                     Name = product.Products.Name,
                                     Category = product.Categories.Name,
+                                    CategoryId = product.CategoryId,
                                     Brand = product.Products.Brand,
                                     Description = product.Products.Description,
                                     Type = product.Products.Type,
@@ -282,6 +283,7 @@ namespace InventoryApp.Controllers.API
                                     TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive).
                                     Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                     IsInCart = Repository<Cart>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false,
+                                    IsInWishList = Repository<WishList>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false,
                                     Images = GetProductImagesById(product.Products.id)
                                 }
                         })
@@ -319,14 +321,14 @@ namespace InventoryApp.Controllers.API
             string path = Path.Combine((System.Web.Hosting.HostingEnvironment.ApplicationHost.ToString() + ProductImagePath), productId.ToString());
 
             string Productpath = Path.Combine(HttpContext.Current.Server.MapPath(ProductImagePath), productId.ToString());
-            
+
             if (Directory.Exists(Productpath))
             {
                 DirectoryInfo info = new DirectoryInfo(Productpath);
                 FileInfo[] files = info.GetFiles("*.*");
 
                 List<string> ProductImages = new List<string>();
-                
+
                 foreach (FileInfo file in files)
                 {
                     string fileName = file.Name;
@@ -334,7 +336,7 @@ namespace InventoryApp.Controllers.API
                 }
                 return ProductImages.ToArray();
             }
-            
+
             //if (Directory.Exists(path))
             //{
             //    return Directory.GetFiles(path);
@@ -383,6 +385,7 @@ namespace InventoryApp.Controllers.API
                                Id = product.id,
                                Name = product.Name,
                                Category = product.Categories.Name,
+                               CategoryId = product.CategoryId,
                                Brand = product.Brand,
                                Description = product.Description,
                                Type = product.Type,
@@ -393,6 +396,7 @@ namespace InventoryApp.Controllers.API
                                TierPricing = product.TierPricings.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                IsSelected = userSelectedProducts.Contains(product.id),
                                IsInCart = product.Carts.Where(x => x.UserId == LoggedInUserId).Count() > 0 ? true : false,
+                               IsInWishList = product.WishLists.Where(x => x.UserId == LoggedInUserId).Count() > 0 ? true : false,
                                Images = GetProductImagesById(product.id)
                            }
                         })
@@ -433,17 +437,27 @@ namespace InventoryApp.Controllers.API
             {
                 try
                 {
+                    var product = Repository<Products>.GetEntityListForQuery(x => x.id == addToCartModel.ProductId).Item1.FirstOrDefault();
+                
                     var newCartItem = new Cart
                     {
                         UserId = LoggedInUserId,
                         OfferId = addToCartModel.OfferId,
-                        Quantity = addToCartModel.Quantity,
+                        Quantity = addToCartModel.Quantity == 0 ? Convert.ToInt32(product.MOQ) : addToCartModel.Quantity,
                         ProductId = addToCartModel.ProductId,
-                        CategoryId = addToCartModel.CategoryId
+                        CategoryId = addToCartModel.CategoryId == 0 ? product.CategoryId : addToCartModel.CategoryId
                     };
 
                     await Repository<Cart>.InsertEntity(newCartItem, entity => { return entity.id; });
 
+                    if (newCartItem.id > 0)
+                    {
+                        var WishListItem = Repository<WishList>.GetEntityListForQuery(x => x.UserId == LoggedInUserId && x.ProductId == addToCartModel.ProductId).Item1.FirstOrDefault();
+                        if (WishListItem != null)
+                        {
+                            await Repository<WishList>.DeleteEntity(WishListItem, entity => { return entity.Id; });
+                        }
+                    }
                     Result = JObject.FromObject(new
                     {
                         status = true,
@@ -511,6 +525,7 @@ namespace InventoryApp.Controllers.API
                                     Id = product.Products?.id,
                                     Name = product.Products?.Name,
                                     Category = product.Categories?.Name,
+                                    CategoryId = product.Products?.CategoryId,
                                     Brand = product.Products?.Brand,
                                     Description = product.Products?.Description,
                                     Type = product.Products?.Type,
@@ -854,15 +869,15 @@ namespace InventoryApp.Controllers.API
         {
             var orderDetail = Repository<OrderDetails>.GetEntityListForQuery(x => x.OrderId == OrderId).Item1;
             List<string> orderedItemImages = new List<string>();
-            foreach(var orderItem in orderDetail)
+            foreach (var orderItem in orderDetail)
             {
                 string[] stProdImaged = GetProductImagesById(orderItem.ProductId);
-                if(stProdImaged.Count() > 0)
+                if (stProdImaged.Count() > 0)
                 {
-                    foreach(string image in stProdImaged)
+                    foreach (string image in stProdImaged)
                     {
                         orderedItemImages.Add(image);
-                    }                    
+                    }
                 }
             }
             return orderedItemImages.ToArray();
@@ -1101,31 +1116,60 @@ namespace InventoryApp.Controllers.API
         }
 
         [HttpPost]
-        [Route("user/addtowishlist")]
-        public async Task<IHttpActionResult> addToWishList(AddToWishListModel foRequest)
+        [Route("user/addremovewishlist")]
+        public async Task<IHttpActionResult> addRemoveWishList(AddToWishListModel foRequest)
         {
             IEnumerable<string> headerValues = Request.Headers.GetValues("UserId");
             var LoggedInUserId = headerValues.FirstOrDefault();
             JObject Result = null;
             if (LoggedInUserId != null)
             {
+                foRequest.UserId = LoggedInUserId;
                 try
                 {
-                    var newWishList = new WishList
+                    if (foRequest.Operation.ToLower() == "add")
                     {
-                        CategoryId = foRequest.CategoryId,
-                        ProductId = foRequest.ProductId,
-                        UserId = LoggedInUserId
-                    };
+                        var prodcut = Repository<Products>.GetEntityListForQuery(x => x.id == foRequest.ProductId).Item1.FirstOrDefault();
 
-                    await Repository<WishList>.InsertEntity(newWishList, entity => { return entity.Id; });
+                        var newWishList = new WishList
+                        {
+                            CategoryId = prodcut.CategoryId,
+                            ProductId = foRequest.ProductId,
+                            UserId = LoggedInUserId
+                        };
 
-                    Result = JObject.FromObject(new
+                        await Repository<WishList>.InsertEntity(newWishList, entity => { return entity.Id; });
+
+                        if (newWishList.Id > 0)
+                        {
+                            var CartItem = Repository<Cart>.GetEntityListForQuery(x => x.ProductId == foRequest.ProductId && x.UserId == LoggedInUserId).Item1.FirstOrDefault();
+                            if (CartItem != null)
+                                await Repository<Cart>.DeleteEntity(CartItem, entity => { return entity.id; });
+                        }
+                        Result = JObject.FromObject(new
+                        {
+                            status = true,
+                            message = "Item added to wish list !",
+                            WishListId = newWishList.Id,
+                            AddWishListResult = ""
+                        });
+                    }
+                    else if (foRequest.Operation.ToLower() == "remove")
                     {
-                        status = true,
-                        message = "Item added to wish list !",
-                        AddWishListResult = ""
-                    });
+                        var WishListItem = Repository<WishList>.GetEntityListForQuery(x => x.UserId == LoggedInUserId && x.ProductId == foRequest.ProductId).Item1.FirstOrDefault();
+                        if (WishListItem != null)
+                        {
+                            await Repository<WishList>.DeleteEntity(WishListItem, entity => { return entity.Id; });
+
+                            Result = JObject.FromObject(new
+                            {
+                                status = true,
+                                message = "Item Removed !",
+                                WishListId = WishListItem.Id,
+                                DeleteWishListResult = ""
+                            });
+                        }
+                    }
 
                     return GetOkResult(Result);
                 }
@@ -1187,6 +1231,7 @@ namespace InventoryApp.Controllers.API
                                     ProductId = product.Products?.id,
                                     ProductName = product.Products?.Name,
                                     Category = product.Categories?.Name,
+                                    CategoryId = product.Products?.CategoryId,
                                     Brand = product.Products?.Brand,
                                     Description = product.Products?.Description,
                                     Type = product.Products?.Type,
@@ -1263,7 +1308,7 @@ namespace InventoryApp.Controllers.API
             {
                 Result = JObject.FromObject(new
                 {
-                    status = false, 
+                    status = false,
                     message = "Unauthorized",
                     DeleteWishListResult = ""
                 });
