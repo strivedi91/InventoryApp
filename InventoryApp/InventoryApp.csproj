@@ -246,6 +246,7 @@
     <Compile Include="Areas\Admin\Models\OrderModel.cs" />
     <Compile Include="Areas\Admin\Models\ProductsModel.cs" />
     <Compile Include="Areas\Admin\Models\CategoryModel.cs" />
+    <Compile Include="Areas\Admin\Models\SuggestionsModel.cs" />
     <Compile Include="Areas\Admin\Models\UserModel.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\API\AccountController.cs" />
@@ -279,6 +280,7 @@
   <ItemGroup>
     <Content Include="Areas\Admin\assets\css\DatePicker.css" />
     <Content Include="Areas\Admin\assets\scripts\Order.js" />
+    <Content Include="Areas\Admin\assets\scripts\Suggestions.js" />
     <Content Include="Areas\Admin\assets\scripts\Products.js" />
     <Content Include="Areas\Admin\assets\scripts\Category.js" />
     <Content Include="Areas\Admin\assets\scripts\Users.js" />
@@ -560,6 +562,7 @@
     <Content Include="Areas\Admin\Views\OrderDetails\Index.cshtml" />
     <Content Include="Areas\Admin\Views\OrderDetails\_OrderDetails.cshtml" />
     <Content Include="Areas\Admin\Views\Suggestion\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Suggestion\_Suggestions.cshtml" />
     <None Include="Properties\PublishProfiles\app.thegodam.com - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\inventory.sachintrivedi.com - Web Deploy.pubxml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />

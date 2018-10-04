@@ -1,8 +1,29 @@
-﻿
+﻿@model InventoryApp.Areas.Admin.Models.SuggestionsModel
 @{
-    ViewBag.Title = "Suggestion";
+    ViewBag.Title = "Suggestions";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h2>Index</h2>
+<section>
+    <div class="section-title">
+        <h2>Suggestions</h2>
+    </div>
 
+    <div id="divSuggestionlist">
+        @Html.Partial("_Suggestions", Model)
+    </div>
+    @Html.Hidden("hdnOrder", "UserId ASC")
+    @Html.Hidden("hdnSortingOnColumn", "sortUserName")
+    @Html.Hidden("hdnSortingDirection", "ASC")
+    <script type="text/javascript">
+        var lsSearchSuggestionsUrl = '@Url.RouteUrl("Admin_default", new { controller = "Suggestion", action = "searchSuggestions" })';
+    </script>
+    <script src="@Url.Content("~/Areas/Admin/assets/scripts/Suggestions.js?ver=0.1")" type="text/javascript"></script>
+</section>
+
+<script>
+    $(document).ready(function () {
+        $(".menu-item a").removeClass("active");
+        $('#lnkSuggestion').addClass('active');
+    });
+</script>

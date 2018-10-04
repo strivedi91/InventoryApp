@@ -1,0 +1,78 @@
+﻿@model InventoryApp.Areas.Admin.Models.SuggestionsModel
+
+@if (Model != null && Model.loSuggestionList.Count > 0)
+{
+    if (TempData["SuccessMsg"] != null && TempData["SuccessMsg"].ToString() != "")
+    {
+        <div class="table-responsive">
+            <hr style="border-color:#F7F7F7 !important;" />
+            <div class="alert alert-success">
+                <span class="close" data-dismiss="alert" aria-label="close">&times;</span>
+                <span style="vertical-align:middle;"> @TempData["SuccessMsg"].ToString()</span>
+
+                @{TempData["SuccessMsg"] = "";}
+            </div>
+        </div>
+    }
+    if (TempData["ErrorMsg"] != null && TempData["ErrorMsg"].ToString() != "")
+    {
+        <div class="table-responsive">
+            <div class="alert alert-danger" style="height:30px; padding:4px !important; margin-bottom:0px !important; margin-top:10px;">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                @TempData["ErrorMsg"].ToString()
+            </div>
+        </div>
+    }
+
+    <div class="table-responsive dash-table">
+        <table class="table table-bordered bg-white">
+            <thead>
+                <tr class="heading">
+                    @Html.Hidden("hdnPageIndex", Model.inPageIndex)
+                    <th id="sortID" style="width:15%;" onclick="getOrderList('ProductName', 'sortProductName');" class="heading-text sorting">Product Name</th>
+                    <th id="sortName" style="width:15%;" onclick="getOrderList('UserName', 'sortUserName');" class="heading-text sorting">Seller Name</th>
+                    <th id="sortType" style="width:15%;" onclick="getOrderList('UserContact', 'sortUserContact');" class="heading-text sorting">Seller Contact</th>
+                    <th id="sortBrand" onclick="getOrderList('Suggestion', 'sortSuggestion');" class="heading-text sorting">Suggestion</th>
+                </tr>
+            </thead>
+            @foreach (var suggestion in Model.loSuggestionList)
+            {
+                <tr>
+                    <td>@suggestion.ProductName</td>
+                    <td>@suggestion.UserName</td>
+                    <td>@suggestion.UserContectNumber</td>
+                    <td>@suggestion.Suggestion</td>
+                </tr>
+            }
+        </table>
+    </div>
+
+    if (@Model.inRecordCount > 10)
+    {
+        <div class="showing">
+            <span>
+                Page @(Model.inPageIndex) out of
+                @((Model.inRecordCount + 10 - 1) / 10)
+            </span>
+            <div class="pull-right">
+                @Html.Hidden("hdnTotalRec", @Model.inRecordCount)
+                <div id="divPager"></div>
+            </div>
+        </div>
+    }
+    @Html.Hidden("hdnId", "")
+}
+else
+{
+    <div class="table-responsive dash-table">
+        <div id="divItemListNoRecord" class="alert alert-warning" align="center">
+            <h4><i class="fa fa-warning"></i> No Record Found </h4>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        GetPager($("#hdnTotalRec").val(), $("#hdnPageIndex").val());
+    });
+</script>
