@@ -1315,5 +1315,60 @@ namespace InventoryApp.Controllers.API
                 return GetOkResult(Result);
             }
         }
+
+        [HttpPost]
+        [Route("user/suggestion")]
+        public async Task<IHttpActionResult> addSuggestion(SuggestionModel foRequest)
+        {
+            IEnumerable<string> headerValues = Request.Headers.GetValues("UserId");
+            var LoggedInUserId = headerValues.FirstOrDefault();
+            JObject Result = null;
+            if (LoggedInUserId != null)
+            {
+                foRequest.UserId = LoggedInUserId;
+                try
+                {
+                        var newSuggestion = new Suggestions
+                        {
+                            Suggestion = foRequest.Suggestion,
+                            ProductId = foRequest.ProductId,
+                            UserId = LoggedInUserId
+                        };
+
+                        await Repository<Suggestions>.InsertEntity(newSuggestion, entity => { return entity.Id; });
+
+                       
+                        Result = JObject.FromObject(new
+                        {
+                            status = true,
+                            message = "Suggestion added !",
+                            SuggestionId = newSuggestion.Id,
+                            AddSuggestionResult = ""
+                        });                    
+
+                    return GetOkResult(Result);
+                }
+                catch (Exception ex)
+                {
+                    Result = JObject.FromObject(new
+                    {
+                        status = false,
+                        message = "Sorry, there was an error processing your request. Please try again !",
+                        AddWishListResult = ""
+                    });
+                    return GetOkResult(Result);
+                }
+            }
+            else
+            {
+                Result = JObject.FromObject(new
+                {
+                    status = false,
+                    message = "Unauthorized",
+                    AddWishListResult = ""
+                });
+                return GetOkResult(Result);
+            }
+        }
     }
 }

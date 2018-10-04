@@ -241,6 +241,7 @@
     <Compile Include="Areas\Admin\Controllers\ProductsController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\ManageUsersController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SuggestionController.cs" />
     <Compile Include="Areas\Admin\Models\OrderDetailsModel.cs" />
     <Compile Include="Areas\Admin\Models\OrderModel.cs" />
     <Compile Include="Areas\Admin\Models\ProductsModel.cs" />
@@ -268,6 +269,7 @@
     <Compile Include="Models\ApiModels\PlaceOrderModel.cs" />
     <Compile Include="Models\ApiModels\SaveUserPreferencesModel.cs" />
     <Compile Include="Areas\Admin\Models\DashboardModel.cs" />
+    <Compile Include="Models\ApiModels\SuggestionModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -557,6 +559,8 @@
     <Content Include="Areas\Admin\Views\Order\_Order.cshtml" />
     <Content Include="Areas\Admin\Views\OrderDetails\Index.cshtml" />
     <Content Include="Areas\Admin\Views\OrderDetails\_OrderDetails.cshtml" />
+    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Admin\Views\Suggestion\Index.cshtml" />
     <None Include="Properties\PublishProfiles\app.thegodam.com - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\inventory.sachintrivedi.com - Web Deploy.pubxml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
