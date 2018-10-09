@@ -38,5 +38,4 @@ namespace InventoryApp_DL.Entities
         partial void InitializePartial();
     }
 
-
 }

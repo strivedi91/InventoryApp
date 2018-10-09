@@ -39,6 +39,7 @@ namespace InventoryApp_DL.Entities
             Property(x => x.IsActive).HasColumnName("IsActive").IsRequired();
             Property(x => x.IsDeleted).HasColumnName("IsDeleted").IsRequired();
             Property(x => x.MinimumSellingPrice).HasColumnName("MinimumSellingPrice").IsOptional().HasPrecision(18,2);
+            Property(x => x.ApplyGst).HasColumnName("ApplyGst").IsRequired();
 
             // Foreign keys
             HasRequired(a => a.Categories).WithMany(b => b.Products).HasForeignKey(c => c.CategoryId); // FK_Products_Categories

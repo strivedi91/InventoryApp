@@ -13,30 +13,25 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace InventoryApp_DL.Entities
 {
-    // Orders
+    // ProductReview
 	[Serializable]
 	
-    public partial class Orders : InventoryApp_DL.Infrastructure.Entity
+    public partial class ProductReview : InventoryApp_DL.Infrastructure.Entity
     {
-        public int id { get; set; } // id (Primary key)
+        public int Id { get; set; } // Id (Primary key)
+        public int ProductId { get; set; } // ProductId
+        public decimal Rating { get; set; } // Rating
+        public string Review { get; set; } // Review
         public string UserId { get; set; } // UserId
         public DateTime CreatedOn { get; set; } // CreatedOn
-        public decimal SubTotal { get; set; } // SubTotal
-        public decimal Discount { get; set; } // Discount
-        public decimal Total { get; set; } // Total
-        public string OrderStatus { get; set; } // OrderStatus
-        public string ShippingAddress { get; set; } // ShippingAddress
-
-        // Reverse navigation
-        public virtual ICollection<OrderDetails> OrderDetails { get; set; } // OrderDetails.FK_OrderDetails_Order
 
         // Foreign keys
-        public virtual AspNetUsers AspNetUsers { get; set; } //  FK_Orders_AspNetUsers
+        public virtual AspNetUsers AspNetUsers { get; set; } //  FK_ProductReview_AspNetUsers
+        public virtual Products Products { get; set; } //  FK_ProductReview_Products
 
-        public Orders()
+        public ProductReview()
         {
             CreatedOn = System.DateTime.Now;
-            OrderDetails = new List<OrderDetails>();
             InitializePartial();
         }
         partial void InitializePartial();

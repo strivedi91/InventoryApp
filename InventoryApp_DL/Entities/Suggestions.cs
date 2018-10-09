@@ -22,10 +22,19 @@ namespace InventoryApp_DL.Entities
         public int ProductId { get; set; } // ProductId
         public string UserId { get; set; } // UserId
         public string Suggestion { get; set; } // Suggestion
+        public string SuggestionResponse { get; set; } // SuggestionResponse
+        public DateTime? CreatedOn { get; set; } // CreatedOn
 
         // Foreign keys
         public virtual AspNetUsers AspNetUsers { get; set; } //  FK__Suggestio__UserI__29221CFB
         public virtual Products Products { get; set; } //  FK__Suggestio__Produ__282DF8C2
+
+        public Suggestions()
+        {
+            CreatedOn = System.DateTime.Now;
+            InitializePartial();
+        }
+        partial void InitializePartial();
     }
 
 }

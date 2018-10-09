@@ -33,6 +33,7 @@ namespace InventoryApp_DL.Entities
             Property(x => x.Discount).HasColumnName("Discount").IsRequired().HasPrecision(18,2);
             Property(x => x.Total).HasColumnName("Total").IsRequired().HasPrecision(18,2);
             Property(x => x.OrderStatus).HasColumnName("OrderStatus").IsRequired().HasMaxLength(50);
+            Property(x => x.ShippingAddress).HasColumnName("ShippingAddress").IsOptional().HasMaxLength(500);
 
             // Foreign keys
             HasRequired(a => a.AspNetUsers).WithMany(b => b.Orders).HasForeignKey(c => c.UserId); // FK_Orders_AspNetUsers

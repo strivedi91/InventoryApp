@@ -13,29 +13,29 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace InventoryApp_DL.Entities
 {
-    // Suggestions
+    // ProductReview
 	
-    internal partial class SuggestionsConfiguration : EntityTypeConfiguration<Suggestions>
+    internal partial class ProductReviewConfiguration : EntityTypeConfiguration<ProductReview>
     {
-		public SuggestionsConfiguration() : this("dbo")
+		public ProductReviewConfiguration() : this("dbo")
 		{
 		}
 
-        public SuggestionsConfiguration(string schema = "dbo")
+        public ProductReviewConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".Suggestions");
+            ToTable(schema + ".ProductReview");
             HasKey(x => x.Id);
 
             Property(x => x.Id).HasColumnName("Id").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.ProductId).HasColumnName("ProductId").IsRequired();
+            Property(x => x.Rating).HasColumnName("Rating").IsRequired().HasPrecision(18,2);
+            Property(x => x.Review).HasColumnName("Review").IsOptional().HasMaxLength(100);
             Property(x => x.UserId).HasColumnName("UserId").IsRequired().HasMaxLength(128);
-            Property(x => x.Suggestion).HasColumnName("Suggestion").IsOptional();
-            Property(x => x.SuggestionResponse).HasColumnName("SuggestionResponse").IsOptional();
-            Property(x => x.CreatedOn).HasColumnName("CreatedOn").IsOptional();
+            Property(x => x.CreatedOn).HasColumnName("CreatedOn").IsRequired();
 
             // Foreign keys
-            HasRequired(a => a.Products).WithMany(b => b.Suggestions).HasForeignKey(c => c.ProductId); // FK__Suggestio__Produ__282DF8C2
-            HasRequired(a => a.AspNetUsers).WithMany(b => b.Suggestions).HasForeignKey(c => c.UserId); // FK__Suggestio__UserI__29221CFB
+            HasRequired(a => a.Products).WithMany(b => b.ProductReviews).HasForeignKey(c => c.ProductId); // FK_ProductReview_Products
+            HasRequired(a => a.AspNetUsers).WithMany(b => b.ProductReviews).HasForeignKey(c => c.UserId); // FK_ProductReview_AspNetUsers
             InitializePartial();
         }
         partial void InitializePartial();

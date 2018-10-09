@@ -130,8 +130,12 @@
     <Compile Include="Entities\OrdersConfiguration.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\Parish.cs" />
-    <Compile Include="Entities\ParishConfiguration.cs" />
+    <Compile Include="Entities\ProductReview.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\ProductReviewConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\Products.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>

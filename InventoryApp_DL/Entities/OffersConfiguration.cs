@@ -27,7 +27,8 @@ namespace InventoryApp_DL.Entities
             HasKey(x => x.id);
 
             Property(x => x.id).HasColumnName("id").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-            Property(x => x.Offer).HasColumnName("Offer").IsRequired().HasMaxLength(10);
+            Property(x => x.OfferCode).HasColumnName("OfferCode").IsRequired().HasMaxLength(10);
+            Property(x => x.OfferDescription).HasColumnName("OfferDescription").IsOptional().HasMaxLength(100);
             Property(x => x.FlatDiscount).HasColumnName("FlatDiscount").IsRequired().HasPrecision(18,2);
             Property(x => x.PercentageDiscount).HasColumnName("PercentageDiscount").IsRequired();
             Property(x => x.ProductId).HasColumnName("ProductId").IsOptional();

@@ -19,7 +19,8 @@ namespace InventoryApp_DL.Entities
     public partial class Offers : InventoryApp_DL.Infrastructure.Entity
     {
         public int id { get; set; } // id (Primary key)
-        public string Offer { get; set; } // Offer
+        public string OfferCode { get; set; } // OfferCode
+        public string OfferDescription { get; set; } // OfferDescription
         public decimal FlatDiscount { get; set; } // FlatDiscount
         public int PercentageDiscount { get; set; } // PercentageDiscount
         public int? ProductId { get; set; } // ProductId
@@ -29,6 +30,9 @@ namespace InventoryApp_DL.Entities
         public DateTime? StartDate { get; set; } // StartDate
         public DateTime? EndDate { get; set; } // EndDate
 
+        // Reverse navigation
+        public virtual ICollection<Cart> Carts { get; set; } // Cart.FK_Cart_Offers
+
         // Foreign keys
         public virtual Categories Categories { get; set; } //  FK_Offers_Categories
         public virtual Products Products { get; set; } //  FK_Offers_Products
@@ -37,6 +41,7 @@ namespace InventoryApp_DL.Entities
         {
             IsActive = true;
             IsDeleted = false;
+            Carts = new List<Cart>();
             InitializePartial();
         }
         partial void InitializePartial();

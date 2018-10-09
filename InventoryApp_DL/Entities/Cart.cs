@@ -28,6 +28,7 @@ namespace InventoryApp_DL.Entities
         // Foreign keys
         public virtual AspNetUsers AspNetUsers { get; set; } //  FK_Cart_AspNetUsers
         public virtual Categories Categories { get; set; } //  FK_Cart_Categories
+        public virtual Offers Offers { get; set; } //  FK_Cart_Offers
         public virtual Products Products { get; set; } //  FK_Cart_Products
     }
 

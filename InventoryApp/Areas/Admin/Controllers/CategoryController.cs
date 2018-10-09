@@ -1,4 +1,5 @@
 ﻿using InventoryApp.Areas.Admin.Models;
+using InventoryApp.Controllers;
 using InventoryApp.Helpers;
 using InventoryApp_DL.Entities;
 using InventoryApp_DL.Repositories;
@@ -12,7 +13,8 @@ using System.Web.Mvc;
 namespace InventoryApp.Areas.Admin.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class CategoryController : Controller
+
+    public class CategoryController : BaseController
     {
         // GET: Admin/Category
         public ActionResult Index()

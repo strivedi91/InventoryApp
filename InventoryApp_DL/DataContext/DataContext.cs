@@ -20,7 +20,7 @@ namespace InventoryApp_DL.DataContext
             _instanceId = Guid.NewGuid();
             Configuration.LazyLoadingEnabled = false;
             Configuration.ProxyCreationEnabled = false;
-            
+            Configuration.AutoDetectChangesEnabled = false;
         }
 
         public DataContext(string nameOrConnectionString)
@@ -29,7 +29,7 @@ namespace InventoryApp_DL.DataContext
             _instanceId = Guid.NewGuid();
             Configuration.LazyLoadingEnabled = false;
             Configuration.ProxyCreationEnabled = false;
-            
+            Configuration.AutoDetectChangesEnabled = false;
         }
 
         public Guid InstanceId

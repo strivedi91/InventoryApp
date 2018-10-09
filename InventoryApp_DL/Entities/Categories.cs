@@ -24,6 +24,7 @@ namespace InventoryApp_DL.Entities
         public bool IsActive { get; set; } // IsActive
         public bool IsDeleted { get; set; } // IsDeleted
         public int ParentId { get; set; } // ParentId
+        public decimal? GstRate { get; set; } // GstRate
 
         // Reverse navigation
         public virtual ICollection<AspNetUserPreferences> AspNetUserPreferences { get; set; } // AspNetUserPreferences.FK_AspNetUserCategories_Categories

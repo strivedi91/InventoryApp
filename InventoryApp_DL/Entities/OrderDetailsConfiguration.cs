@@ -34,6 +34,10 @@ namespace InventoryApp_DL.Entities
             Property(x => x.Price).HasColumnName("Price").IsRequired().HasPrecision(18,2);
             Property(x => x.Discount).HasColumnName("Discount").IsRequired().HasPrecision(18,2);
             Property(x => x.TotalPrice).HasColumnName("TotalPrice").IsRequired().HasPrecision(18,2);
+            Property(x => x.OfferCode).HasColumnName("OfferCode").IsOptional().HasMaxLength(10);
+            Property(x => x.OfferDescription).HasColumnName("OfferDescription").IsOptional().HasMaxLength(100);
+            Property(x => x.FlatDiscount).HasColumnName("FlatDiscount").IsOptional().HasPrecision(18,2);
+            Property(x => x.PercentageDiscount).HasColumnName("PercentageDiscount").IsOptional();
 
             // Foreign keys
             HasRequired(a => a.Orders).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId); // FK_OrderDetails_Order

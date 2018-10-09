@@ -1,4 +1,5 @@
 ﻿using InventoryApp.Areas.Admin.Models;
+using InventoryApp.Controllers;
 using InventoryApp_DL.Entities;
 using InventoryApp_DL.Repositories;
 using System;
@@ -10,7 +11,7 @@ using System.Web.Mvc;
 
 namespace InventoryApp.Areas.Admin.Controllers
 {
-    public class OrderDetailsController : Controller
+    public class OrderDetailsController : BaseController
     {
         // GET: Admin/OrderDetails
         public ActionResult Index(int Id)

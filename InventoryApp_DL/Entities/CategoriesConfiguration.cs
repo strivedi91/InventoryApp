@@ -32,6 +32,7 @@ namespace InventoryApp_DL.Entities
             Property(x => x.IsActive).HasColumnName("IsActive").IsRequired();
             Property(x => x.IsDeleted).HasColumnName("IsDeleted").IsRequired();
             Property(x => x.ParentId).HasColumnName("ParentId").IsRequired();
+            Property(x => x.GstRate).HasColumnName("GstRate").IsOptional().HasPrecision(18,2);
             InitializePartial();
         }
         partial void InitializePartial();

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -29,6 +30,14 @@ namespace InventoryApp
                 ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             };
 
+        }
+
+        protected void Application_End()
+        {
+            var client = new WebClient();
+            var urlHelper = new UrlHelper(HttpContext.Current.Request.RequestContext);
+            var url = urlHelper.Action("Login","Account");
+            client.DownloadString(url);            
         }
     }
 }

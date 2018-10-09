@@ -36,6 +36,7 @@ namespace InventoryApp_DL.Entities
             // Foreign keys
             HasRequired(a => a.Categories).WithMany(b => b.Carts).HasForeignKey(c => c.CategoryId); // FK_Cart_Categories
             HasRequired(a => a.Products).WithMany(b => b.Carts).HasForeignKey(c => c.ProductId); // FK_Cart_Products
+            HasOptional(a => a.Offers).WithMany(b => b.Carts).HasForeignKey(c => c.OfferId); // FK_Cart_Offers
             HasRequired(a => a.AspNetUsers).WithMany(b => b.Carts).HasForeignKey(c => c.UserId); // FK_Cart_AspNetUsers
             InitializePartial();
         }

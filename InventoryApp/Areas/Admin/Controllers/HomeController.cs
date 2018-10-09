@@ -1,4 +1,5 @@
 ﻿using InventoryApp.Areas.Admin.Models;
+using InventoryApp.Controllers;
 using InventoryApp.Models;
 using InventoryApp_DL.Entities;
 using InventoryApp_DL.Repositories;
@@ -10,7 +11,7 @@ using System.Web.Mvc;
 
 namespace InventoryApp.Areas.Admin.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         public ActionResult Index()
         {

@@ -26,6 +26,10 @@ namespace InventoryApp_DL.Entities
         public decimal Price { get; set; } // Price
         public decimal Discount { get; set; } // Discount
         public decimal TotalPrice { get; set; } // TotalPrice
+        public string OfferCode { get; set; } // OfferCode
+        public string OfferDescription { get; set; } // OfferDescription
+        public decimal? FlatDiscount { get; set; } // FlatDiscount
+        public int? PercentageDiscount { get; set; } // PercentageDiscount
 
         // Foreign keys
         public virtual Categories Categories { get; set; } //  FK_OrderDetails_Categories

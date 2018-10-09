@@ -1,4 +1,5 @@
 ﻿using InventoryApp.Areas.Admin.Models;
+using InventoryApp.Controllers;
 using InventoryApp.Helpers;
 using InventoryApp.Models;
 using InventoryApp_DL.Entities;
@@ -17,7 +18,7 @@ using System.Web.Mvc;
 namespace InventoryApp.Areas.Admin.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class ManageUsersController : Controller
+    public class ManageUsersController : BaseController
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;

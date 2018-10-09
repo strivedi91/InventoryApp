@@ -13,11 +13,8 @@ using InventoryApp.Filters;
 
 namespace InventoryApp.Controllers
 {
-    [Authorize]
-    [ETag]
-    [CompressFilter]
-    [WhitespaceFilter]
-    public class AccountController : Controller
+    [Authorize]    
+    public class AccountController : BaseController
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
