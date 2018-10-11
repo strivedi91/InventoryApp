@@ -48,7 +48,7 @@
             {
                 <tr>
                     <td>@prod.id</td>
-                    <td>@prod.Name</td>
+                    <td><a class="btn-link" href="@Url.Action("getProductDetailsById", "Products", new { ProductId = prod.id })">@prod.Name</a></td>
                     @*<td>@prod.Description</td>*@
                     <td>@prod.Type</td>
                     <td>@prod.Brand</td>

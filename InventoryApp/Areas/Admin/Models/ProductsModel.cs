@@ -29,6 +29,7 @@ namespace InventoryApp.Areas.Admin.Models
         public ProductsViewModel()
         {
             objCategoryList = new List<SelectListItem>();
+            loFilesPath = new List<string>();
         }
 
         public int id { get; set; }
@@ -84,5 +85,7 @@ namespace InventoryApp.Areas.Admin.Models
         public string lstTierPircing { get; set; }
 
         public HttpPostedFileBase[] loFiles { get; set; }
+
+        public List<string> loFilesPath { get; set; }
     }
 }

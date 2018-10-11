@@ -480,5 +480,42 @@ namespace InventoryApp.Areas.Admin.Controllers
 
             return true;
         }
+
+        public ActionResult getProductDetailsById(int ProductId)
+        {
+            Products objProductDetails = Repository<Products>.GetEntityListForQuery(x => x.id == ProductId && x.IsDeleted == false).Item1.FirstOrDefault();
+
+            ProductsViewModel loProductDetails = new ProductsViewModel()
+            {
+                id = objProductDetails.id,
+                Name = objProductDetails.Name,
+                Description = objProductDetails.Description,
+                Type = objProductDetails.Type,
+                Brand = objProductDetails.Brand,
+                CategoryId = objProductDetails.CategoryId,
+                CategoryName = Repository<Categories>.GetEntityListForQuery(x => x.Id == objProductDetails.CategoryId && x.IsDeleted == false).Item1.Select(x => x.Name).FirstOrDefault(),
+                MinimumSellingPrice = objProductDetails.MinimumSellingPrice,
+                MOQ = objProductDetails.MOQ,
+                OfferPrice = objProductDetails.OfferPrice,
+                Price = objProductDetails.Price,
+                Quantity = objProductDetails.Quantity,
+                objTierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == objProductDetails.id && x.IsDeleted == false).Item1.ToList()
+            };
+
+            string path = Path.Combine(Server.MapPath(ProductImagePath), objProductDetails.id.ToString());
+            List<SelectListItem> fileNameWithPath = new List<SelectListItem>();
+            if (Directory.Exists(path))
+            {
+                DirectoryInfo info = new DirectoryInfo(path);
+                FileInfo[] files = info.GetFiles("*.*");
+
+                foreach (FileInfo file in files)
+                {
+                    loProductDetails.loFilesPath.Add(ConfigurationManager.AppSettings["ProductImagePath"].Replace("~", "") + "/" + objProductDetails.id  + "/" + file.Name);
+                }
+            }
+
+            return View("ProductProfile", loProductDetails);
+        }
     }
 }
