@@ -64,6 +64,8 @@ namespace InventoryApp.Areas.Admin.Models
 
         public bool IsDeleted { get; set; }
 
+        public string stRandomProductId { get; set; }
+
         public string stSearch { get; set; }
 
         public string stSearchQuantity { get; set; }

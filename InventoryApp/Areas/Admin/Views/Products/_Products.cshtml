@@ -70,7 +70,7 @@
                     <td>
                         <a href="@Url.Action("AddEditProduct", "Products", new { Id = prod.id })" title="Edit"><i class="fa fa-pencil-square-o" style="font-size: 1.5em;"></i></a>
                         <a href=javascript:void(0); onclick="confirmDelete(@prod.id)" title="Delete"><i class="fa fa-close" style="color:#23527C; font-size:1.5em;"></i></a>
-                        <a href=javascript:void(0); onclick="uploadFile(@prod.id)" title="Upload File"><i class="fa fa-upload" style="color:#23527C; font-size:1.5em;"></i></a>
+                        @*<a href=javascript:void(0); onclick="uploadFile(@prod.id)" title="Upload File"><i class="fa fa-upload" style="color:#23527C; font-size:1.5em;"></i></a>*@
                     </td>
                 </tr>
             }

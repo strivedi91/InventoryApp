@@ -1,10 +1,29 @@
 ﻿@model InventoryApp.Areas.Admin.Models.ProductsViewModel
 @{
-    /**/
-
     ViewBag.Title = "Add/Edit Product";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
+
+<style>
+    .uploadFileLable {
+        padding: 25px 20px 15px 20px;
+        margin-bottom: 0;
+    }
+
+    .uploadFileBottomArea {
+        padding: 0 15px;
+        border-radius: 10px;
+    }
+
+    img {
+        padding: 2px;
+        border: 1px solid lightgray;
+    }
+
+    .textGreycolor {
+        color: #cecccc;
+    }
+</style>
 
 <section>
     <div class="section-title">
@@ -20,6 +39,7 @@
     <div class="white-box bg-white space">
         @using (Html.BeginForm("AddEditProduct", "Products", FormMethod.Post, new { @id = "frmAddEditProduct", @enctype = "multipart/form-data" }))
         {
+            @Html.HiddenFor(m => m.stRandomProductId, new { @id = "hdnUploadProductId" })
             @Html.HiddenFor(m => m.id, new { @id = "hdnProductId" })
             @Html.HiddenFor(m => m.lstTierPircing, new { @id = "hdnTierPricing" })
             @Html.ValidationSummary(true)
@@ -105,7 +125,6 @@
                     </div>
                     <div class="col-lg-5 col-md-7">
                         @Html.TextBoxFor(m => m.MinimumSellingPrice, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Minimum Price", @maxlength = "19", @autofocus = "autofocus", @tabindex = "5", @id = "txtMinSellPrice", @onKeyUp = "return validate_double(this, 18, 2)" })
-                        
                     </div>
                 </div>
             </div>
@@ -181,22 +200,53 @@
                     </div>
                 </div>
             </div>
-            @*<div class="form-group">
+            <div class="form-group">
                 <div class="row">
                     <div class="col-lg-3 col-md-5">
                         <label>
-                            Upload Product Images
+                            Upload Photos
                         </label>
                     </div>
-                    <div class="col-lg-5 col-md-7">
-                        @Html.TextBoxFor(m => m.loFiles, new { @class = "form-control", @type = "file", @multiple = "multiple", @id = "fUpload" })
-                        <label id="spnDocuments">(Only image type with max 2 MB size file allowed.)</label>
-                        <div class="required" id="imageValidDiv" style="display:none">
-                            <label id="imageValidation" class="field-validation-error">.</label>
+                    <div class="col-lg-5 col-md-7" style="background-color: #f7f5f5; padding: 15px 0px 15px 0px; border-radius:10px;">
+                        <div class="uploadFileBottomArea">
+                            <div class="uploadButton">
+                                <div class="btn border-pink btnFileUpload" style="padding:0; width:250px;">
+                                    <label class="uploadFileLable">
+                                        UPLOAD PRODUCT PHOTOS <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                                        <input type="file" id="fUpload" multiple class="custom-file-input" />
+                                    </label>
+                                </div>
+                            </div>
+                            <label id="spnDocuments">(Only image type with max 2 MB size file allowed.)</label>
+                            <div class="required" id="imageValidDiv" style="display:none">
+                                <label id="imageValidation" class="field-validation-error">.</label>
+                            </div>
+                            <span class="text-danger" id="spnDocuments" style="display:none;"></span>
+                        </div>
+                        <br />
+                        <br />
+                        <div id="divFiles">
+
                         </div>
                     </div>
                 </div>
-            </div>*@
+            </div>
+            @*<div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-5">
+                            <label>
+                                Upload Product Images
+                            </label>
+                        </div>
+                        <div class="col-lg-5 col-md-7">
+                            @Html.TextBoxFor(m => m.loFiles, new { @class = "form-control", @type = "file", @multiple = "multiple", @id = "fUpload" })
+                            <label id="spnDocuments">(Only image type with max 2 MB size file allowed.)</label>
+                            <div class="required" id="imageValidDiv" style="display:none">
+                                <label id="imageValidation" class="field-validation-error">.</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>*@
             <div class="form-group">
                 <div class="row">
                     <div class="col-lg-3 col-md-5">
@@ -272,7 +322,6 @@
                                         </table>
                                     </div>
                                 }
-
                                 <input type="hidden" value="@Model.objTierPricing.Count" id="hdnTierPricCount" />
                             }
                         </div>
@@ -296,45 +345,57 @@
 </section>
 
 <script>
+     var loFileUploadUrl = '@Url.RouteUrl("Admin_default", new { controller = "Products", action = "FileUpload" })';
+     var loGetUploadedFileUrl = '@Url.RouteUrl("Admin_default", new { controller = "Products", action = "getUploadedFile" })';
+     var loDeleteUploadedFileUrl = '@Url.RouteUrl("Admin_default", new { controller = "Products", action = "DeleteUploadedFile" })';
+</script>
+
+<script>
     $(document).ready(function () {
         $(".menu-item a").removeClass("active");
         $('#lnkProduct').addClass('active');
 
         $('.dashboard-menu').height($(document).height());
 
-        //$(document).ready(function () {
-        //    $('#fUpload').change(function () {
-        //        $("#imageValidDiv").hide();
-        //        debugger;
-        //        var fp = $("#fUpload");
-        //        var lg = fp[0].files.length; 
-        //        var items = fp[0].files;
-                
-        //        if (lg > 0) {
-        //            for (var i = 0; i < lg; i++) {
-        //                var fileSize = items[i].size; 
-        //                if (fileSize > 2097152) {
-        //                    $('#imageValidation').html('File size must not be more than 2 MB');
-        //                    $('#fUpload').val('');
-        //                    $("#imageValidDiv").show();
-        //                }
-                        
-        //                var ext = items[i].name.split(".");
-        //                ext = ext[ext.length - 1].toLowerCase();
+        @if (Model.id > 0)
+        {
+            <text>
+               uploadFile(@Model.id);
+            </text>
+        }
+            //$(document).ready(function () {
+            //    $('#fUpload').change(function () {
+            //        $("#imageValidDiv").hide();
+            //        debugger;
+            //        var fp = $("#fUpload");
+            //        var lg = fp[0].files.length;
+            //        var items = fp[0].files;
 
-        //                var arrayExtensions = ["jpg", "jpeg", "png", "bmp", "gif", "JPG", "JPEG", "PNG"];
+            //        if (lg > 0) {
+            //            for (var i = 0; i < lg; i++) {
+            //                var fileSize = items[i].size;
+            //                if (fileSize > 2097152) {
+            //                    $('#imageValidation').html('File size must not be more than 2 MB');
+            //                    $('#fUpload').val('');
+            //                    $("#imageValidDiv").show();
+            //                }
 
-        //                if (arrayExtensions.lastIndexOf(ext) == -1) {
-        //                    $('#imageValidation').html('Please upload only image type file.');
-        //                    $('#fUpload').val('');
-        //                    $("#imageValidDiv").show();
-        //                }
-        //            }
-        //        }
-        //    });
-        //});
-        
-    });
+            //                var ext = items[i].name.split(".");
+            //                ext = ext[ext.length - 1].toLowerCase();
+
+            //                var arrayExtensions = ["jpg", "jpeg", "png", "bmp", "gif", "JPG", "JPEG", "PNG"];
+
+            //                if (arrayExtensions.lastIndexOf(ext) == -1) {
+            //                    $('#imageValidation').html('Please upload only image type file.');
+            //                    $('#fUpload').val('');
+            //                    $("#imageValidDiv").show();
+            //                }
+            //            }
+            //        }
+            //    });
+            //});
+
+        });
     function jsInteger(evt) {
         var charCode = (evt.which) ? evt.which : event.keyCode;
         if (charCode == 46)
@@ -346,7 +407,7 @@
         return true;
     }
     var RowId = $("#hdnTierPricCount").val();
-    
+
     var isAllAdded = true;
     $(document).ready(function () {
         $("#Add").on("click", function () {
@@ -396,7 +457,6 @@
     }
 
     function validateForm() {
-
         readData();
         var form = $("#frmAddEditProduct");
 
@@ -413,4 +473,140 @@
         }
         return false;
     }
+
+    function uploadFile(prdId) {
+        $("#hdnUploadProductId").val(prdId);
+        $("#imageValidDiv").hide();
+        $('#fUpload').val('');
+        $("#divFiles").html('');
+        $.ajax({
+            url: loGetUploadedFileUrl,
+            type: "GET",
+            content: "application/json; charset=utf-8",
+            dataType: "json",
+            async: false,
+            data: {
+                Id: prdId,
+            },
+            success: function (result) {
+
+                if (result) {
+                    for (var i = 0; i < result.fileNameWithPath.length; i++) {
+
+                        var deleteclick = "deleteFile(" + i + ")";
+                        //var appendData = '<div class="col-md-3" style="display:inline-block; padding:0; margin:5px 20px;" ><img src="/Images/Product/' + prdId + "/" + result.fileNameWithPath[i].Value + '" /><br><a href="/Images/Product/' + prdId + "/" + result.fileNameWithPath[i].Value + '" target="_blank" style="color:#FF0078">View</a> <i style="float: right; cursor:pointer;" class="fa fa-close" onclick="deleteFile("' + result.fileNameWithPath[i].Value + '")"></i></div>';
+                        var appendData = "<div class='col-md-3' style='display:inline-block; padding:0; margin:5px 20px;' ><input type='hidden' value='" + result.fileNameWithPath[i].Value + "' id='imgName" + i + "'><img src='/Images/Product/" + prdId + '/' + result.fileNameWithPath[i].Value + "' /><br><a href='/Images/Product/" + prdId + '/' + result.fileNameWithPath[i].Value + "' target='_blank' style='color:#FF0078'>View</a> <i style='float: right; cursor:pointer;' class='fa fa-close textGreycolor' onclick='" + deleteclick + "')'></i></div>";
+                        $("#divFiles").append(appendData);
+                    }
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (errorThrown === "abort") {
+                    return;
+                }
+                else {
+                    alert(errorThrown);
+                }
+            }
+        });
+    }
+
+    function deleteFile(imageNameId) {
+        var imageName = $("#imgName" + imageNameId).val();
+        $.ajax({
+            type: "POST",
+            url: loDeleteUploadedFileUrl,
+            content: "application/json; charset=utf-8",
+            //dataType: "json",
+            data: {
+                Id: $("#hdnUploadProductId").val(),
+                filename: imageName
+            },
+            success: function (lodata) {
+                if (lodata !== null) {
+                    var prdId = $("#hdnUploadProductId").val();
+                    uploadFile(prdId);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (errorThrown === "abort") {
+                    return;
+                }
+                else {
+                    alert(errorThrown);
+                }
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $('#fUpload').change(function () {
+            var fp = $("#fUpload");
+            var lg = fp[0].files.length;
+            var items = fp[0].files;
+            var fileData = new FormData();
+            var isValidAllFiles = true;
+            if (lg > 0) {
+                for (var i = 0; i < lg; i++) {
+                    var fileSize = items[i].size;
+                    var ext = items[i].name.split(".");
+                    ext = ext[ext.length - 1].toLowerCase();
+
+                    var arrayExtensions = ["jpg", "jpeg", "png", "bmp", "gif", "JPG", "JPEG", "PNG"];
+
+                    if (fileSize > 2097152) {
+                        $('#imageValidation').html('File size must not be more than 2 MB');
+                        $('#fUpload').val('');
+                        $("#imageValidDiv").show();
+                        isValidAllFiles = false;
+                    }
+                    else if (arrayExtensions.lastIndexOf(ext) == -1) {
+                        $('#imageValidation').html('Please upload only image type file.');
+                        $('#fUpload').val('');
+                        $("#imageValidDiv").show();
+                        isValidAllFiles = false;
+                    }
+                    else {
+                        fileData.append($("#hdnUploadProductId").val(), items[i]);
+                    }
+                }
+                if (isValidAllFiles) {
+                    // Adding one more key to FormData object
+                    fileData.append('username', 'Manas');
+                    $.ajax({
+                        url: loFileUploadUrl,
+                        type: "POST",
+                        contentType: false, // Not to set any content header
+                        processData: false, // Not to process data
+                        async: false,
+                        data: fileData,
+                        success: function (result) {
+                            if (result.isSuccess) {
+                                for (var i = 0; i < result.fileNameWithPath.length; i++) {
+                                    var deleteclick = "deleteFile(" + i + ")";
+                                    //var appendData = "<div class='col-md-3' style='display:inline-block; padding:0; margin:5px 20px;' ><img src='/Images/Product/" + $('#hdnUploadProductId').val() + '/' + result.fileNameWithPath[i].Item2 + "' /><br><a href='/Images/Product/" + $('#hdnUploadProductId').val() + '/' + result.fileNameWithPath[i].Item2 + "' target='_blank' style='color:#FF0078'>View</a> <i style='float: right; cursor:pointer;' class='fa fa-close' onclick='deleteFile('" + result.fileNameWithPath[i].Item2 + "')'></i></div>";
+                                    var appendData = "<div class='col-md-3' style='display:inline-block; padding:0; margin:5px 20px;' ><input type='hidden' value='" + result.fileNameWithPath[i].Item2 + "' id='imgName" + i + "'><img src='/Images/Product/" + $('#hdnUploadProductId').val() + '/' + result.fileNameWithPath[i].Item2 + "' /><br><a href='/Images/Product/" + $('#hdnUploadProductId').val() + '/' + result.fileNameWithPath[i].Item2 + "' target='_blank' style='color:#FF0078'>View</a> <i style='float: right; cursor:pointer;' class='fa fa-close' onclick='" + deleteclick + "')'></i></div>";
+                                    $("#divFiles").append(appendData);
+                                }
+
+                            } else {
+                                $("#spnDocuments").css("display", "block");
+                                $('#spnDocuments').html(result.outPutMessage);
+                            }
+
+                            $('#fUpload').val('');
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            if (errorThrown === "abort") {
+                                return;
+                            }
+                            else {
+                                alert(errorThrown);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
 </script>

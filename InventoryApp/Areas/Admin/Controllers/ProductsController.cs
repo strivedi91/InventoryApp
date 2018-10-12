@@ -74,10 +74,10 @@ namespace InventoryApp.Areas.Admin.Controllers
             else if (foRequest.inFilterCategory > 0 && !string.IsNullOrEmpty(foRequest.stSearchQuantity))
             {
                 int quantity = Convert.ToInt32(foRequest.stSearchQuantity);
-                expression = x => x.CategoryId == foRequest.inFilterCategory && x.Quantity <=quantity && x.IsDeleted == false;
+                expression = x => x.CategoryId == foRequest.inFilterCategory && x.Quantity <= quantity && x.IsDeleted == false;
             }
             else if (!string.IsNullOrEmpty(foRequest.stSearch))
-            {                
+            {
                 foRequest.stSearch = foRequest.stSearch.Replace("%20", " ");
                 expression = x => x.Name.ToLower().Contains(foRequest.stSearch.ToLower()) && x.IsDeleted == false;
             }
@@ -233,8 +233,13 @@ namespace InventoryApp.Areas.Admin.Controllers
                     CategoryId = objProduct.CategoryId,
                     IsActive = objProduct.IsActive,
                     MinimumSellingPrice = objProduct.MinimumSellingPrice,
-                    objTierPricing = getTierPricing(objProduct.id)
+                    objTierPricing = getTierPricing(objProduct.id),
+                    stRandomProductId = objProduct.id.ToString()
                 };
+            }
+            else
+            {
+                objProductsViewModel.stRandomProductId = Guid.NewGuid().ToString();
             }
 
             var objCategories = Repository<Categories>.GetEntityListForQuery(x => x.IsDeleted == false).Item1.ToList();
@@ -266,6 +271,7 @@ namespace InventoryApp.Areas.Admin.Controllers
                     if (foProduct.id == 0)
                     {
                         Products objProduct = new Products();
+
                         objProduct.Name = foProduct.Name;
                         objProduct.Description = foProduct.Description;
                         objProduct.Type = foProduct.Type;
@@ -296,6 +302,32 @@ namespace InventoryApp.Areas.Admin.Controllers
                             await Repository<TierPricing>.InsertEntity(objTierPricing, entity => { return entity.Id; });
                         }
 
+                        var stSourceFilePathImg = Path.Combine(Server.MapPath(ProductImagePath), foProduct.stRandomProductId);
+                        var stDestFilePathImg = Path.Combine(Server.MapPath(ProductImagePath), Convert.ToString(objProduct.id));
+                        string[] allUploadedImg = null;
+
+                        if (Directory.Exists(stSourceFilePathImg))
+                        {
+                            allUploadedImg = Directory.GetFiles(stSourceFilePathImg, "*", SearchOption.TopDirectoryOnly);
+                        }
+
+                        if (!Directory.Exists(stDestFilePathImg))
+                        {
+                            Directory.CreateDirectory(stDestFilePathImg);
+                        }
+
+                        foreach (string img in allUploadedImg)
+                        {
+                            string fileName = Path.GetFileName(img);
+                            string destFile = Path.Combine(stDestFilePathImg, fileName);
+
+                            System.IO.File.Move(img, destFile);
+                        }
+
+                        if (Directory.Exists(stSourceFilePathImg))
+                        {
+                            Directory.Delete(stSourceFilePathImg);
+                        }
                         //string savepath = Path.Combine(Server.MapPath(ProductImagePath), objProduct.id.ToString());
                         //System.IO.Directory.CreateDirectory(savepath);
 
@@ -447,9 +479,9 @@ namespace InventoryApp.Areas.Admin.Controllers
             return Json(new { isSuccess, outPutMessage, fileNameWithPath }, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult getUploadedFile(int Id)
+        public JsonResult getUploadedFile(string Id)
         {
-            string path = Path.Combine(Server.MapPath(ProductImagePath), Id.ToString());
+            string path = Path.Combine(Server.MapPath(ProductImagePath), Id);
             List<SelectListItem> fileNameWithPath = new List<SelectListItem>();
             if (Directory.Exists(path))
             {
@@ -469,9 +501,9 @@ namespace InventoryApp.Areas.Admin.Controllers
             return Json(new { fileNameWithPath }, JsonRequestBehavior.AllowGet);
         }
 
-        public bool DeleteUploadedFile(int Id, string filename)
+        public bool DeleteUploadedFile(string Id, string filename)
         {
-            string path = Path.Combine(Server.MapPath(ProductImagePath), Id.ToString(), filename);
+            string path = Path.Combine(Server.MapPath(ProductImagePath), Id, filename);
 
             if (System.IO.File.Exists(path))
             {
@@ -511,7 +543,7 @@ namespace InventoryApp.Areas.Admin.Controllers
 
                 foreach (FileInfo file in files)
                 {
-                    loProductDetails.loFilesPath.Add(ConfigurationManager.AppSettings["ProductImagePath"].Replace("~", "") + "/" + objProductDetails.id  + "/" + file.Name);
+                    loProductDetails.loFilesPath.Add(ConfigurationManager.AppSettings["ProductImagePath"].Replace("~", "") + "/" + objProductDetails.id + "/" + file.Name);
                 }
             }
 
