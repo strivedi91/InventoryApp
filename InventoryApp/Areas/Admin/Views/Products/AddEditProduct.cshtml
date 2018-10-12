@@ -332,7 +332,7 @@
                 </div>
             </div>
             <div class="btn-block-solid-pink text-center pull-right">
-                <button tabindex="20" type="submit" title="Submit" class="btn btn-gradient" id="btnSubmit" onclick="validateForm()">
+                <button tabindex="20" type="button" title="Submit" class="btn btn-gradient" id="btnSubmit" onclick="validateForm()">
                     <i class="fa fa-save"></i>&nbsp;&nbsp;Save <i class=" m-icon-swapright">
                     </i>
                 </button>
@@ -408,7 +408,6 @@
     }
     var RowId = $("#hdnTierPricCount").val();
 
-    var isAllAdded = true;
     $(document).ready(function () {
         $("#Add").on("click", function () {
             var divHTML = "<div id='row" + RowId + "' style='padding-top: 10px;'>";
@@ -431,7 +430,7 @@
         $("#row" + Id).remove();
     }
     function readData() {
-        isAllAdded = true;
+        var isAllAdded = true;
         var tierPriceArry = new Array();
         for (i = 1; i <= RowId; i++) {
             var fromQty = $("#txtFromQuantity" + i).val();
@@ -449,20 +448,22 @@
         }
         if (isAllAdded === false) {
             $('#isAllTierPrice').show();
+            return false;
         }
         else {
             $('#isAllTierPrice').hide();
         }
         $("#hdnTierPricing").val(tierPriceArry);
+        return true;
     }
 
     function validateForm() {
-        readData();
+        var isValid = readData();
         var form = $("#frmAddEditProduct");
 
         form.valid();
 
-        if (form.valid() && isAllAdded) {
+        if (form.valid() && isValid) {
             form.submit();
             if ($("#loadingbar").length === 0) {
                 $("body").append("<div id='loadingbar'></div>")
@@ -583,9 +584,10 @@
                         success: function (result) {
                             if (result.isSuccess) {
                                 for (var i = 0; i < result.fileNameWithPath.length; i++) {
-                                    var deleteclick = "deleteFile(" + i + ")";
+                                    var imgRandomId = Math.floor(Math.random() * 999999);
+                                    var deleteclick = "deleteFile(" + imgRandomId + ")";
                                     //var appendData = "<div class='col-md-3' style='display:inline-block; padding:0; margin:5px 20px;' ><img src='/Images/Product/" + $('#hdnUploadProductId').val() + '/' + result.fileNameWithPath[i].Item2 + "' /><br><a href='/Images/Product/" + $('#hdnUploadProductId').val() + '/' + result.fileNameWithPath[i].Item2 + "' target='_blank' style='color:#FF0078'>View</a> <i style='float: right; cursor:pointer;' class='fa fa-close' onclick='deleteFile('" + result.fileNameWithPath[i].Item2 + "')'></i></div>";
-                                    var appendData = "<div class='col-md-3' style='display:inline-block; padding:0; margin:5px 20px;' ><input type='hidden' value='" + result.fileNameWithPath[i].Item2 + "' id='imgName" + i + "'><img src='/Images/Product/" + $('#hdnUploadProductId').val() + '/' + result.fileNameWithPath[i].Item2 + "' /><br><a href='/Images/Product/" + $('#hdnUploadProductId').val() + '/' + result.fileNameWithPath[i].Item2 + "' target='_blank' style='color:#FF0078'>View</a> <i style='float: right; cursor:pointer;' class='fa fa-close' onclick='" + deleteclick + "')'></i></div>";
+                                    var appendData = "<div class='col-md-3' style='display:inline-block; padding:0; margin:5px 20px;' ><input type='hidden' value='" + result.fileNameWithPath[i].Item2 + "' id='imgName" + imgRandomId + "'><img src='/Images/Product/" + $('#hdnUploadProductId').val() + '/' + result.fileNameWithPath[i].Item2 + "' /><br><a href='/Images/Product/" + $('#hdnUploadProductId').val() + '/' + result.fileNameWithPath[i].Item2 + "' target='_blank' style='color:#FF0078'>View</a> <i style='float: right; cursor:pointer;' class='fa fa-close' onclick='" + deleteclick + "')'></i></div>";
                                     $("#divFiles").append(appendData);
                                 }
 
