@@ -1,0 +1,285 @@
+﻿@model InventoryApp.Areas.Admin.Models.OffersViewModel
+@{
+    ViewBag.Title = "Add/Edit Coupon";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<section>
+    <div class="section-title">
+        @if (Model.id != 0)
+        {
+            <h2>Edit Coupon</h2>
+        }
+        else
+        {
+            <h2>Add Coupon</h2>
+        }
+    </div>
+    <div class="white-box bg-white space">
+        @using (Html.BeginForm("AddEditCoupon", "Coupons", FormMethod.Post, new { @id = "frmAddEditCoupon", @enctype = "multipart/form-data" }))
+        {
+            @Html.HiddenFor(m => m.id, new { @id = "hdnProductId" })
+            @Html.ValidationSummary(true)
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Offer Code&nbsp;<span class="required">*</span>
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.TextBoxFor(m => m.OfferCode, new { @class = "form-control placeholder-no-fix", @placeholder = "Offer Code", @maxlength = "100", @autofocus = "autofocus", @tabindex = "1", @id = "txtOfferCode", @required = "required" })
+                        <div class="required">
+                            @Html.ValidationMessageFor(m => m.OfferCode)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Description
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.TextAreaFor(m => m.OfferDescription, new { @class = "form-control placeholder-no-fix", @placeholder = "Description", @maxlength = "500", @tabindex = "2", @id = "txtDescription" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Discount&nbsp;<span class="required">*</span>
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        <label>
+                            <input type="radio" name="rbDiscount" id="rbFloat" value="1" checked="checked" tabindex="3"/>
+                            &nbsp;Float
+                        </label>
+                        &nbsp;&nbsp;&nbsp;
+                        <label>
+                            <input type="radio" name="rbDiscount" id="rbPercentage" value="2" tabindex="4"/>
+                            &nbsp;Percentage
+                        </label>
+                        <br />
+                        <br />
+                        @Html.TextBoxFor(m => m.FlatDiscount, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Flat Discount", @type = "number", @autofocus = "autofocus", @tabindex = "5", @id = "txtFlatDiscount" })
+                        @Html.TextBoxFor(m => m.PercentageDiscount, null, new { @class = "form-control placeholder-no-fix", @placeholder = "Percentage Discount", @type = "number", @autofocus = "autofocus", @tabindex = "5", @id = "txtPercentageDiscount", @style = "display:none;" })
+                        <div class="required field-validation-error" id="errorMsgDiscount">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Discount On&nbsp;<span class="required">*</span>
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        <label>
+                            <input type="radio" name="rbDiscountOn" id="rbProduct" value="1" checked="checked" tabindex = "6"/>
+                            &nbsp;Product
+                        </label>
+                        &nbsp;&nbsp;&nbsp;
+                        <label>
+                            <input type="radio" name="rbDiscountOn" id="rbCategory" value="2" tabindex = "7"/>
+                            &nbsp;Category
+                        </label>
+                        <br />
+                        <br />
+                        @Html.DropDownListFor(m => m.ProductId, Model.objProductList, new { @class = "form-control placeholder-no-fix", @autofocus = "autofocus", @tabindex = "8", @id = "ddlProduct" })
+                        @Html.DropDownListFor(m => m.CategoryId, Model.objCategoryList, new { @class = "form-control placeholder-no-fix", @autofocus = "autofocus", @tabindex = "8", @id = "ddlCategory", @style = "display:none;" })
+                        <div class="required field-validation-error" id="errorMsgDiscountOn">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Offer Start Date&nbsp;<span class="required">*</span>
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.TextBoxFor(m => m.StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control placeholder-no-fix", @type = "date", @placeholder = "Start Date", @autofocus = "autofocus", @tabindex = "9", @id = "txtStartDate", @required = "required" })
+                        <div class="required">
+                            @Html.ValidationMessageFor(m => m.StartDate)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Offer End Date&nbsp;<span class="required">*</span>
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.TextBoxFor(m => m.EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control placeholder-no-fix", @type = "date", @placeholder = "End Date", @autofocus = "autofocus", @tabindex = "10", @id = "txtEndDate", @required = "required" })
+                        <div class="required">
+                            @Html.ValidationMessageFor(m => m.EndDate)
+                        </div>
+                        <div class="required field-validation-error" id="errorMsgEndDate">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            Is Active
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.CheckBoxFor(m => m.IsActive, new { @autofocus = "autofocus", @tabindex = "11"})
+                    </div>
+                </div>
+            </div>
+            <div class="btn-block-solid-pink text-center pull-right">
+                <button tabindex="20" type="button" title="Submit" class="btn btn-gradient" id="btnSubmit" onclick="validateForm();">
+                    <i class="fa fa-save"></i>&nbsp;&nbsp;Save <i class=" m-icon-swapright">
+                    </i>
+                </button>
+                <a class="btn  btn-gradient" title="Cancel" onclick="cancelForm();" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Coupons" })">
+                    <i class=" fa fa-angle-left"></i>&nbsp;&nbsp;Cancel
+                </a>
+            </div>
+        }
+    </div>
+</section>
+
+<script>
+    $(document).ready(function () {
+        $(".menu-item a").removeClass("active");
+        $('#lnkCoupon').addClass('active');
+
+        $('.dashboard-menu').height($(document).height());
+
+        @if(Model.id > 0 && Model.PercentageDiscount != null && Model.PercentageDiscount != 0)
+        {
+            <text>
+                 $('#txtFlatDiscount').val('').hide();
+                 $('#txtPercentageDiscount').show();
+                 $('#rbPercentage').prop("checked", true);
+            </text>
+        }
+
+        @if(Model.id > 0 && Model.CategoryId != null && Model.CategoryId != 0)
+        {
+            <text>
+                 $('#ddlProduct').val(0).hide();
+                 $('#ddlCategory').show();
+                 $('#rbCategory').prop("checked", true);
+            </text>
+        }
+    });
+
+    function jsInteger(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode == 46)
+            return false;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+    function validateFields() {
+        isDiscountValid = false;
+        isDiscountOnValid = false;
+
+        if ($('[name="rbDiscount"]:checked').val() == 1 && parseInt($('#txtFlatDiscount').val()) > 0) {
+            $('#errorMsgDiscount').text('').hide();
+            isDiscountValid = true;
+        }
+        else if ($('[name="rbDiscount"]:checked').val() == 2 && parseFloat($('#txtPercentageDiscount').val()) > 0) {
+            debugger
+            if (parseFloat($('#txtPercentageDiscount').val()) > 0 && parseFloat($('#txtPercentageDiscount').val()) < 100) {
+                $('#errorMsgDiscount').text('').hide();
+                isDiscountValid = true;
+            }
+            else {
+                $('#errorMsgDiscount').text('Percentage should be 1 to 100.').show();
+            }
+        }
+        else {
+            $('#errorMsgDiscount').text('Discount should not be empty.').show();
+        }
+
+        if ($('[name="rbDiscountOn"]:checked').val() == 1 && parseInt($('#ddlProduct').val()) > 0) {
+            $('#errorMsgDiscountOn').text('').hide();
+            isDiscountOnValid = true;
+        }
+        else if ($('[name="rbDiscountOn"]:checked').val() == 2 && parseInt($('#ddlCategory').val()) > 0) {
+            $('#errorMsgDiscountOn').text('').hide();
+            isDiscountOnValid = true;
+        }
+        else
+            $('#errorMsgDiscountOn').text('Discount On should not be empty.').show();
+
+
+        if (new Date($('#txtStartDate').val()) >= new Date($('#txtEndDate').val())) {
+            $('#errorMsgEndDate').text('End date should be greater then Start date.').show();
+        }
+        else {
+            $('#errorMsgEndDate').text('').hide();
+        }
+
+
+        if (isDiscountValid && isDiscountOnValid) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    function validateForm() {
+        var isValid = validateFields();
+        var form = $("#frmAddEditCoupon");
+
+        form.valid();
+
+        if (form.valid() && isValid) {
+            form.submit();
+            if ($("#loadingbar").length === 0) {
+                $("body").append("<div id='loadingbar'></div>")
+                $("#divLoader").css("display", "block");
+                $("#loadingbar").addClass("waiting").append($("<dt/><dd/>"));
+                $("#loadingbar").width((50 + Math.random() * 30) + "%");
+            }
+        }
+        return false;
+    }
+
+    $('[name="rbDiscount"]').change(function () {
+        if ($(this).val() == 1) {
+            $('#txtFlatDiscount').val('').show();
+            $('#txtPercentageDiscount').val('').hide();
+        }
+        else {
+            $('#txtPercentageDiscount').val('').show();
+            $('#txtFlatDiscount').val('').hide();
+        }
+    });
+    $('[name="rbDiscountOn"]').change(function () {
+        if ($(this).val() == 1) {
+            $('#ddlProduct').val(0).show();
+            $('#ddlCategory').val(0).hide();
+        }
+        else {
+            $('#ddlCategory').val(0).show();
+            $('#ddlProduct').val(0).hide();
+        }
+    });
+</script>

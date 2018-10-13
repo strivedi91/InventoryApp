@@ -158,6 +158,12 @@ namespace InventoryApp.Areas.Admin.Controllers
                     case "CategoryId ASC":
                         orderingFunc = q => q.OrderBy(s => s.CategoryId);
                         break;
+                    case "ApplyGst DESC":
+                        orderingFunc = q => q.OrderByDescending(s => s.ApplyGst);
+                        break;
+                    case "ApplyGst ASC":
+                        orderingFunc = q => q.OrderBy(s => s.ApplyGst);
+                        break;
                 }
             }
 
@@ -197,7 +203,8 @@ namespace InventoryApp.Areas.Admin.Controllers
                         MOQ = prod.MOQ,
                         CategoryId = prod.CategoryId,
                         CategoryName = Repository<Categories>.GetEntityListForQuery(x => x.Id == prod.CategoryId).Item1.Select(x => x.Name).FirstOrDefault(),
-                        IsActive = prod.IsActive
+                        IsActive = prod.IsActive,
+                        ApplyGst = prod.ApplyGst
                     });
                 }
             }
@@ -234,7 +241,8 @@ namespace InventoryApp.Areas.Admin.Controllers
                     IsActive = objProduct.IsActive,
                     MinimumSellingPrice = objProduct.MinimumSellingPrice,
                     objTierPricing = getTierPricing(objProduct.id),
-                    stRandomProductId = objProduct.id.ToString()
+                    stRandomProductId = objProduct.id.ToString(),
+                    ApplyGst = objProduct.ApplyGst
                 };
             }
             else
@@ -283,6 +291,7 @@ namespace InventoryApp.Areas.Admin.Controllers
                         objProduct.CategoryId = foProduct.CategoryId.GetValueOrDefault();
                         objProduct.IsActive = foProduct.IsActive;
                         objProduct.MinimumSellingPrice = foProduct.MinimumSellingPrice;
+                        objProduct.ApplyGst = foProduct.ApplyGst;
                         await Repository<Products>.InsertEntity(objProduct, entity => { return entity.id; });
 
                         string[] lstTierPricing = foProduct.lstTierPircing.Split(',');
@@ -358,6 +367,7 @@ namespace InventoryApp.Areas.Admin.Controllers
                         objProduct.CategoryId = foProduct.CategoryId.GetValueOrDefault();
                         objProduct.IsActive = foProduct.IsActive;
                         objProduct.MinimumSellingPrice = foProduct.MinimumSellingPrice;
+                        objProduct.ApplyGst = foProduct.ApplyGst;
                         await Repository<Products>.UpdateEntity(objProduct, (entity) => { return entity.id; });
 
                         var objTierPrice = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == objProduct.id && x.IsDeleted == false).Item1;
@@ -531,6 +541,7 @@ namespace InventoryApp.Areas.Admin.Controllers
                 OfferPrice = objProductDetails.OfferPrice,
                 Price = objProductDetails.Price,
                 Quantity = objProductDetails.Quantity,
+                ApplyGst = objProductDetails.ApplyGst,
                 objTierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == objProductDetails.id && x.IsDeleted == false).Item1.ToList()
             };
 

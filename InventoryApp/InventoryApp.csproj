@@ -238,12 +238,14 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\OrderController.cs" />
     <Compile Include="Areas\Admin\Controllers\OrderDetailsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CouponsController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductsController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\ManageUsersController.cs" />
     <Compile Include="Areas\Admin\Controllers\SuggestionController.cs" />
     <Compile Include="Areas\Admin\Models\OrderDetailsModel.cs" />
     <Compile Include="Areas\Admin\Models\OrderModel.cs" />
+    <Compile Include="Areas\Admin\Models\OffersModel.cs" />
     <Compile Include="Areas\Admin\Models\ProductsModel.cs" />
     <Compile Include="Areas\Admin\Models\CategoryModel.cs" />
     <Compile Include="Areas\Admin\Models\SuggestionsModel.cs" />
@@ -281,6 +283,7 @@
   <ItemGroup>
     <Content Include="Areas\Admin\assets\css\DatePicker.css" />
     <Content Include="Areas\Admin\assets\scripts\Order.js" />
+    <Content Include="Areas\Admin\assets\scripts\Coupons.js" />
     <Content Include="Areas\Admin\assets\scripts\Suggestions.js" />
     <Content Include="Areas\Admin\assets\scripts\Products.js" />
     <Content Include="Areas\Admin\assets\scripts\Category.js" />
@@ -565,6 +568,9 @@
     <Content Include="Areas\Admin\Views\Suggestion\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Suggestion\_Suggestions.cshtml" />
     <Content Include="Areas\Admin\Views\Products\ProductProfile.cshtml" />
+    <Content Include="Areas\Admin\Views\Coupons\_Coupons.cshtml" />
+    <Content Include="Areas\Admin\Views\Coupons\AddEditCoupon.cshtml" />
+    <Content Include="Areas\Admin\Views\Coupons\Index.cshtml" />
     <None Include="Properties\PublishProfiles\app.thegodam.com - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\inventory.sachintrivedi.com - Web Deploy.pubxml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />

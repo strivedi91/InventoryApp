@@ -35,7 +35,18 @@
                     </div>
                     <div class="col-lg-5 col-md-7">
                         @Html.TextAreaFor(m => m.Description, new { @class = "form-control placeholder-no-fix", @placeholder = "Description", @maxlength = "500", @tabindex = "2", @id = "txtDescription" })
-                        
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label>
+                            GST
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.TextBoxFor(m => m.GST, new { @class = "form-control placeholder-no-fix", @placeholder = "GST", @tabindex = "3", @type="number" })
                     </div>
                 </div>
             </div>
@@ -47,12 +58,11 @@
                         </label>
                     </div>
                     <div class="col-lg-5 col-md-7">
-                        @Html.CheckBoxFor(m => m.IsActive, new { @placeholder = "Active", @tabindex = "5" })
-
+                        @Html.CheckBoxFor(m => m.IsActive, new { @placeholder = "Active", @tabindex = "4" })
                     </div>
                 </div>
             </div>
-            
+
             <div class="btn-block-solid-pink text-center pull-right">
                 <button tabindex="5" type="submit" title="Submit" class="btn btn-gradient" id="btnSubmit">
                     <i class="fa fa-save"></i>&nbsp;&nbsp;Save <i class=" m-icon-swapright">
@@ -61,7 +71,7 @@
                 <a class="btn  btn-gradient" title="Cancel" onclick="cancelForm();" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Category" })">
                     <i class=" fa fa-angle-left"></i>&nbsp;&nbsp;Cancel
                 </a>
-            </div>            
+            </div>
         }
     </div>
 </section>

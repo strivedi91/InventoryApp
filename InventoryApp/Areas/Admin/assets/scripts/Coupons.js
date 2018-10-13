@@ -3,41 +3,48 @@
     $('#txtSearch').focus();
 });
 function userSearch(e) {
-    if (e.which == 13) {
-        
+    if (e.which === 13) {
         e.preventDefault();
         $(this).blur();
         $('#btnSearch').focus().click();
     }
 }
 
+$('#ddlFilterCategory').change(function () {
+    refeshList();
+});
+
 function search() {
     var stSearch = "";
     var stToDate = "";
-    if ($('#txtSearch').val() != "") {
+    if ($('#txtSearch').val() !== "") {
         stSearch = $('#txtSearch').val();
     }
     refeshList(stSearch);
 }
+function clearFilter() {
+
+    $('#txtSearch').val('');
+    refeshList("load");
+}
 function refeshList(foId,pageIndex) {
-    
+
     var stSortField = "";
     var lsSearch = $('#txtSearch').val().trim();
     var lsOriginalSearch = $('#txtSearch').val().trim();
     lsSearch = encodeURIComponent(lsSearch);
-    
+
     lsSearch = lsSearch.replace(/'/g, "''");
-   
-    if (foId == "load") {
+    if (foId === "load") {
         pageIndex = 1;
     }
-    else if (foId == "Name ASC" || foId == "Name DESC" || foId == "Likes ASC" || foId == "Likes DESC" || foId == "Price ASC" || foId == "Price DESC") {
+    else if (foId === "Name ASC" || foId === "Name DESC" || foId === "ID ASC" || foId === "ID DESC" || foId === "Type ASC" || foId === "Type DESC" || foId === "Brand ASC" || foId === "Brand DESC" || foId === "Price ASC" || foId === "Price DESC" || foId === "Quantity ASC" || foId === "Quantity DESC" || foId === "CategoryId ASC" || foId === "CategoryId DESC") {
         pageIndex = parseInt($('#hdnPageIndex').val());
     }
-   
+    
     $.ajax({
         type: "POST",
-        url: lsgetUserList,
+        url: lsSearchCouponsUrl,
         content: "application/json; charset=utf-8",
         dataType: "html",
         data: {
@@ -47,10 +54,10 @@ function refeshList(foId,pageIndex) {
             stSearch: lsSearch
         },
         success: function (lodata) {
-            if (lodata != null) {
-                var divSOReleased = $('#packagelist');
-                divSOReleased.html('');
-                divSOReleased.html(lodata);
+            if (lodata !== null) {
+                var divToPutHTML = $('#divCouponlist');
+                divToPutHTML.html('');
+                divToPutHTML.html(lodata);
                 $('#hdnPageIndex').val(pageIndex);
                 setSortingArrow();
                 $('#txtSearch').val(lsOriginalSearch);
@@ -60,7 +67,7 @@ function refeshList(foId,pageIndex) {
         error: function (jqXHR, textStatus, errorThrown) {
             $('#txtSearch').val(lsOriginalSearch);
             $('#txtSearch').focus();
-            if (errorThrown == "abort") {
+            if (errorThrown === "abort") {
                 return;
             }
             else {
@@ -69,11 +76,12 @@ function refeshList(foId,pageIndex) {
         }
     });
 }
-function getOrderbyUserList(foOrderedField, tdID) {
+
+function getOrderedList(foOrderedField, tdID) {
     var foFieldwithOrder = "";
     $('#hdnSortingOnColumn').val(tdID);
 
-    if ($('#hdnOrder').val() == "") {
+    if ($('#hdnOrder').val() === "") {
         $('#hdnOrder').val(foOrderedField + " ASC");
         foFieldwithOrder = foOrderedField + " ASC";
         $('#hdnOrder').val(foFieldwithOrder);
@@ -81,7 +89,7 @@ function getOrderbyUserList(foOrderedField, tdID) {
 
     }
     else {
-        if ($('#hdnOrder').val() == (foOrderedField + " ASC")) {
+        if ($('#hdnOrder').val() === (foOrderedField + " ASC")) {
             foFieldwithOrder = foOrderedField + " DESC";
             $('#hdnOrder').val(foFieldwithOrder);
             $('#hdnSortingDirection').val("DESC");
@@ -94,18 +102,17 @@ function getOrderbyUserList(foOrderedField, tdID) {
     }
     refeshList(foFieldwithOrder);
 }
-
 function setSortingArrow() {
 
     var sortTD = $('#hdnSortingOnColumn').val();
     var sortDirection = $('#hdnSortingDirection').val();
 
-    if (sortTD != "") {
+    if (sortTD !== "") {
         $('#' + sortTD).removeClass("sorting");
-        if (sortDirection.toUpperCase() == "ASC") {
+        if (sortDirection.toUpperCase() === "ASC") {
             $('#' + sortTD).addClass("sorting_asc");
         }
-        else if (sortDirection.toUpperCase() == "DESC") {
+        else if (sortDirection.toUpperCase() === "DESC") {
             $('#' + sortTD).addClass("sorting_desc");
         }
     }
@@ -116,23 +123,22 @@ function setSortingArrow() {
     }
 }
 
-function DeleteUser(fiUserId) {
+function DeleteCategory(fiId) {
         $.ajax({
             type: "POST",
-            url: deleteUserUrl,
+            url: lsDeleteCouponUrl,
             content: "application/json; charset=utf-8",
             dataType: "json",
             data: {
-                ID: fiUserId
+                ID: fiId
             },
             success: function (lodata) {
-                if (lodata != null) {
-                    
+                if (lodata !== null) {
                     refeshList("delete");
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                if (errorThrown == "abort") {
+                if (errorThrown === "abort") {
                     return;
                 }
                 else {

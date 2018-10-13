@@ -74,6 +74,12 @@ namespace InventoryApp.Areas.Admin.Controllers
                     case "Name ASC":
                         orderingFunc = q => q.OrderBy(s => s.Name);
                         break;
+                    case "GST DESC":
+                        orderingFunc = q => q.OrderByDescending(s => s.GST);
+                        break;
+                    case "GST ASC":
+                        orderingFunc = q => q.OrderBy(s => s.GST);
+                        break;
                     case "Description DESC":
                         orderingFunc = q => q.OrderByDescending(s => s.Description);
                         break;
@@ -101,7 +107,8 @@ namespace InventoryApp.Areas.Admin.Controllers
                         Id = catg.Id,
                         Name = catg.Name,
                         Description = catg.Description,
-                        IsActive = catg.IsActive
+                        IsActive = catg.IsActive,
+                        GST = catg.GST
                     });
                 }
             }
@@ -128,6 +135,7 @@ namespace InventoryApp.Areas.Admin.Controllers
                         objCategory.Name = loCategoryViewModel.Name;
                         objCategory.Description = loCategoryViewModel.Description;
                         objCategory.IsActive = loCategoryViewModel.IsActive;
+                        objCategory.GST = loCategoryViewModel.GST;
                         Repository<Categories>.InsertEntity(objCategory, entity => { return entity.Id; });
                                                 
                         TempData["SuccessMsg"] = "Category has been added successfully";
@@ -137,7 +145,8 @@ namespace InventoryApp.Areas.Admin.Controllers
                         Categories objCategory = Repository<Categories>.GetEntityListForQuery(x => x.Id == loCategoryViewModel.Id).Item1.FirstOrDefault();
                         objCategory.Name = loCategoryViewModel.Name;
                         objCategory.Description = loCategoryViewModel.Description;
-                        objCategory.IsActive = loCategoryViewModel.IsActive;                        
+                        objCategory.IsActive = loCategoryViewModel.IsActive;
+                        objCategory.GST = loCategoryViewModel.GST;
                         Repository<Categories>.UpdateEntity(objCategory, (entity) => { return entity.Id; });
 
                         TempData["SuccessMsg"] = "Category has been updated successfully";
@@ -164,7 +173,8 @@ namespace InventoryApp.Areas.Admin.Controllers
                     Id = objCategory.Id,
                     Name = objCategory.Name,
                     Description = objCategory.Description,
-                    IsActive = objCategory.IsActive
+                    IsActive = objCategory.IsActive,
+                    GST = objCategory.GST
                 };
             }
 

@@ -256,7 +256,7 @@ namespace InventoryApp.Controllers.API
 
 
                     var userSelectedProducts = Repository<AspNetUserPreferences>.
-                        GetEntityListForQuery(x => x.UserId == LoggedInUserId && x.CategoryId == Id, null, includes).Item1;
+                        GetEntityListForQuery(x => x.UserId == LoggedInUserId && x.CategoryId == Id && x.Products.IsActive == true, null, includes).Item1;
 
                     Result = JObject.FromObject(new
                     {

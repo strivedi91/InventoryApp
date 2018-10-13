@@ -1,5 +1,6 @@
-﻿@model InventoryApp.Areas.Admin.Models.CategoryModel
-@if (Model != null && Model.loCategoryList.Count > 0)
+﻿@model InventoryApp.Areas.Admin.Models.OffersModel
+
+@if (Model != null && Model.loOfferList.Count > 0)
 {
     if (TempData["SuccessMsg"] != null && TempData["SuccessMsg"].ToString() != "")
     {
@@ -23,39 +24,41 @@
         </div>
 
     }
+
     <div class="table-responsive dash-table">
         <table class="table table-bordered bg-white">
             <thead>
                 <tr class="heading">
                     @Html.Hidden("hdnPageIndex", Model.inPageIndex)
-                    <th id="sortName" onclick="getOrderbyCategoryList('ID', 'sortID');" class="heading-text sorting">ID</th>
-                    <th id="sortName" onclick="getOrderbyCategoryList('Name', 'sortName');" class="heading-text sorting">Name</th>
-                    <th id="sortGST" onclick="getOrderbyCategoryList('GST', 'sortGST');" class="heading-text sorting">GST</th>
-                    <th>Description</th>
-                    <th>Is Active?</th>
+                    <th id="sortID" onclick="getOrderedList('ID', 'sortID');" class="heading-text sorting">Id</th>
+                    <th id="sortOfferCode" onclick="getOrderedList('OfferCode', 'sortOfferCode');" class="heading-text sorting">Offer Code</th>
+                    <th id="sortOfferDescription" onclick="getOrderedList('OfferDescription', 'sortOfferDescription');" class="heading-text sorting">Offer Description</th>
+                    <th id="sortFlatDiscount" onclick="getOrderedList('FlatDiscount', 'sortFlatDiscount');" class="heading-text sorting">Flat Discount</th>
+                    <th id="sortPercentageDiscount" onclick="getOrderedList('PercentageDiscount', 'sortPercentageDiscount');" class="heading-text sorting">Percentage Discount</th>
+                    <th id="sortProductId" onclick="getOrderedList('ProductId', 'sortProductId');" class="heading-text sorting">Product</th>
+                    <th id="sortCategoryId" onclick="getOrderedList('CategoryId', 'sortCategoryId');" class="heading-text sorting">Category</th>
+                    <th id="sortStartDate" onclick="getOrderedList('StartDate', 'sortStartDate');" class="heading-text sorting">Start Date</th>
+                    <th id="sortEndDate" onclick="getOrderedList('EndDate', 'sortEndDate');" class="heading-text sorting">End Date</th>
+                    <th id="sortEndDate" onclick="getOrderedList('EndDate', 'sortEndDate');" class="heading-text sorting">Is Active</th>
                     <th>Action</th>
                 </tr>
             </thead>
-            @foreach (var cat in Model.loCategoryList)
+            @foreach (var coupon in Model.loOfferList)
             {
             <tr>
-                <td>@cat.Id</td>
-                <td>@cat.Name</td>
-                <td>@cat.GST</td>
-                <td>@cat.Description</td>
+                <td>@coupon.id</td>
+                <td>@coupon.OfferCode</td>
+                <td>@coupon.OfferDescription</td>
+                <td>@(coupon.FlatDiscount > 0 ? coupon.FlatDiscount.ToString() : "")</td>
+                <td>@(coupon.PercentageDiscount > 0 ? coupon.PercentageDiscount + "%" : "")</td>
+                <td>@coupon.ProductName</td>
+                <td>@coupon.CategoryName</td>
+                <td>@(coupon.StartDate != null ? Convert.ToString(coupon.StartDate.Value.ToString("dd/MM/yyyy")) : "")</td>
+                <td>@(coupon.EndDate != null ? Convert.ToString(coupon.EndDate.Value.ToString("dd/MM/yyyy")) : "")</td>
+                <td>@(coupon.IsActive ? "Active" : "Deactive")</td>
                 <td>
-                    @if (cat.IsActive)
-                    {
-                        <input checked type="checkbox" disabled />
-                    }
-                    else
-                    {
-                        <input type="checkbox" disabled />
-                    }
-                </td>
-                <td>
-                    <a href="@Url.Action("AddEditCategory", "Category", new { Id = cat.Id })" title="Edit"><i class="fa fa-pencil-square-o" style="font-size: 1.5em;"></i></a>
-                    <a href=javascript:void(0); onclick="confirmDelete(@cat.Id)" title="Delete"><i class="fa fa-close" style="color:#23527C; font-size:1.5em;"></i></a>
+                    <a href="@Url.Action("AddEditCoupon", "Coupons", new { Id = coupon.id })" title="Edit"><i class="fa fa-pencil-square-o" style="font-size: 1.5em;"></i></a>
+                    <a href=javascript:void(0); onclick="confirmDelete(@coupon.id)" title="Delete"><i class="fa fa-close" style="color:#23527C; font-size:1.5em;"></i></a>
                 </td>
             </tr>
             }
@@ -84,7 +87,8 @@ else
         </div>
     </div>
 }
-<div class="modal fade" tabindex="-1" role="dialog" id="modelDeleteCard">
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modelDelete">
     <div class="modal-dialog">
         <div class="modal-content white-box bg-white">
             <div class="modal-header">
@@ -92,36 +96,15 @@ else
                 <h4 class="modal-title">Confirmation</h4>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete this Category?</p>
+                <p>Are you sure you want to delete this coupon?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-gradient" onclick="DeleteClick();">Yes</button>
                 <button type="button" class="btn btn-gradient" data-dismiss="modal">Cancel</button>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+        </div>
+    </div>
 </div>
-
-<script>
-
-    function confirmDelete(id) {
-        $('#hdnId').val(id);
-        jQuery.noConflict();
-        (function ($) {
-            $('#modelDeleteCard').modal('show');
-        }
-        )(jQuery);
-    }
-    function DeleteClick() {
-        jQuery.noConflict();
-        (function ($) {
-            $('#modelDeleteCard').modal('hide');
-        }
-        )(jQuery);
-        var id = $('#hdnId').val();
-        DeleteCategory(id);
-    }
-</script>
 <script type="text/javascript">
     $(document).ready(function () {
         GetPager($("#hdnTotalRec").val(), $("#hdnPageIndex").val());

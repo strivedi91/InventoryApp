@@ -33,6 +33,8 @@ namespace InventoryApp.Areas.Admin.Models
 
         public int ParentId { get; set; }
 
+        public decimal? GST { get; set; }
+
         public string stSearch { get; set; }
 
         public int inPageIndex { get; set; }

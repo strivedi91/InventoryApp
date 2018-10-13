@@ -85,6 +85,7 @@
                                 <p><b>Quantity:</b>&nbsp;<text class="textGreycolor">@(Model.Quantity == null ? "N/A" : Model.Quantity.ToString())</text></p>
                                 <p><b>MOQ:</b>&nbsp;<text class="textGreycolor">@(Model.MOQ == null ? "N/A" : Model.MOQ.ToString())</text></p>
                                 <p><b>Category:&nbsp;</b><text class="textGreycolor">@Model.CategoryName</text></p>
+                                <p><b>Include GST?:&nbsp;</b><text class="textGreycolor">@(Model.ApplyGst ? "Yes" : "No")</text></p>
                                 <p><b>Tier Pricing:&nbsp;</b><text class="textGreycolor">@(Model.objTierPricing.Count == 0 ? "N/A" : "")</text></p>
                                 @if (Model.objTierPricing.Count > 0)
                                 {

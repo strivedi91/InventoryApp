@@ -60,6 +60,8 @@ namespace InventoryApp.Areas.Admin.Models
 
         public string CategoryName { get; set; }
 
+        public bool ApplyGst { get; set; }
+
         public bool IsActive { get; set; }
 
         public bool IsDeleted { get; set; }

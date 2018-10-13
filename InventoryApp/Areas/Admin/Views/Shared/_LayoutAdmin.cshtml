@@ -92,6 +92,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a id="lnkCoupon" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "Index", controller = "Coupons" })">
+                                <i class="fa fa-building-o"></i>
+                                &nbsp;Coupons
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a id="lnkSuggestion" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "Index", controller = "Suggestion" })">
                                 <i class="fa fa-info-circle"></i>
                                 &nbsp;Suggestions
@@ -184,10 +190,6 @@
                 }
             });
         }
-
     </script>
-
-    <!-- END JAVASCRIPTS -->
 </body>
-
 </html>
