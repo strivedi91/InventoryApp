@@ -15,6 +15,10 @@ using InventoryApp.Models;
 using InventoryApp.Models.ApiModels;
 using InventoryApp_DL.Entities;
 using InventoryApp_DL.Repositories;
+using iTextSharp.text;
+using iTextSharp.text.html.simpleparser;
+using iTextSharp.text.pdf;
+using iTextSharp.tool.xml;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Newtonsoft.Json;
@@ -315,7 +319,6 @@ namespace InventoryApp.Controllers.API
 
         private string[] GetProductImagesById(int productId)
         {
-
             string ProductImagePath = ConfigurationManager.AppSettings["ProductImagePath"].ToString();
 
             string path = Path.Combine((System.Web.Hosting.HostingEnvironment.ApplicationHost.ToString() + ProductImagePath), productId.ToString());
@@ -359,18 +362,22 @@ namespace InventoryApp.Controllers.API
             {
                 try
                 {
-
                     List<Expression<Func<Products, Object>>> includes = new List<Expression<Func<Products, object>>>();
                     Expression<Func<Products, object>> IncludeCategories = (category) => category.Categories;
                     Expression<Func<Products, object>> IncludeTierPricing = (pricing) => pricing.TierPricings;
                     Expression<Func<Products, object>> IncludeCart = (pricing) => pricing.Carts;
+                    Expression<Func<Products, object>> IncludeOffer = (Offer) => Offer.Offers;
                     includes.Add(IncludeCategories);
                     includes.Add(IncludeTierPricing);
                     includes.Add(IncludeCart);
+                    includes.Add(IncludeOffer);
 
                     var products = Repository<Products>.GetEntityListForQuery(x => x.IsActive && x.CategoryId == Id, null, includes).Item1;
                     var userSelectedProducts = Repository<AspNetUserPreferences>.
                         GetEntityListForQuery(x => x.UserId == LoggedInUserId).Item1.Select(x => x.ProductId);
+
+
+                    var categoryOffer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == Id && x.IsDeleted == false && x.IsActive == true).Item1;
 
                     Result = JObject.FromObject(new
                     {
@@ -391,8 +398,15 @@ namespace InventoryApp.Controllers.API
                                Type = product.Type,
                                Price = product.Price,
                                OfferPrice = product.OfferPrice,
+                               GST = product.ApplyGst ? product.Categories.GST : 0,
                                product.MOQ,
                                product.Quantity,
+                               offer = categoryOffer != null && categoryOffer.Count > 0
+                                              ? categoryOffer
+                                                    .Select(x => new { x.id, x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.CategoryId, x.ProductId, x.StartDate, x.EndDate })
+                                              : product.Offers
+                                                    .Where(x => x.IsDeleted == false && x.IsActive == true)
+                                                    .Select(x => new { x.id, x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.CategoryId, x.ProductId, x.StartDate, x.EndDate }),
                                TierPricing = product.TierPricings.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                IsSelected = userSelectedProducts.Contains(product.id),
                                IsInCart = product.Carts.Where(x => x.UserId == LoggedInUserId).Count() > 0 ? true : false,
@@ -438,7 +452,7 @@ namespace InventoryApp.Controllers.API
                 try
                 {
                     var product = Repository<Products>.GetEntityListForQuery(x => x.id == addToCartModel.ProductId).Item1.FirstOrDefault();
-                
+
                     var newCartItem = new Cart
                     {
                         UserId = LoggedInUserId,
@@ -768,6 +782,68 @@ namespace InventoryApp.Controllers.API
 
                     await Repository<Cart>.DeleteRange(userSelectedProducts);
 
+                    #region PDF
+                    string lsPDFBody = string.Empty;
+
+                    string fsFilePath = ConfigurationManager.AppSettings["OrderInvoicePdfPath"];
+                    string fsFileName = "Order_Invoice_" + orders.id + ".pdf";
+
+                    using (StreamReader loStreamReader = new StreamReader(System.Web.HttpContext.Current.Server.MapPath(ConfigurationManager.AppSettings["OrderInvoiceTemplatePath"])))
+                    {
+                        string lsLine = string.Empty;
+                        while ((lsLine = loStreamReader.ReadLine()) != null)
+                        {
+                            lsPDFBody += lsLine;
+                        }
+
+                        string itemList =  "<tr>"
+                                           + "<td></td>"
+                                           + "<td></td>"
+                                           + "<td></td>"
+                                           + "<td></td>"
+                                           + "<td></td>"
+                                           + "<td></td>"
+                                           + "</tr>";
+                        var counter = 1;
+                        foreach (var item in orderItems)
+                        {
+                            itemList += "<tr>"
+                                        + "<td>" + counter++ + "</td>"
+                                        + "<td>" + Repository<Products>.GetEntityListForQuery(x => x.id == item.ProductId).Item1.Select(y => y.Name).FirstOrDefault() + "</td>"
+                                        //+ "<td>" + item.OfferDescription + "</td>"
+                                        //+ "<td>" + item.CategoryId + "</td>"
+                                        //+ "<td>" + item.Products.Type + "</td>"
+                                        //+ "<td>" + item.Products.Brand + "</td>"
+                                        + "<td>" + item.Price + "</td>"
+                                        + "<td>" + item.Quantity + "</td>"
+                                        + "<td>" + item.Discount + "</td>"
+                                        + "<td>" + item.TotalPrice + "</td>"
+                                        + "</tr>";
+                        }
+
+                        lsPDFBody = lsPDFBody.Replace("{SellerName}", Repository<AspNetUsers>.GetEntityListForQuery(x => x.Id == orders.UserId).Item1.Select(y => y.Name).FirstOrDefault());
+                        lsPDFBody = lsPDFBody.Replace("{OrderDate}", orders.CreatedOn.ToShortDateString());
+                        lsPDFBody = lsPDFBody.Replace("{OrderAddress}", orders.ShippingAddress);
+                        lsPDFBody = lsPDFBody.Replace("{ProductList}", itemList);
+                        lsPDFBody = lsPDFBody.Replace("{SubTotal}", orders.SubTotal.ToString());
+                        lsPDFBody = lsPDFBody.Replace("{Discount}", orders.Discount.ToString());
+                        lsPDFBody = lsPDFBody.Replace("{Total}", orders.Total.ToString());
+
+
+                        StringReader loStringReader = new StringReader(lsPDFBody);
+
+                        Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 10f, 0f);
+
+                        PdfWriter writer = PdfWriter.GetInstance(pdfDoc, new FileStream(HttpContext.Current.Server.MapPath(fsFilePath + fsFileName), FileMode.Create));
+
+                        pdfDoc.Open();
+
+                        XMLWorkerHelper.GetInstance().ParseXHtml(writer, pdfDoc, loStringReader);
+
+                        pdfDoc.Close();
+                    }
+                    #endregion
+
                     Result = JObject.FromObject(new
                     {
                         status = true,
@@ -836,6 +912,7 @@ namespace InventoryApp.Controllers.API
                                     order.SubTotal,
                                     order.Total,
                                     ShippingAddress = string.IsNullOrEmpty(order.ShippingAddress) ? "" : order.ShippingAddress,
+                                    OrderInvoice = ConfigurationManager.AppSettings["OrderInvoicePdfPath"] + "Order_Invoice_" + order.id,
                                     Images = getProductImages(order.id)
                                 }
                         })
@@ -1328,23 +1405,23 @@ namespace InventoryApp.Controllers.API
                 foRequest.UserId = LoggedInUserId;
                 try
                 {
-                        var newSuggestion = new Suggestions
-                        {
-                            Suggestion = foRequest.Suggestion,
-                            ProductId = foRequest.ProductId,
-                            UserId = LoggedInUserId
-                        };
+                    var newSuggestion = new Suggestions
+                    {
+                        Suggestion = foRequest.Suggestion,
+                        ProductId = foRequest.ProductId,
+                        UserId = LoggedInUserId
+                    };
 
-                        await Repository<Suggestions>.InsertEntity(newSuggestion, entity => { return entity.Id; });
+                    await Repository<Suggestions>.InsertEntity(newSuggestion, entity => { return entity.Id; });
 
-                       
-                        Result = JObject.FromObject(new
-                        {
-                            status = true,
-                            message = "Suggestion added !",
-                            SuggestionId = newSuggestion.Id,
-                            AddSuggestionResult = ""
-                        });                    
+
+                    Result = JObject.FromObject(new
+                    {
+                        status = true,
+                        message = "Suggestion added !",
+                        SuggestionId = newSuggestion.Id,
+                        AddSuggestionResult = ""
+                    });
 
                     return GetOkResult(Result);
                 }

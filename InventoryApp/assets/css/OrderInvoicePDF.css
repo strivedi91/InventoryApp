@@ -1,0 +1,40 @@
+.table thead tr th {
+    font-size: 12px;
+    text-transform: uppercase;
+    font-family: 'avenirheavy';
+    vertical-align: middle;
+    padding: 0 15px;
+    border-right: 1px solid rgba(216, 216, 216, 0.55);
+    height: 36px;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    background-color: transparent;
+}
+
+    .table thead {
+        border-top: 0;
+        background: #ff0078;
+        background: -moz-linear-gradient(left, #ff0078 0%, #f58c52 100%);
+        background: -webkit-linear-gradient(left, #ff0078 0%,#f58c52 100%);
+        background: linear-gradient(to right, #ff0078 0%,#f58c52 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff0078', endColorstr='#f58c52',GradientType=1 );
+        background-attachment: fixed;
+        -webkit-border-radius: 15px 15px 0 0;
+        border-radius: 15px 15px 0 0;
+    }
+
+body {
+    height: 100%;
+    font-family: 'AvenirLTStd-Book';
+    font-size: 14px;
+    letter-spacing: 1px;
+    font-weight: 400;
+    background-color: #F7F7F7;
+    color: #000000;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
