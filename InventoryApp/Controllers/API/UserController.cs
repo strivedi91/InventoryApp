@@ -912,7 +912,7 @@ namespace InventoryApp.Controllers.API
                                     order.SubTotal,
                                     order.Total,
                                     ShippingAddress = string.IsNullOrEmpty(order.ShippingAddress) ? "" : order.ShippingAddress,
-                                    OrderInvoice = ConfigurationManager.AppSettings["OrderInvoicePdfPath"] + "Order_Invoice_" + order.id,
+                                    OrderInvoice = Url.Content(ConfigurationManager.AppSettings["OrderInvoicePdfPath"] + "Order_Invoice_" + order.id),
                                     Images = getProductImages(order.id)
                                 }
                         })
