@@ -29,7 +29,7 @@ namespace InventoryApp.Controllers.API
     [RoutePrefix("api")]
     public class UserController : BaseAPIController
     {
-
+        #region public methods
         [HttpGet]
         [Route("categories")]
         public async Task<IHttpActionResult> getAllCategories()
@@ -262,6 +262,8 @@ namespace InventoryApp.Controllers.API
                     var userSelectedProducts = Repository<AspNetUserPreferences>.
                         GetEntityListForQuery(x => x.UserId == LoggedInUserId && x.CategoryId == Id && x.Products.IsActive == true, null, includes).Item1;
 
+                    var categoryOffer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == Id && x.IsDeleted == false && x.IsActive == true).Item1;
+
                     Result = JObject.FromObject(new
                     {
                         status = true,
@@ -280,10 +282,17 @@ namespace InventoryApp.Controllers.API
                                     Brand = product.Products.Brand,
                                     Description = product.Products.Description,
                                     Type = product.Products.Type,
-                                    Price = product.Products.Price,
+                                    Price = product.Products.Price + (product.Products.ApplyGst ? (product.Products.Price * product.Categories.GST) / 100 : 0),
                                     OfferPrice = product.Products.OfferPrice,
+                                    GST = product.Products.ApplyGst ? product.Categories.GST : 0,
                                     product.Products.MOQ,
                                     product.Products.Quantity,
+                                    offer = categoryOffer != null && categoryOffer.Count > 0
+                                              ? categoryOffer
+                                                    .Select(x => new { x.id, x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.CategoryId, x.ProductId, x.StartDate, x.EndDate })
+                                              : product.Products.Offers
+                                                    .Where(x => x.IsDeleted == false && x.IsActive == true)
+                                                    .Select(x => new { x.id, x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.CategoryId, x.ProductId, x.StartDate, x.EndDate }),
                                     TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive).
                                     Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                     IsInCart = Repository<Cart>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false,
@@ -315,40 +324,6 @@ namespace InventoryApp.Controllers.API
                 });
                 return GetOkResult(Result);
             }
-        }
-
-        private string[] GetProductImagesById(int productId)
-        {
-            string ProductImagePath = ConfigurationManager.AppSettings["ProductImagePath"].ToString();
-
-            string path = Path.Combine((System.Web.Hosting.HostingEnvironment.ApplicationHost.ToString() + ProductImagePath), productId.ToString());
-
-            string Productpath = Path.Combine(HttpContext.Current.Server.MapPath(ProductImagePath), productId.ToString());
-
-            if (Directory.Exists(Productpath))
-            {
-                DirectoryInfo info = new DirectoryInfo(Productpath);
-                FileInfo[] files = info.GetFiles("*.*");
-
-                List<string> ProductImages = new List<string>();
-
-                foreach (FileInfo file in files)
-                {
-                    string fileName = file.Name;
-                    ProductImages.Add(Url.Content(ProductImagePath) + productId.ToString() + "/" + fileName);
-                }
-                return ProductImages.ToArray();
-            }
-
-            //if (Directory.Exists(path))
-            //{
-            //    return Directory.GetFiles(path);
-            //}
-            else
-            {
-                return new string[] { };
-            }
-
         }
 
         [HttpGet]
@@ -396,7 +371,7 @@ namespace InventoryApp.Controllers.API
                                Brand = product.Brand,
                                Description = product.Description,
                                Type = product.Type,
-                               Price = product.Price,
+                               Price = product.Price + (product.ApplyGst ? (product.Price * product.Categories.GST) / 100 : 0),
                                OfferPrice = product.OfferPrice,
                                GST = product.ApplyGst ? product.Categories.GST : 0,
                                product.MOQ,
@@ -740,16 +715,16 @@ namespace InventoryApp.Controllers.API
             {
                 try
                 {
-
                     List<Expression<Func<Cart, Object>>> includes = new List<Expression<Func<Cart, object>>>();
                     Expression<Func<Cart, object>> IncludeProducts = (product) => product.Products;
                     Expression<Func<Cart, object>> IncludeCategory = (category) => category.Categories;
+                    Expression<Func<Cart, object>> IncludeOffers = (offer) => offer.Offers;
                     includes.Add(IncludeProducts);
                     includes.Add(IncludeCategory);
+                    includes.Add(IncludeOffers);
 
                     var userSelectedProducts = Repository<Cart>.
                         GetEntityListForQuery(x => x.UserId == LoggedInUserId, null, includes).Item1;
-
 
                     Orders orders = new Orders
                     {
@@ -775,7 +750,12 @@ namespace InventoryApp.Controllers.API
                             Discount = 0,
                             Price = x.Products.Price,
                             TotalPrice = x.Products.Price,
-                            ProductId = x.ProductId
+                            ProductId = x.ProductId,
+                            OfferId = x.OfferId,
+                            OfferCode = x.Offers.OfferCode,
+                            OfferDescription = x.Offers.OfferDescription,
+                            FlatDiscount = x.Offers.FlatDiscount,
+                            PercentageDiscount = x.Offers.PercentageDiscount,
                         }));
 
                     await Repository<OrderDetails>.InsertMultipleEntities(orderItems);
@@ -796,7 +776,7 @@ namespace InventoryApp.Controllers.API
                             lsPDFBody += lsLine;
                         }
 
-                        string itemList =  "<tr>"
+                        string itemList = "<tr>"
                                            + "<td></td>"
                                            + "<td></td>"
                                            + "<td></td>"
@@ -912,7 +892,7 @@ namespace InventoryApp.Controllers.API
                                     order.SubTotal,
                                     order.Total,
                                     ShippingAddress = string.IsNullOrEmpty(order.ShippingAddress) ? "" : order.ShippingAddress,
-                                    OrderInvoice = Url.Content(ConfigurationManager.AppSettings["OrderInvoicePdfPath"] + "Order_Invoice_" + order.id),
+                                    OrderInvoice = getOrderInvoiceUrl(order.id),
                                     Images = getProductImages(order.id)
                                 }
                         })
@@ -936,6 +916,56 @@ namespace InventoryApp.Controllers.API
                 {
                     status = false,
                     message = "Unauthorized",
+                    OrderResult = ""
+                });
+                return GetOkResult(Result);
+            }
+        }
+
+        [HttpGet]
+        [Route("user/offers/{Id:int}")]
+        public async Task<IHttpActionResult> GetOffers(int Id)
+        {
+            JObject Result = null;
+
+            try
+            {
+                List<Expression<Func<Offers, Object>>> includes = new List<Expression<Func<Offers, object>>>();
+                Expression<Func<Offers, object>> IncludeProducts = (products) => products.Products;
+                Expression<Func<Offers, object>> IncludeCategorys = (categories) => categories.Categories;
+                includes.Add(IncludeProducts);
+                includes.Add(IncludeCategorys);
+
+                var offers = Repository<Offers>.
+                    GetEntityListForQuery(x => x.id == Id, null, includes).Item1;
+
+                Result = JObject.FromObject(new
+                {
+                    status = true,
+                    message = "",
+                    OfferResult = from offer in offers
+                                  select new
+                                  {
+                                      Id = offer.id,
+                                      OfferCode = offer.OfferCode,
+                                      OfferDescription = offer.OfferDescription,
+                                      FlatDiscount = offer.FlatDiscount,
+                                      PercentageDiscount = offer.PercentageDiscount,
+                                      Category = offer.Categories != null ? offer.Categories.Name : "",
+                                      Product = offer.Products != null ? offer.Products.Name : "",
+                                      StartDate = offer.StartDate,
+                                      EndDate = offer.EndDate,
+                                      IsActive = offer.IsActive
+                                  }
+                });
+                return GetOkResult(Result);
+            }
+            catch (Exception ex)
+            {
+                Result = JObject.FromObject(new
+                {
+                    status = false,
+                    message = "Sorry, there was an error processing your request. Please try again !",
                     OrderResult = ""
                 });
                 return GetOkResult(Result);
@@ -1447,5 +1477,64 @@ namespace InventoryApp.Controllers.API
                 return GetOkResult(Result);
             }
         }
+        #endregion
+
+        #region private methodes
+        private string[] GetProductImagesById(int productId)
+        {
+            string ProductImagePath = ConfigurationManager.AppSettings["ProductImagePath"].ToString();
+
+            string path = Path.Combine((System.Web.Hosting.HostingEnvironment.ApplicationHost.ToString() + ProductImagePath), productId.ToString());
+
+            string Productpath = Path.Combine(HttpContext.Current.Server.MapPath(ProductImagePath), productId.ToString());
+
+            if (Directory.Exists(Productpath))
+            {
+                DirectoryInfo info = new DirectoryInfo(Productpath);
+                FileInfo[] files = info.GetFiles("*.*");
+
+                List<string> ProductImages = new List<string>();
+
+                foreach (FileInfo file in files)
+                {
+                    string fileName = file.Name;
+                    ProductImages.Add(Url.Content(ProductImagePath) + productId.ToString() + "/" + fileName);
+                }
+                return ProductImages.ToArray();
+            }
+
+            //if (Directory.Exists(path))
+            //{
+            //    return Directory.GetFiles(path);
+            //}
+            else
+            {
+                return new string[] { };
+            }
+
+        }
+
+        private string getOrderInvoiceUrl(int OrderId)
+        {
+            string PDFPath = HttpContext.Current.Server.MapPath(ConfigurationManager.AppSettings["OrderInvoicePdfPath"]);
+
+            string PdfName = "Order_Invoice_" + OrderId.ToString() + ".pdf";
+
+            if (Directory.Exists(PDFPath))
+            {
+                DirectoryInfo info = new DirectoryInfo(PDFPath);
+                FileInfo[] files = info.GetFiles(PdfName);
+
+                if (files != null && files.Count() > 0 && files[0].Name.ToLower() == PdfName.ToLower())
+                    return Url.Content(ConfigurationManager.AppSettings["OrderInvoicePdfPath"] + PdfName);
+                else
+                    return string.Empty;
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+        #endregion
     }
 }

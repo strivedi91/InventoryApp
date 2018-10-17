@@ -30,6 +30,7 @@ namespace InventoryApp_DL.Entities
         public string OfferDescription { get; set; } // OfferDescription
         public decimal? FlatDiscount { get; set; } // FlatDiscount
         public int? PercentageDiscount { get; set; } // PercentageDiscount
+        public int? OfferId { get; set; } // OfferId
 
         // Foreign keys
         public virtual Categories Categories { get; set; } //  FK_OrderDetails_Categories

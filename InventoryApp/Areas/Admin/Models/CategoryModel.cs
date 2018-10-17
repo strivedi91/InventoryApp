@@ -33,6 +33,7 @@ namespace InventoryApp.Areas.Admin.Models
 
         public int ParentId { get; set; }
 
+        [Range(1, 100, ErrorMessage = "GST should be 1 to 100.")]
         public decimal? GST { get; set; }
 
         public string stSearch { get; set; }

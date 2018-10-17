@@ -47,6 +47,9 @@
                     </div>
                     <div class="col-lg-5 col-md-7">
                         @Html.TextBoxFor(m => m.GST, new { @class = "form-control placeholder-no-fix", @placeholder = "GST", @tabindex = "3", @type="number" })
+                        <div class="required">
+                            @Html.ValidationMessageFor(m => m.GST)
+                        </div>
                     </div>
                 </div>
             </div>
