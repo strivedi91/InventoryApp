@@ -293,7 +293,7 @@ namespace InventoryApp.Controllers.API
                                               : product.Products.Offers
                                                     .Where(x => x.IsDeleted == false && x.IsActive == true)
                                                     .Select(x => new { x.id, x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.CategoryId, x.ProductId, x.StartDate, x.EndDate }),
-                                    TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive).
+                                    TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive && x.IsDeleted == false).
                                     Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                     IsInCart = Repository<Cart>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false,
                                     IsInWishList = Repository<WishList>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false,
@@ -493,8 +493,10 @@ namespace InventoryApp.Controllers.API
                     List<Expression<Func<Cart, Object>>> includes = new List<Expression<Func<Cart, object>>>();
                     Expression<Func<Cart, object>> IncludeProducts = (product) => product.Products;
                     Expression<Func<Cart, object>> IncludeCategory = (category) => category.Categories;
+                    Expression<Func<Cart, object>> IncludeOffers = (offers) => offers.Offers;
                     includes.Add(IncludeProducts);
                     includes.Add(IncludeCategory);
+                    includes.Add(IncludeOffers);
 
                     var userSelectedProducts = Repository<Cart>.
                         GetEntityListForQuery(x => x.UserId == LoggedInUserId, null, includes).Item1;
@@ -523,7 +525,9 @@ namespace InventoryApp.Controllers.API
                                     product.Products?.MOQ,
                                     product.Products?.Quantity,
                                     SelectedQuantity = product.Quantity,
-                                    TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive).
+                                    OfferDetails = Repository<Offers>.GetEntityListForQuery(x => x.id == product.OfferId && x.IsDeleted == false).
+                                    Item1.Select(x => new { x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.StartDate, x.EndDate}),
+                                    TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive && x.IsDeleted == false).
                                     Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                     Images = GetProductImagesById(product.Products.id)
                                 }
@@ -1346,7 +1350,7 @@ namespace InventoryApp.Controllers.API
                                     OfferPrice = product.Products?.OfferPrice,
                                     product.Products?.MOQ,
                                     product.Products?.Quantity,
-                                    TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive).
+                                    TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive && x.IsDeleted == false).
                                     Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                     Images = GetProductImagesById(product.Products.id)
                                 }
