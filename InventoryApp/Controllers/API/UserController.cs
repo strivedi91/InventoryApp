@@ -254,7 +254,7 @@ namespace InventoryApp.Controllers.API
                 {
                     List<Expression<Func<AspNetUserPreferences, Object>>> includes = new List<Expression<Func<AspNetUserPreferences, object>>>();
                     Expression<Func<AspNetUserPreferences, object>> IncludeCategories = (category) => category.Categories;
-                    Expression<Func<AspNetUserPreferences, object>> IncludeProducts = (product) => product.Products;
+                    Expression<Func<AspNetUserPreferences, object>> IncludeProducts = (product) => product.Products;                    
                     includes.Add(IncludeCategories);
                     includes.Add(IncludeProducts);
 
@@ -297,6 +297,7 @@ namespace InventoryApp.Controllers.API
                                     Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                     IsInCart = Repository<Cart>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false,
                                     IsInWishList = Repository<WishList>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false,
+                                    Reviews = Repository<ProductReview>.GetEntityListForQuery(x => x.ProductId == product.ProductId),
                                     Images = GetProductImagesById(product.Products.id)
                                 }
                         })
@@ -342,10 +343,12 @@ namespace InventoryApp.Controllers.API
                     Expression<Func<Products, object>> IncludeTierPricing = (pricing) => pricing.TierPricings;
                     Expression<Func<Products, object>> IncludeCart = (pricing) => pricing.Carts;
                     Expression<Func<Products, object>> IncludeOffer = (Offer) => Offer.Offers;
+                    Expression<Func<Products, object>> IncludeReview = (review) => review.ProductReviews;
                     includes.Add(IncludeCategories);
                     includes.Add(IncludeTierPricing);
                     includes.Add(IncludeCart);
                     includes.Add(IncludeOffer);
+                    includes.Add(IncludeReview);
 
                     var products = Repository<Products>.GetEntityListForQuery(x => x.IsActive && x.CategoryId == Id, null, includes).Item1;
                     var userSelectedProducts = Repository<AspNetUserPreferences>.
@@ -386,6 +389,7 @@ namespace InventoryApp.Controllers.API
                                IsSelected = userSelectedProducts.Contains(product.id),
                                IsInCart = product.Carts.Where(x => x.UserId == LoggedInUserId).Count() > 0 ? true : false,
                                IsInWishList = product.WishLists.Where(x => x.UserId == LoggedInUserId).Count() > 0 ? true : false,
+                               Reviews=product.ProductReviews,
                                Images = GetProductImagesById(product.id)
                            }
                         })
@@ -526,7 +530,7 @@ namespace InventoryApp.Controllers.API
                                     product.Products?.Quantity,
                                     SelectedQuantity = product.Quantity,
                                     OfferDetails = Repository<Offers>.GetEntityListForQuery(x => x.id == product.OfferId && x.IsDeleted == false).
-                                    Item1.Select(x => new { x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.StartDate, x.EndDate}),
+                                    Item1.Select(x => new { x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.StartDate, x.EndDate }),
                                     TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive && x.IsDeleted == false).
                                     Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                     Images = GetProductImagesById(product.Products.id)
@@ -1481,7 +1485,66 @@ namespace InventoryApp.Controllers.API
                 return GetOkResult(Result);
             }
         }
+
+        [HttpPost]
+        [Route("user/feedback")]
+        public async Task<IHttpActionResult> addProductReview(SaveProductReviewModel foRequest)
+        {
+            IEnumerable<string> headerValues = Request.Headers.GetValues("UserId");
+            var LoggedInUserId = headerValues.FirstOrDefault();
+            JObject Result = null;
+
+            if (LoggedInUserId != null)
+            {                
+                try
+                {
+                    var newSuggestion = new ProductReview
+                    {
+                        Review = foRequest.Review,
+                        ProductId = foRequest.ProductId,
+                        UserId = LoggedInUserId
+                    };
+
+                    await Repository<ProductReview>.InsertEntity(newSuggestion, entity => { return entity.Id; });
+
+
+                    Result = JObject.FromObject(new
+                    {
+                        status = true,
+                        message = "Review added !",
+                        SuggestionId = newSuggestion.Id,
+                        AddSuggestionResult = ""
+                    });
+
+                    return GetOkResult(Result);
+                }
+                catch (Exception ex)
+                {
+                    Result = JObject.FromObject(new
+                    {
+                        status = false,
+                        message = "Sorry, there was an error processing your request. Please try again !",
+                        AddWishListResult = ""
+                    });
+                    return GetOkResult(Result);
+                }
+            }
+            else
+            {
+                Result = JObject.FromObject(new
+                {
+                    status = false,
+                    message = "Unauthorized",
+                    AddWishListResult = ""
+                });
+                return GetOkResult(Result);
+            }
+        }
+
+
         #endregion
+
+
 
         #region private methodes
         private string[] GetProductImagesById(int productId)
