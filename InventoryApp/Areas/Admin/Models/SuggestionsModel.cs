@@ -35,9 +35,15 @@ namespace InventoryApp.Areas.Admin.Models
 
         public string UserName { get; set; }
 
+        public string Email { get; set; }
+
         public string UserContectNumber { get; set; }
 
         public string Suggestion { get; set; }
+
+        public bool? IsReplied { get; set; }
+
+        public string ProductImgPath { get; set; }
 
         public string stSearch { get; set; }
 
@@ -48,5 +54,12 @@ namespace InventoryApp.Areas.Admin.Models
         public string stSortColumn { get; set; }
 
         public Int64 inRowNumber { get; set; }
+    }
+
+    public class SuggestionReplayRequest
+    {
+        public int SuggestionId { get; set; }
+
+        public string Replay { get; set; }
     }
 }
