@@ -1,4 +1,7 @@
 ﻿@using Microsoft.AspNet.Identity
+@using InventoryApp_DL.Entities
+@using InventoryApp_DL.Repositories
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -86,9 +89,14 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            @{
+                                var loOrders = Repository<Orders>.GetEntityListForQuery(null).Item1;
+
+                                loOrders = loOrders.Where(x => x.CreatedOn.Date == DateTime.Now.Date).ToList();
+                            }
                             <a id="lnkManageOrders" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Order" })">
                                 <i class="fa fa-building-o"></i>
-                                &nbsp;Orders
+                                &nbsp;Orders&nbsp;(@loOrders.Count())
                             </a>
                         </li>
                         <li class="nav-item">
@@ -98,9 +106,14 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            @{
+                                var loSuggestions = Repository<Suggestions>.GetEntityListForQuery(null).Item1;
+
+                                loSuggestions = loSuggestions.Where(x => x.CreatedOn?.Date == DateTime.Now.Date).ToList();
+                            }
                             <a id="lnkSuggestion" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "Index", controller = "Suggestion" })">
                                 <i class="fa fa-info-circle"></i>
-                                &nbsp;Suggestions
+                                &nbsp;Suggestions&nbsp;(@loSuggestions.Count())
                             </a>
                         </li>
                     </ul>

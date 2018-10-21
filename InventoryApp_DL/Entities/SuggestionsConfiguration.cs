@@ -32,6 +32,7 @@ namespace InventoryApp_DL.Entities
             Property(x => x.Suggestion).HasColumnName("Suggestion").IsOptional();
             Property(x => x.SuggestionResponse).HasColumnName("SuggestionResponse").IsOptional();
             Property(x => x.CreatedOn).HasColumnName("CreatedOn").IsOptional();
+            Property(x => x.IsReplied).HasColumnName("IsReplied").IsOptional();
 
             // Foreign keys
             HasRequired(a => a.Products).WithMany(b => b.Suggestions).HasForeignKey(c => c.ProductId); // FK__Suggestio__Produ__282DF8C2

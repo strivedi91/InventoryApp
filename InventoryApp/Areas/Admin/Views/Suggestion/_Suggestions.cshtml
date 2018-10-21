@@ -1,5 +1,21 @@
 ﻿@model InventoryApp.Areas.Admin.Models.SuggestionsModel
 
+<style>
+    .productImg {
+        transition: transform .2s; /* Animation */
+        height: 230px;
+        width: 200px;
+        padding: 2px;
+        margin: 20px auto;
+        border: 1px solid #c7c6c6;
+    }
+
+        .productImg:hover {
+            z-index: 10000;
+            transform: scale(1.1);
+        }
+</style>
+
 @if (Model != null && Model.loSuggestionList.Count > 0)
 {
     if (TempData["SuccessMsg"] != null && TempData["SuccessMsg"].ToString() != "")
@@ -29,19 +45,37 @@
             <thead>
                 <tr class="heading">
                     @Html.Hidden("hdnPageIndex", Model.inPageIndex)
+                    <th style="width:15%;" class="heading-text">Image</th>
                     <th id="sortID" style="width:15%;" onclick="getOrderList('ProductName', 'sortProductName');" class="heading-text sorting">Product Name</th>
                     <th id="sortName" style="width:15%;" onclick="getOrderList('UserName', 'sortUserName');" class="heading-text sorting">Seller Name</th>
+                    <th id="sortName" style="width:15%;" onclick="getOrderList('UserEmail', 'sortEmail');" class="heading-text sorting">Seller Email</th>
                     <th id="sortType" style="width:15%;" onclick="getOrderList('UserContact', 'sortUserContact');" class="heading-text sorting">Seller Contact</th>
                     <th id="sortBrand" onclick="getOrderList('Suggestion', 'sortSuggestion');" class="heading-text sorting">Suggestion</th>
+                    <th class="heading-text">Action</th>
                 </tr>
             </thead>
             @foreach (var suggestion in Model.loSuggestionList)
             {
                 <tr>
+                    <td>
+                        @if (@suggestion.ProductImgPath != null && @suggestion.ProductImgPath != "")
+                        {
+                            <a href="@suggestion.ProductImgPath" target="_blank"><img src="@suggestion.ProductImgPath" class="productImg" style="height:80px; width:85px;" /></a>
+                        }
+                        else
+                        {
+                            <text>No Image</text>
+                        }
+
+                    </td>
                     <td>@suggestion.ProductName</td>
                     <td>@suggestion.UserName</td>
+                    <td>@suggestion.Email</td>
                     <td>@suggestion.UserContectNumber</td>
                     <td style="text-align:left">@suggestion.Suggestion</td>
+                    <td>
+                        <a href="#" data-toggle="modal" data-target="#popReplay" title="Replay" onclick="$('#lblSuggestion').text('@suggestion.Suggestion'); $('#txtReplay').val(''); $('#hdnSuggestionIdForResponse').val(@suggestion.Id)"><i class="fa fa-reply"></i></a>
+                    </td>
                 </tr>
             }
         </table>
@@ -61,6 +95,32 @@
         </div>
     }
     @Html.Hidden("hdnId", "")
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="popReplay">
+        <div class="modal-dialog">
+            <div class="modal-content white-box bg-white">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size:larger;">&times;</span></button>
+                    <h4 class="modal-title">Replay</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Suggestion:</label>
+                        <label id="lblSuggestion"></label>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" id="hdnSuggestionIdForResponse" />
+                        <label>Replay:</label>
+                        <textarea class="form-control" id="txtReplay"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-gradient" data-dismiss="modal" title="Replay" onclick="ReplayForSuggestion();">Replay</button>
+                    <button type="button" class="btn btn-gradient" data-dismiss="modal" title="Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 else
 {
@@ -71,8 +131,39 @@ else
     </div>
 }
 
+<script>
+    var loReplayForSuggestionUrl = '@Url.RouteUrl("Admin_default", new { controller = "Suggestion", action = "ReplayForSuggestion" })';
+</script>
+
 <script type="text/javascript">
     $(document).ready(function () {
         GetPager($("#hdnTotalRec").val(), $("#hdnPageIndex").val());
     });
+
+    function ReplayForSuggestion()
+    {
+        foRequest = {
+            SuggestionId: $('#hdnSuggestionIdForResponse').val(),
+            Replay: $('#txtReplay').val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: loReplayForSuggestionUrl,
+            content: "application/json; charset=utf-8",
+            dataType: "json",
+            data: foRequest,
+            success: function (loResponse) {
+               
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (errorThrown === "abort") {
+                    return;
+                }
+                else {
+                    alert(errorThrown);
+                }
+            }
+        });
+    }
 </script>

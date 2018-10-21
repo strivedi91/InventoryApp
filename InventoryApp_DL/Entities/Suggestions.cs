@@ -24,6 +24,7 @@ namespace InventoryApp_DL.Entities
         public string Suggestion { get; set; } // Suggestion
         public string SuggestionResponse { get; set; } // SuggestionResponse
         public DateTime? CreatedOn { get; set; } // CreatedOn
+        public bool? IsReplied { get; set; } // IsReplied
 
         // Foreign keys
         public virtual AspNetUsers AspNetUsers { get; set; } //  FK__Suggestio__UserI__29221CFB
