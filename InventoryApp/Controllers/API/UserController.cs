@@ -297,7 +297,7 @@ namespace InventoryApp.Controllers.API
                                     Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                     IsInCart = Repository<Cart>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false,
                                     IsInWishList = Repository<WishList>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false,
-                                    Reviews = Repository<ProductReview>.GetEntityListForQuery(x => x.ProductId == product.ProductId),
+                                    //Reviews = Repository<ProductReview>.GetEntityListForQuery(x => x.ProductId == product.ProductId),
                                     Images = GetProductImagesById(product.Products.id)
                                 }
                         })
@@ -328,6 +328,62 @@ namespace InventoryApp.Controllers.API
         }
 
         [HttpGet]
+        [Route("product/{Id:int}/review")]
+        public async Task<IHttpActionResult> GetProductReviewById(int Id)
+        {
+            IEnumerable<string> headerValues = Request.Headers.GetValues("UserId");
+            var LoggedInUserId = headerValues.FirstOrDefault();
+            JObject Result = null;
+            if (LoggedInUserId != null)
+            {
+                try
+                {
+                    
+                    var productReviews = Repository<ProductReview>.GetEntityListForQuery(x => x.ProductId ==Id, null).Item1;
+                    Result = JObject.FromObject(new
+                    {
+                        status = true,
+                        message = "",
+                        ProductReviewResult = JObject.FromObject(new
+                        {
+                            Reviews =
+                           from review in productReviews
+                           select new
+                           {
+                               review.Id,
+                               review.Rating,
+                               review.Review,
+                               
+                           }
+                        })
+                    });
+                    return GetOkResult(Result);
+                }
+                catch (Exception)
+                {
+                    Result = JObject.FromObject(new
+                    {
+                        status = false,
+                        message = "Sorry, there was an error processing your request. Please try again !",
+                        ProductResult = ""
+                    });
+                    return GetOkResult(Result);
+                }
+            }
+            else
+            {
+                Result = JObject.FromObject(new
+                {
+                    status = false,
+                    message = "Unauthorized",
+                    ProductResult = ""
+                });
+                return GetOkResult(Result);
+            }
+        }
+
+
+        [HttpGet]
         [Route("category/{Id:int}/products")]
         public async Task<IHttpActionResult> GetProductsByCategoryId(int Id)
         {
@@ -343,12 +399,12 @@ namespace InventoryApp.Controllers.API
                     Expression<Func<Products, object>> IncludeTierPricing = (pricing) => pricing.TierPricings;
                     Expression<Func<Products, object>> IncludeCart = (pricing) => pricing.Carts;
                     Expression<Func<Products, object>> IncludeOffer = (Offer) => Offer.Offers;
-                    Expression<Func<Products, object>> IncludeReview = (review) => review.ProductReviews;
+                    //Expression<Func<Products, object>> IncludeReview = (review) => review.ProductReviews;
                     includes.Add(IncludeCategories);
                     includes.Add(IncludeTierPricing);
                     includes.Add(IncludeCart);
                     includes.Add(IncludeOffer);
-                    includes.Add(IncludeReview);
+                    //includes.Add(IncludeReview);
 
                     var products = Repository<Products>.GetEntityListForQuery(x => x.IsActive && x.CategoryId == Id, null, includes).Item1;
                     var userSelectedProducts = Repository<AspNetUserPreferences>.
@@ -389,7 +445,7 @@ namespace InventoryApp.Controllers.API
                                IsSelected = userSelectedProducts.Contains(product.id),
                                IsInCart = product.Carts.Where(x => x.UserId == LoggedInUserId).Count() > 0 ? true : false,
                                IsInWishList = product.WishLists.Where(x => x.UserId == LoggedInUserId).Count() > 0 ? true : false,
-                               Reviews=product.ProductReviews,
+                               //Reviews=product.ProductReviews,
                                Images = GetProductImagesById(product.id)
                            }
                         })
