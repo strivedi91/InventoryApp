@@ -1,0 +1,43 @@
+﻿@model List<InventoryApp.Areas.Admin.Models.PageAccessModel>
+@using InventoryApp.Helpers
+@using InventoryApp_DL.Entities
+@using InventoryApp_DL.Repositories
+@using System.Linq.Expressions
+
+<div class="form-group">
+    <div class="row">
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <label class="label">
+                <b>Pages:</b>
+            </label>
+        </div>
+    </div>
+</div>
+
+@{ 
+    var loAllPages = Repository<Pages>.GetEntityListForQuery(x => x.IsDeleted == false).Item1;
+}
+
+@foreach (var page in loAllPages)
+{
+    var loPageAccess = Model.Where(x => x.PageId == page.Id).FirstOrDefault();
+    int inPageAccessId = loPageAccess != null ? loPageAccess.Id : 0;
+    string checkboxVal = loPageAccess != null && loPageAccess.IsAccessGranted.GetValueOrDefault(false) ? "checked" : "";
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                <label>
+                    @page.PageName:&nbsp;&nbsp;
+                </label>
+            </div>
+            <div class="col-lg-5 col-md-7">
+                <input type="checkbox" class="checkbox" id="@("cb_" + page.Id + "_"+ inPageAccessId)" @checkboxVal />
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    var loReplayForSuggestionUrl = '@Url.RouteUrl("Admin_default", new { controller = "Suggestion", action = "ReplayForSuggestion" })';
+</script>

@@ -112,6 +112,12 @@
     <Compile Include="Entities\DocumentTypesConfiguration.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\NotificationHistory.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\NotificationHistoryConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\Offers.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
@@ -128,6 +134,18 @@
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\OrdersConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\PageAccess.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\PageAccessConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Pages.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\PagesConfiguration.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\ProductReview.cs">

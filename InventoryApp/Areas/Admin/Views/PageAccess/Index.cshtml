@@ -1,0 +1,160 @@
+﻿@model InventoryApp.Areas.Admin.Models.PageAccessModel
+@using InventoryApp.Helpers
+@using InventoryApp_DL.Entities
+@using InventoryApp_DL.Repositories
+@using System.Linq.Expressions
+@{
+    ViewBag.Title = "PageAccess";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<section>
+    <div class="section-title">
+        <h2>Page Access</h2>
+    </div>
+    <div class="table-responsive" style="display:none" id="alertMsgSuccess">
+        <div class="alert alert-success">
+            <span class="close" data-dismiss="alert" aria-label="close">&times;</span>
+            <span style="vertical-align:middle;" id="textMsgSuccess"> </span>
+        </div>
+    </div>
+    <div class="table-responsive" style="display:none" id="alertMsgError">
+        <div class="alert alert-danger">
+            <span class="close" data-dismiss="alert" aria-label="close">&times;</span>
+            <span style="vertical-align:middle;" id="textMsgError"> </span>
+        </div>
+    </div>
+    <div class="white-box bg-white space">
+        <form>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3 col-md-5">
+                        <label class="label">
+                            <b>User:</b>
+                        </label>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        @Html.DropDownListFor(m => m.UserId, Model.objUserList, new { @class = "form-control placeholder-no-fix", @autofocus = "autofocus", @tabindex = "1", @id = "ddlUser" })
+                        <span class="field-validation-error" id="errorMsgUser" style="display: none;">
+
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <form>
+            <hr />
+            <div id="divPageAccess" style="display: none;">
+                @*@Html.Partial("_PageAccess", new List<InventoryApp.Areas.Admin.Models.PageAccessModel>())*@
+            </div>
+
+            <div class="btn-block-solid-pink text-center pull-right">
+                <button type="button" title="Submit" class="btn btn-gradient" id="btnSubmit">
+                    <i class="fa fa-save"></i>&nbsp;&nbsp;Save <i class=" m-icon-swapright">
+                    </i>
+                </button>
+                <button type="reset" class="btn btn-gradient" title="Cancel">
+                    Reset
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script type="text/javascript">
+        var lsAssignPageAccessUrl = '@Url.RouteUrl("Admin_default", new { controller = "PageAccess", action = "AssignPageAccess" })';
+        var lsGetPageAccessDetailsByUserIdUrl = '@Url.RouteUrl("Admin_default", new { controller = "PageAccess", action = "GetPageAccessDetailsByUserId" })';
+    </script>
+</section>
+
+<script>
+    $(document).ready(function () {
+        $(".menu-item a").removeClass("active");
+        $('#lnkPageAccess').addClass('active');
+    });
+
+    $('#btnSubmit').click(function () {
+        if (typeof $('#ddlUser').val() === 'undefined' || $('#ddlUser').val() === '' || $('#ddlUser').val() === '0') {
+            $('#errorMsgUser').text('User is Required field.').show();
+            return false;
+        }
+
+        var foRequest = [];
+        var objPageAccess = [];
+        @{
+            var loAllPages = Repository<Pages>.GetEntityListForQuery(x => x.IsDeleted == false).Item1;
+
+            foreach (var page in loAllPages)
+            {
+            <text>
+                 objPageAccess.push({
+                     Id: parseInt($("[id *= 'cb_" + @page.Id + "_']").attr('id').split('_')[2]),
+                     PageId: parseInt($("[id *= 'cb_" + @page.Id + "_']").attr('id').split('_')[1]),
+                     UserId: $('#ddlUser').val(),
+                     IsAccessGranted: $("[id *= 'cb_" + @page.Id + "_']").is(':checked')
+                 });
+            </text>
+            }
+       }
+                foRequest = {
+            objPageAccess: objPageAccess
+            };
+            console.log(foRequest);
+
+        $.ajax({
+            url: lsAssignPageAccessUrl,
+            type: 'post',
+            dataType: 'json',
+            data: foRequest,
+            success: function (loResponse) {
+                    if (loResponse === true || loResponse === "true") {
+                    $('#alertMsgError').hide();
+                    $('#textMsgError').text('');
+                    $('#alertMsgSuccess').show();
+                    $('#textMsgSuccess').text('Page Access has been updated successfully!');
+                    }
+                    else {
+                    $('#alertMsgSuccess').hide();
+                    $('#textMsgSuccess').text('');
+                    $('#alertMsgError').show();
+                    $('#textMsgError').text('Something wrong!! Please try after sometime.');
+                    }
+                },
+            error: function (jqXHR, textStatus, errorThrown) {
+                    if (errorThrown === "abort") {
+                        return;
+                    }
+                    else {
+                        alert(errorThrown);
+                    }
+                }
+            });
+    });
+
+
+    $('#ddlUser').change(function () {
+        if (typeof $(this).val() === 'undefined' || $(this).val() === '' || $(this).val() === '0') {
+            $('#divPageAccess').fadeOut();
+            return false;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: lsGetPageAccessDetailsByUserIdUrl,
+            dataType: "html",
+            data: {
+                UserId: $(this).val()
+            },
+            success: function (loResponse) {
+                $('#divPageAccess').html(loResponse).fadeIn();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (errorThrown === "abort") {
+                    return;
+                }
+                else {
+                    alert(errorThrown);
+                }
+            }
+        });
+    });
+</script>

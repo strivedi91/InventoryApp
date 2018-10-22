@@ -47,6 +47,7 @@ namespace InventoryApp_DL.Entities
             Property(x => x.IsActive).HasColumnName("IsActive").IsRequired();
             Property(x => x.IsDeleted).HasColumnName("IsDeleted").IsRequired();
             Property(x => x.SecondaryPhone).HasColumnName("SecondaryPhone").IsOptional().HasMaxLength(50);
+            Property(x => x.IsAdmin).HasColumnName("IsAdmin").IsOptional();
             InitializePartial();
         }
         partial void InitializePartial();

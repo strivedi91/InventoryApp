@@ -39,6 +39,7 @@ namespace InventoryApp_DL.Entities
         public bool IsActive { get; set; } // IsActive
         public bool IsDeleted { get; set; } // IsDeleted
         public string SecondaryPhone { get; set; } // SecondaryPhone
+        public bool? IsAdmin { get; set; } // IsAdmin
 
         // Reverse navigation
         public virtual ICollection<AspNetRoles> AspNetRoles { get; set; } // Many to many mapping
@@ -47,7 +48,9 @@ namespace InventoryApp_DL.Entities
         public virtual ICollection<AspNetUserLogins> AspNetUserLogins { get; set; } // Many to many mapping
         public virtual ICollection<AspNetUserPreferences> AspNetUserPreferences { get; set; } // AspNetUserPreferences.FK_AspNetUserCategories_AspNetUsers
         public virtual ICollection<Cart> Carts { get; set; } // Cart.FK_Cart_AspNetUsers
+        public virtual ICollection<NotificationHistory> NotificationHistories { get; set; } // NotificationHistory.FK_NotificationHistory_AspNetUsers
         public virtual ICollection<Orders> Orders { get; set; } // Orders.FK_Orders_AspNetUsers
+        public virtual ICollection<PageAccess> PageAccesses { get; set; } // PageAccess.FK_PageAccess_AspNetUsers
         public virtual ICollection<ProductReview> ProductReviews { get; set; } // ProductReview.FK_ProductReview_AspNetUsers
         public virtual ICollection<Suggestions> Suggestions { get; set; } // Suggestions.FK__Suggestio__UserI__29221CFB
         public virtual ICollection<WishList> WishLists { get; set; } // WishList.FK__WishList__UserId__1BC821DD
@@ -61,7 +64,9 @@ namespace InventoryApp_DL.Entities
             AspNetUserLogins = new List<AspNetUserLogins>();
             AspNetUserPreferences = new List<AspNetUserPreferences>();
             Carts = new List<Cart>();
+            NotificationHistories = new List<NotificationHistory>();
             Orders = new List<Orders>();
+            PageAccesses = new List<PageAccess>();
             ProductReviews = new List<ProductReview>();
             Suggestions = new List<Suggestions>();
             WishLists = new List<WishList>();

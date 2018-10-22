@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNet.Identity
 @using InventoryApp_DL.Entities
+@using InventoryApp.Helpers
 @using InventoryApp_DL.Repositories
+@using System.Linq.Expressions
 
 <!DOCTYPE html>
 <html>
@@ -15,7 +17,7 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
     @Styles.Render("~/assets/css/common.css")
-    
+
     <link href="~/assets/css/nice-select.min.css" rel="stylesheet" type="text/css" media="all">
     <link href="~/assets/css/styles.css" rel="stylesheet" type="text/css" media="all">
     <link href="~/assets/css/responsive.css" rel="stylesheet" type="text/css" media="all">
@@ -64,60 +66,106 @@
             <nav class="col-xl-3 d-md-block bg-light sidebar bg-white">
                 <div class="sidebar-sticky menu-item">
                     <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a id="lnkDashboard" class="nav-link active" href="@Url.RouteUrl("Admin_default", new { action = "Index", controller = "Home" })">
-                                <i class="fa fa-dashboard"></i>
-                                &nbsp;Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a id="lnkManageSellers" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "ManageUsers" })">
-                                <i class="fa fa-bullhorn"></i>
-                                &nbsp;Sellers
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a id="lnkCategory" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Category" })">
-                                <i class="fa fa-building-o"></i>
-                                &nbsp;Categories
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a id="lnkProduct" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Products" })">
-                                <i class="fa fa-building-o"></i>
-                                &nbsp;Products
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            @{
-                                var loOrders = Repository<Orders>.GetEntityListForQuery(null).Item1;
+                        @{
+                            List<Expression<Func<Pages, Object>>> includesforPages = new List<Expression<Func<Pages, object>>>();
+                            Expression<Func<Pages, object>> IncludePageAccess = (pageAccess) => pageAccess.PageAccesses;
+                            includesforPages.Add(IncludePageAccess);
 
-                                loOrders = loOrders.Where(x => x.CreatedOn.Date == DateTime.Now.Date).ToList();
-                            }
-                            <a id="lnkManageOrders" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Order" })">
-                                <i class="fa fa-building-o"></i>
-                                &nbsp;Orders&nbsp;(@loOrders.Count())
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a id="lnkCoupon" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "Index", controller = "Coupons" })">
-                                <i class="fa fa-building-o"></i>
-                                &nbsp;Coupons
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            @{
-                                var loSuggestions = Repository<Suggestions>.GetEntityListForQuery(null).Item1;
+                            string currentUserId = User.Identity.GetUserId();
 
-                                loSuggestions = loSuggestions.Where(x => x.CreatedOn?.Date == DateTime.Now.Date).ToList();
-                            }
-                            <a id="lnkSuggestion" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "Index", controller = "Suggestion" })">
-                                <i class="fa fa-info-circle"></i>
-                                &nbsp;Suggestions&nbsp;(@loSuggestions.Count())
-                            </a>
-                        </li>
+                            var pages = Repository<Pages>.GetEntityListForQuery(x => x.IsDeleted == false && x.PageAccesses.Any(y => y.UserId == currentUserId && y.IsAccessGranted == true) == true, null, includesforPages).Item1;
+                        }
+
+                        @if (pages.Where(x => x.PageName.ToLower() == Enums.Menus.Dashboard.ToString().ToLower()).FirstOrDefault() != null)
+                        {
+                            <li class="nav-item">
+                                <a id="lnkDashboard" class="nav-link active" href="@Url.RouteUrl("Admin_default", new { action = "Index", controller = "Home" })">
+                                    <i class="fa fa-dashboard"></i>
+                                    &nbsp;@Enums.GetEnumDescription(Enums.Menus.Dashboard)
+                                </a>
+                            </li>
+                        }
+
+                        @if (pages.Where(x => x.PageName.ToLower() == Enums.Menus.Sellers.ToString().ToLower()).FirstOrDefault() != null)
+                        {
+                            <li class="nav-item">
+                                <a id="lnkManageSellers" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "ManageUsers" })">
+                                    <i class="fa fa-bullhorn"></i>
+                                    &nbsp;@Enums.GetEnumDescription(Enums.Menus.Sellers)
+                                </a>
+                            </li>
+                        }
+
+                        @if (pages.Where(x => x.PageName.ToLower() == Enums.Menus.Categories.ToString().ToLower()).FirstOrDefault() != null)
+                        {
+                            <li class="nav-item">
+                                <a id="lnkCategory" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Category" })">
+                                    <i class="fa fa-building-o"></i>
+                                    &nbsp;@Enums.GetEnumDescription(Enums.Menus.Categories)
+                                </a>
+                            </li>
+                        }
+
+                        @if (pages.Where(x => x.PageName.ToLower() == Enums.Menus.Products.ToString().ToLower()).FirstOrDefault() != null)
+                        {
+                            <li class="nav-item">
+                                <a id="lnkProduct" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Products" })">
+                                    <i class="fa fa-building-o"></i>
+                                    &nbsp;@Enums.GetEnumDescription(Enums.Menus.Products)
+                                </a>
+                            </li>
+                        }
+
+                        @if (pages.Where(x => x.PageName.ToLower() == Enums.Menus.Orders.ToString().ToLower()).FirstOrDefault() != null)
+                        {
+                            <li class="nav-item">
+                                @{
+                                    var loOrders = Repository<Orders>.GetEntityListForQuery(null).Item1;
+
+                                    loOrders = loOrders.Where(x => x.CreatedOn.Date == DateTime.Now.Date).ToList();
+                                }
+                                <a id="lnkManageOrders" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "", controller = "Order" })">
+                                    <i class="fa fa-building-o"></i>
+                                    &nbsp;@Enums.GetEnumDescription(Enums.Menus.Orders)&nbsp;(@loOrders.Count())
+                                </a>
+                            </li>
+                        }
+
+                        @if (pages.Where(x => x.PageName.ToLower() == Enums.Menus.Coupons.ToString().ToLower()).FirstOrDefault() != null)
+                        {
+                            <li class="nav-item">
+                                <a id="lnkCoupon" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "Index", controller = "Coupons" })">
+                                    <i class="fa fa-building-o"></i>
+                                    &nbsp;@Enums.GetEnumDescription(Enums.Menus.Coupons)
+                                </a>
+                            </li>
+                        }
+
+                        @if (pages.Where(x => x.PageName.ToLower() == Enums.Menus.Suggestions.ToString().ToLower()).FirstOrDefault() != null)
+                        {
+                            <li class="nav-item">
+                                @{
+                                    var loSuggestions = Repository<Suggestions>.GetEntityListForQuery(null).Item1;
+
+                                    loSuggestions = loSuggestions.Where(x => x.CreatedOn?.Date == DateTime.Now.Date).ToList();
+                                }
+                                <a id="lnkSuggestion" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "Index", controller = "Suggestion" })">
+                                    <i class="fa fa-info-circle"></i>
+                                    &nbsp;@Enums.GetEnumDescription(Enums.Menus.Suggestions)&nbsp;(@loSuggestions.Count())
+                                </a>
+                            </li>
+                        }
+
+                        @if (pages.Where(x => x.PageName.ToLower() == Enums.GetEnumDescription(Enums.Menus.Page_Access).ToLower()).FirstOrDefault() != null)
+                        {
+                            <li class="nav-item">
+                                <a id="lnkPageAccess" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "Index", controller = "PageAccess" })">
+                                    <i class="fa fa-lock"></i>
+                                    &nbsp;@Enums.GetEnumDescription(Enums.Menus.Page_Access)
+                                </a>
+                            </li>
+                        }
                     </ul>
-                    
                 </div>
             </nav>
             <div class="main col-xl-9 ml-sm-auto">

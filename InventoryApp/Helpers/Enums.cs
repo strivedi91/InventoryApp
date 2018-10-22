@@ -10,6 +10,33 @@ namespace InventoryApp.Helpers
     public class Enums
     {
         #region modules
+        public enum Menus : int
+        {
+            [Description("Dashboard")]
+            Dashboard = 0,
+
+            [Description("Sellers")]
+            Sellers = 1,
+
+            [Description("Categories")]
+            Categories = 2,
+
+            [Description("Products")]
+            Products = 3,
+
+            [Description("Orders")]
+            Orders = 4,
+
+            [Description("Coupons")]
+            Coupons = 5,
+
+            [Description("Suggestions")]
+            Suggestions = 6,
+
+            [Description("Page Access")]
+            Page_Access = 7
+        }
+
         public enum OrderStatus : int
         {
             [Description("Order Placed")]
