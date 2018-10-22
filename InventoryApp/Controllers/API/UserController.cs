@@ -254,7 +254,7 @@ namespace InventoryApp.Controllers.API
                 {
                     List<Expression<Func<AspNetUserPreferences, Object>>> includes = new List<Expression<Func<AspNetUserPreferences, object>>>();
                     Expression<Func<AspNetUserPreferences, object>> IncludeCategories = (category) => category.Categories;
-                    Expression<Func<AspNetUserPreferences, object>> IncludeProducts = (product) => product.Products;                    
+                    Expression<Func<AspNetUserPreferences, object>> IncludeProducts = (product) => product.Products;
                     includes.Add(IncludeCategories);
                     includes.Add(IncludeProducts);
 
@@ -338,8 +338,11 @@ namespace InventoryApp.Controllers.API
             {
                 try
                 {
-                    
-                    var productReviews = Repository<ProductReview>.GetEntityListForQuery(x => x.ProductId ==Id, null).Item1;
+                    List<Expression<Func<ProductReview, Object>>> includes = new List<Expression<Func<ProductReview, object>>>();
+                    Expression<Func<ProductReview, object>> IncludeUser = (user) => user.AspNetUsers;
+                    includes.Add(IncludeUser);
+
+                    var productReviews = Repository<ProductReview>.GetEntityListForQuery(x => x.ProductId == Id, null, includes).Item1;
                     Result = JObject.FromObject(new
                     {
                         status = true,
@@ -353,7 +356,8 @@ namespace InventoryApp.Controllers.API
                                review.Id,
                                review.Rating,
                                review.Review,
-                               
+                               review.CreatedOn,
+                               review.AspNetUsers.UserName
                            }
                         })
                     });
@@ -1551,13 +1555,14 @@ namespace InventoryApp.Controllers.API
             JObject Result = null;
 
             if (LoggedInUserId != null)
-            {                
+            {
                 try
                 {
                     var newSuggestion = new ProductReview
                     {
                         Review = foRequest.Review,
                         ProductId = foRequest.ProductId,
+                        Rating = foRequest.Rating,
                         UserId = LoggedInUserId
                     };
 
