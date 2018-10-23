@@ -15,6 +15,7 @@ using System.Web.Mvc;
 
 namespace InventoryApp.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class PageAccessController : BaseController
     {
         #region public Methods

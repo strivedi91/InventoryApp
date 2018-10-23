@@ -11,6 +11,7 @@ using System.Web.Mvc;
 
 namespace InventoryApp.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class OrderDetailsController : BaseController
     {
         // GET: Admin/OrderDetails
