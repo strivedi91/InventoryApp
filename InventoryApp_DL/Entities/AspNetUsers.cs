@@ -40,6 +40,7 @@ namespace InventoryApp_DL.Entities
         public bool IsDeleted { get; set; } // IsDeleted
         public string SecondaryPhone { get; set; } // SecondaryPhone
         public bool? IsAdmin { get; set; } // IsAdmin
+        public string DeviceId { get; set; } // DeviceId
 
         // Reverse navigation
         public virtual ICollection<AspNetRoles> AspNetRoles { get; set; } // Many to many mapping

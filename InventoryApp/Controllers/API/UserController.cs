@@ -1717,6 +1717,56 @@ namespace InventoryApp.Controllers.API
             }
         }
 
+        [HttpPost]
+        [Route("user/updatedeviceid")]
+        public async Task<IHttpActionResult> updateDeviceId(UpdateDeviceIdModel foRequest)
+        {
+            IEnumerable<string> headerValues = Request.Headers.GetValues("UserId");
+            var LoggedInUserId = headerValues.FirstOrDefault();
+            JObject Result = null;
+
+            var user = Repository<AspNetUsers>.GetEntityListForQuery(x => x.Id == LoggedInUserId).Item1.FirstOrDefault();
+
+            if (LoggedInUserId != null)
+            {
+                try
+                {
+                    user.DeviceId = foRequest.DeviceId;
+
+                    await Repository<AspNetUsers>.UpdateEntity(user, entity => { return entity.Id; });
+
+
+                    Result = JObject.FromObject(new
+                    {
+                        status = true,
+                        message = "Device Id Updated!",                        
+                        UpdateDeviceIdResult = ""
+                    });
+
+                    return GetOkResult(Result);
+                }
+                catch (Exception ex)
+                {
+                    Result = JObject.FromObject(new
+                    {
+                        status = false,
+                        message = "Sorry, there was an error processing your request. Please try again !",
+                        UpdateDeviceIdResult = ""
+                    });
+                    return GetOkResult(Result);
+                }
+            }
+            else
+            {
+                Result = JObject.FromObject(new
+                {
+                    status = false,
+                    message = "Unauthorized",
+                    UpdateDeviceIdResult = ""
+                });
+                return GetOkResult(Result);
+            }
+        }
 
 
         #endregion
