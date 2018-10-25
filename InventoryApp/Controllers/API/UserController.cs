@@ -1735,10 +1735,12 @@ namespace InventoryApp.Controllers.API
             {
                 try
                 {
-                    user.DeviceId = foRequest.DeviceId;
+                    if (!string.IsNullOrEmpty(user.DeviceId))
+                    {
+                        user.DeviceId = foRequest.DeviceId;
 
-                    await Repository<AspNetUsers>.UpdateEntity(user, entity => { return entity.Id; });
-
+                        await Repository<AspNetUsers>.UpdateEntity(user, entity => { return entity.Id; });
+                    }
 
                     Result = JObject.FromObject(new
                     {
