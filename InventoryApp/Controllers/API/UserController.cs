@@ -308,7 +308,7 @@ namespace InventoryApp.Controllers.API
                                     TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive && x.IsDeleted == false).
                                     Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                     IsInCart = cart.Where(x => x.ProductId == product.Products.id).Count() > 0 ? true : false,
-                                    SelectedQuantity = cart.Where(x => x.ProductId == product.id).Select(x => x.Quantity).FirstOrDefault(),
+                                    SelectedQuantity = cart.Where(x => x.ProductId == product.ProductId).Select(x => x.Quantity).FirstOrDefault(),
                                     //OfferId = cart.Where(x => x.ProductId == product.Products.id).Select(x => x.OfferId),
                                     IsInWishList = Repository<WishList>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false,
                                     //Reviews = Repository<ProductReview>.GetEntityListForQuery(x => x.ProductId == product.ProductId),
