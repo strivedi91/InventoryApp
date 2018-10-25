@@ -255,9 +255,10 @@ namespace InventoryApp.Controllers.API
                     List<Expression<Func<AspNetUserPreferences, Object>>> includes = new List<Expression<Func<AspNetUserPreferences, object>>>();
                     Expression<Func<AspNetUserPreferences, object>> IncludeCategories = (category) => category.Categories;
                     Expression<Func<AspNetUserPreferences, object>> IncludeProducts = (product) => product.Products;
+                    Expression<Func<AspNetUserPreferences, object>> IncludeOffer = (Offer) => Offer.Products.Offers;
                     includes.Add(IncludeCategories);
                     includes.Add(IncludeProducts);
-
+                    includes.Add(IncludeOffer);
 
                     var userSelectedProducts = Repository<AspNetUserPreferences>.
                         GetEntityListForQuery(x => x.UserId == LoggedInUserId && x.CategoryId == Id && x.Products.IsActive == true, null, includes).Item1;
@@ -289,34 +290,21 @@ namespace InventoryApp.Controllers.API
                                     GST = product.Products.ApplyGst ? product.Categories.GST : 0,
                                     product.Products.MOQ,
                                     product.Products.Quantity,
-                                    OfferDetails = categoryOffer != null && categoryOffer.Count > 0
-                                              ? categoryOffer
-                                                    .Select(x => new
-                                                    {
-                                                        x.id,
-                                                        x.OfferCode,
-                                                        x.OfferDescription,
-                                                        x.FlatDiscount,
-                                                        x.PercentageDiscount,
-                                                        x.CategoryId,
-                                                        x.ProductId,
-                                                        x.StartDate,
-                                                        x.EndDate
-                                                    })
-                                              : product.Products.Offers
-                                                    .Where(x => x.IsDeleted == false && x.IsActive == true)
-                                                    .Select(x => new
-                                                    {
-                                                        x.id,
-                                                        x.OfferCode,
-                                                        x.OfferDescription,
-                                                        x.FlatDiscount,
-                                                        x.PercentageDiscount,
-                                                        x.CategoryId,
-                                                        x.ProductId,
-                                                        x.StartDate,
-                                                        x.EndDate,
-                                                    }),
+                                    Offers = mergeOffers(categoryOffer, product.Products.Offers.Where(x => x.IsDeleted == false && x.IsActive == true))
+                                              .Select(x => new
+                                              {
+                                                  x.id,
+                                                  x.OfferCode,
+                                                  x.OfferDescription,
+                                                  x.FlatDiscount,
+                                                  x.PercentageDiscount,
+                                                  x.CategoryId,
+                                                  x.ProductId,
+                                                  x.StartDate,
+                                                  x.EndDate,
+                                                  IsApplied = Repository<Cart>.GetEntityListForQuery(c => c.OfferId == x.id && x.IsDeleted == false && c.AspNetUsers.Id == LoggedInUserId).Item2 > 0 ? true : false,
+                                                  IsUsed = Repository<OrderDetails>.GetEntityListForQuery(o => o.OfferId == x.id && x.IsDeleted == false && o.Orders.UserId == LoggedInUserId).Item2 > 0 ? true : false,
+                                              }),
                                     TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive && x.IsDeleted == false).
                                     Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                     IsInCart = cart.Where(x => x.ProductId == product.Products.id).Count() > 0 ? true : false,
@@ -464,34 +452,21 @@ namespace InventoryApp.Controllers.API
                                GST = product.ApplyGst ? product.Categories.GST : 0,
                                product.MOQ,
                                product.Quantity,
-                               OfferDetails = categoryOffer != null && categoryOffer.Count > 0
-                                              ? categoryOffer
-                                                    .Select(x => new
-                                                    {
-                                                        x.id,
-                                                        x.OfferCode,
-                                                        x.OfferDescription,
-                                                        x.FlatDiscount,
-                                                        x.PercentageDiscount,
-                                                        x.CategoryId,
-                                                        x.ProductId,
-                                                        x.StartDate,
-                                                        x.EndDate
-                                                    })
-                                              : product.Offers
-                                                    .Where(x => x.IsDeleted == false && x.IsActive == true)
-                                                    .Select(x => new
-                                                    {
-                                                        x.id,
-                                                        x.OfferCode,
-                                                        x.OfferDescription,
-                                                        x.FlatDiscount,
-                                                        x.PercentageDiscount,
-                                                        x.CategoryId,
-                                                        x.ProductId,
-                                                        x.StartDate,
-                                                        x.EndDate
-                                                    }),
+                               Offers = mergeOffers(categoryOffer, product.Offers.Where(x => x.IsDeleted == false && x.IsActive == true))
+                                              .Select(x => new
+                                              {
+                                                  x.id,
+                                                  x.OfferCode,
+                                                  x.OfferDescription,
+                                                  x.FlatDiscount,
+                                                  x.PercentageDiscount,
+                                                  x.CategoryId,
+                                                  x.ProductId,
+                                                  x.StartDate,
+                                                  x.EndDate,
+                                                  IsApplied = Repository<Cart>.GetEntityListForQuery(c => c.OfferId == x.id && x.IsDeleted == false && c.AspNetUsers.Id == LoggedInUserId).Item2 > 0 ? true : false,
+                                                  IsUsed = Repository<OrderDetails>.GetEntityListForQuery(o => o.OfferId == x.id && x.IsDeleted == false && o.Orders.UserId == LoggedInUserId).Item2 > 0 ? true : false,
+                                              }),
                                TierPricing = product.TierPricings.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                IsSelected = userSelectedProducts.Contains(product.id),
                                IsInCart = product.Carts.Where(x => x.UserId == LoggedInUserId).Count() > 0 ? true : false,
@@ -1773,11 +1748,7 @@ namespace InventoryApp.Controllers.API
                 return GetOkResult(Result);
             }
         }
-
-
         #endregion
-
-
 
         #region private methodes
         private string[] GetProductImagesById(int productId)
@@ -1811,7 +1782,6 @@ namespace InventoryApp.Controllers.API
             {
                 return new string[] { };
             }
-
         }
 
         private string getOrderInvoiceUrl(int OrderId)
@@ -1834,6 +1804,16 @@ namespace InventoryApp.Controllers.API
             {
                 return string.Empty;
             }
+        }
+
+        private List<Offers> mergeOffers(IEnumerable<Offers> foOffers1, IEnumerable<Offers> foOffers2)
+        {
+            List<Offers> loAllOffers = new List<Offers>();
+
+            loAllOffers.AddRange(foOffers1);
+            loAllOffers.AddRange(foOffers2);
+
+            return loAllOffers;
         }
         #endregion
     }
