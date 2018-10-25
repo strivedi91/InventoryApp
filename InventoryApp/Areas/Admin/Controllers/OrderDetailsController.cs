@@ -46,12 +46,16 @@ namespace InventoryApp.Areas.Admin.Controllers
             }
 
             orderDetails.Products = productModels;
-
+            
             Orders objOrder = Repository<Orders>.GetEntityListForQuery(x => x.id == Id).Item1.FirstOrDefault();
+            var seller = Repository<AspNetUsers>.GetEntityListForQuery(x => x.Id == objOrder.UserId).Item1.FirstOrDefault();
+
             orderDetails.SubTotal = objOrder.SubTotal;
             orderDetails.Total = objOrder.Total;
             orderDetails.Discount = objOrder.Discount;
-            orderDetails.SellerName = Repository<AspNetUsers>.GetEntityListForQuery(x => x.Id == objOrder.UserId).Item1.Select(y=>y.Name).FirstOrDefault();
+            orderDetails.SellerName = seller.Name;
+            orderDetails.PhoneNumber = seller.PhoneNumber;
+            orderDetails.Email = seller.Email;
             orderDetails.Date = objOrder.CreatedOn.Date.ToShortDateString();
             orderDetails.Address = objOrder.ShippingAddress;
             orderDetails.Status = objOrder.OrderStatus;

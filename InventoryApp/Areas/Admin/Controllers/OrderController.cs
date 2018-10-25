@@ -20,7 +20,7 @@ namespace InventoryApp.Areas.Admin.Controllers
         public ActionResult Index()
         {
             OrderViewModel foRequest = new OrderViewModel();
-            foRequest.stSortColumn = "ID ASC";
+            foRequest.stSortColumn = "CreatedOn DESC";
             return View("~/Areas/Admin/Views/Order/Index.cshtml", getOrderList(foRequest));
         }
 
@@ -208,6 +208,9 @@ namespace InventoryApp.Areas.Admin.Controllers
                         break;
                     case "Total ASC":
                         orderingFunc = q => q.OrderBy(s => s.Total);
+                        break;
+                    default:
+                        orderingFunc = q => q.OrderByDescending(s => s.CreatedOn);
                         break;
                 }
             }

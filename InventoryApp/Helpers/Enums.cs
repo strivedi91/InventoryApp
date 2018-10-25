@@ -52,7 +52,10 @@ namespace InventoryApp.Helpers
             DeliveredCompleted = 3,
 
             [Description("Cancelled")]
-            Cancelled = 4
+            Cancelled = 4,
+
+            [Description("Requested Cancellation")]
+            RequestedCancellation = 5
         }
         #endregion
 

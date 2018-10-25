@@ -62,7 +62,7 @@
     <div id="companylist">
         @Html.Partial("_Order", Model)
     </div>
-    @Html.Hidden("hdnOrder", "ID ASC")
+    @Html.Hidden("hdnOrder", "CreatedOn DESC")
     @Html.Hidden("hdnSortingOnColumn", "sortID")
     @Html.Hidden("hdnSortingDirection", "ASC")
     @Html.Hidden("hdnStatus", "0")
