@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using Microsoft.AspNet.Identity;
 
 namespace InventoryApp.Controllers.API
@@ -7,6 +8,8 @@ namespace InventoryApp.Controllers.API
     /// <summary>
     /// Base API Controller
     /// </summary>
+    /// 
+    [EnableCors("*","*","GET,POST,DELETE,PUT")]
     public class BaseAPIController : ApiController
     {
         protected IHttpActionResult GetOkResult<T>(T result)
