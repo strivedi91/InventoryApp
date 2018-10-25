@@ -453,7 +453,7 @@ namespace InventoryApp.Controllers.API
                                GST = product.ApplyGst ? product.Categories.GST : 0,
                                product.MOQ,
                                product.Quantity,
-                               Offers = mergeOffers(categoryOffer, product.Offers.Where(x => x.IsDeleted == false && x.IsActive == true))
+                               OfferDetails = mergeOffers(categoryOffer, product.Offers.Where(x => x.IsDeleted == false && x.IsActive == true))
                                               .Select(x => new
                                               {
                                                   x.id,
@@ -465,8 +465,8 @@ namespace InventoryApp.Controllers.API
                                                   x.ProductId,
                                                   x.StartDate,
                                                   x.EndDate,
-                                                  IsApplied = Repository<Cart>.GetEntityListForQuery(c => c.OfferId == x.id && x.IsDeleted == false && c.AspNetUsers.Id == LoggedInUserId).Item2 > 0 ? true : false,
-                                                  IsUsed = Repository<OrderDetails>.GetEntityListForQuery(o => o.OfferId == x.id && x.IsDeleted == false && o.Orders.UserId == LoggedInUserId).Item2 > 0 ? true : false,
+                                                  IsSelected = Repository<Cart>.GetEntityListForQuery(c => c.OfferId == x.id && x.IsDeleted == false && c.AspNetUsers.Id == LoggedInUserId).Item2 > 0 ? true : false,
+                                                  //IsUsed = Repository<OrderDetails>.GetEntityListForQuery(o => o.OfferId == x.id && x.IsDeleted == false && o.Orders.UserId == LoggedInUserId).Item2 > 0 ? true : false,
                                               }),
                                TierPricing = product.TierPricings.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                IsSelected = userSelectedProducts.Contains(product.id),
@@ -617,7 +617,7 @@ namespace InventoryApp.Controllers.API
                                     product.Products?.MOQ,
                                     product.Products?.Quantity,
                                     SelectedQuantity = product.Quantity,
-                                    OfferDetails = Repository<Offers>.GetEntityListForQuery(null).Item1.
+                                    OfferDetails = Repository<Offers>.GetEntityListForQuery(x => x.IsDeleted == false && x.IsActive == true).Item1.
                                     Select(x => new
                                     {
                                         x.id,
