@@ -262,6 +262,8 @@ namespace InventoryApp.Controllers.API
                     var userSelectedProducts = Repository<AspNetUserPreferences>.
                         GetEntityListForQuery(x => x.UserId == LoggedInUserId && x.CategoryId == Id && x.Products.IsActive == true, null, includes).Item1;
 
+                    var cart = Repository<Cart>.GetEntityListForQuery(x => x.UserId == LoggedInUserId).Item1;
+
                     var categoryOffer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == Id && x.IsDeleted == false && x.IsActive == true).Item1;
 
                     Result = JObject.FromObject(new
@@ -287,15 +289,38 @@ namespace InventoryApp.Controllers.API
                                     GST = product.Products.ApplyGst ? product.Categories.GST : 0,
                                     product.Products.MOQ,
                                     product.Products.Quantity,
-                                    offer = categoryOffer != null && categoryOffer.Count > 0
+                                    OfferDetails = categoryOffer != null && categoryOffer.Count > 0
                                               ? categoryOffer
-                                                    .Select(x => new { x.id, x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.CategoryId, x.ProductId, x.StartDate, x.EndDate })
+                                                    .Select(x => new
+                                                    {
+                                                        x.id,
+                                                        x.OfferCode,
+                                                        x.OfferDescription,
+                                                        x.FlatDiscount,
+                                                        x.PercentageDiscount,
+                                                        x.CategoryId,
+                                                        x.ProductId,
+                                                        x.StartDate,
+                                                        x.EndDate
+                                                    })
                                               : product.Products.Offers
                                                     .Where(x => x.IsDeleted == false && x.IsActive == true)
-                                                    .Select(x => new { x.id, x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.CategoryId, x.ProductId, x.StartDate, x.EndDate }),
+                                                    .Select(x => new
+                                                    {
+                                                        x.id,
+                                                        x.OfferCode,
+                                                        x.OfferDescription,
+                                                        x.FlatDiscount,
+                                                        x.PercentageDiscount,
+                                                        x.CategoryId,
+                                                        x.ProductId,
+                                                        x.StartDate,
+                                                        x.EndDate,
+                                                    }),
                                     TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive && x.IsDeleted == false).
                                     Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
-                                    IsInCart = Repository<Cart>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false,
+                                    IsInCart = cart.Where(x => x.ProductId == product.Products.id).Count() > 0 ? true : false,
+                                    OfferId = cart.Where(x => x.ProductId == product.Products.id).Select(x => x.OfferId),
                                     IsInWishList = Repository<WishList>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false,
                                     //Reviews = Repository<ProductReview>.GetEntityListForQuery(x => x.ProductId == product.ProductId),
                                     Images = GetProductImagesById(product.Products.id)
@@ -439,15 +464,38 @@ namespace InventoryApp.Controllers.API
                                GST = product.ApplyGst ? product.Categories.GST : 0,
                                product.MOQ,
                                product.Quantity,
-                               offer = categoryOffer != null && categoryOffer.Count > 0
+                               OfferDetails = categoryOffer != null && categoryOffer.Count > 0
                                               ? categoryOffer
-                                                    .Select(x => new { x.id, x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.CategoryId, x.ProductId, x.StartDate, x.EndDate })
+                                                    .Select(x => new
+                                                    {
+                                                        x.id,
+                                                        x.OfferCode,
+                                                        x.OfferDescription,
+                                                        x.FlatDiscount,
+                                                        x.PercentageDiscount,
+                                                        x.CategoryId,
+                                                        x.ProductId,
+                                                        x.StartDate,
+                                                        x.EndDate
+                                                    })
                                               : product.Offers
                                                     .Where(x => x.IsDeleted == false && x.IsActive == true)
-                                                    .Select(x => new { x.id, x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.CategoryId, x.ProductId, x.StartDate, x.EndDate }),
+                                                    .Select(x => new
+                                                    {
+                                                        x.id,
+                                                        x.OfferCode,
+                                                        x.OfferDescription,
+                                                        x.FlatDiscount,
+                                                        x.PercentageDiscount,
+                                                        x.CategoryId,
+                                                        x.ProductId,
+                                                        x.StartDate,
+                                                        x.EndDate
+                                                    }),
                                TierPricing = product.TierPricings.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                IsSelected = userSelectedProducts.Contains(product.id),
                                IsInCart = product.Carts.Where(x => x.UserId == LoggedInUserId).Count() > 0 ? true : false,
+                               OfferId = product.Carts.Where(x => x.ProductId == product.id).Select(x => x.OfferId),
                                IsInWishList = product.WishLists.Where(x => x.UserId == LoggedInUserId).Count() > 0 ? true : false,
                                //Reviews=product.ProductReviews,
                                Images = GetProductImagesById(product.id)
@@ -495,12 +543,15 @@ namespace InventoryApp.Controllers.API
                     var newCartItem = new Cart
                     {
                         UserId = LoggedInUserId,
-                        OfferId = addToCartModel.OfferId,
                         Quantity = addToCartModel.Quantity == 0 ? Convert.ToInt32(product.MOQ) : addToCartModel.Quantity,
                         ProductId = addToCartModel.ProductId,
                         CategoryId = addToCartModel.CategoryId == 0 ? product.CategoryId : addToCartModel.CategoryId
                     };
 
+                    if (newCartItem.OfferId != null)
+                    {
+                        newCartItem.OfferId = addToCartModel.OfferId;
+                    }
                     await Repository<Cart>.InsertEntity(newCartItem, entity => { return entity.id; });
 
                     if (newCartItem.id > 0)
@@ -589,8 +640,10 @@ namespace InventoryApp.Controllers.API
                                     product.Products?.MOQ,
                                     product.Products?.Quantity,
                                     SelectedQuantity = product.Quantity,
-                                    OfferDetails = Repository<Offers>.GetEntityListForQuery(x => x.id == product.OfferId && x.IsDeleted == false).
-                                    Item1.Select(x => new { x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.StartDate, x.EndDate }),
+                                    OfferDetails = Repository<Offers>.GetEntityListForQuery(null).Item1.
+                                    Select(x => new { x.id, x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.StartDate, x.EndDate, IsSelected = x.id == product.OfferId }),
+                                    //OfferDetails = Repository<Offers>.GetEntityListForQuery(x => x.id == product.OfferId && x.IsDeleted == false).
+                                    //Item1.Select(x => new { x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.StartDate, x.EndDate }),
                                     TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive && x.IsDeleted == false).
                                     Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                     Images = GetProductImagesById(product.Products.id)
@@ -691,6 +744,11 @@ namespace InventoryApp.Controllers.API
 
                     var CartItem = Repository<Cart>.GetEntityListForQuery(x => x.id == addToCartModel.CartId).Item1.FirstOrDefault();
                     CartItem.Quantity = addToCartModel.Quantity;
+                    if (addToCartModel.OfferId != 0)
+                    {
+                        CartItem.OfferId = addToCartModel.OfferId;
+                    }
+
                     await Repository<Cart>.UpdateEntity(CartItem, entity => { return entity.id; });
 
                     Result = JObject.FromObject(new
@@ -1372,6 +1430,63 @@ namespace InventoryApp.Controllers.API
         }
 
         [HttpGet]
+        [Route("notifications")]
+        public async Task<IHttpActionResult> getNotificaions()
+        {
+            IEnumerable<string> headerValues = Request.Headers.GetValues("UserId");
+            var LoggedInUserId = headerValues.FirstOrDefault();
+            JObject Result = null;
+            if (LoggedInUserId != null)
+            {
+                try
+                {
+                    var notifications = Repository<NotificationHistory>.
+                        GetEntityListForQuery(null).Item1;
+
+                    Result = JObject.FromObject(new
+                    {
+                        status = true,
+                        message = "",
+                        NotificationResult = JObject.FromObject(new
+                        {
+
+                            Products =
+                                from notification in notifications
+                                select new
+                                {
+                                    notification.Id,
+                                    notification.NotificationText,
+                                    notification.CreatedOn
+                                }
+                        })
+                    });
+                    return GetOkResult(Result);
+                }
+                catch (Exception ex)
+                {
+                    Result = JObject.FromObject(new
+                    {
+                        status = false,
+                        message = "Sorry, there was an error processing your request. Please try again !",
+                        NotificationResult = ""
+                    });
+                    return GetOkResult(Result);
+                }
+            }
+            else
+            {
+                Result = JObject.FromObject(new
+                {
+                    status = false,
+                    message = "Unauthorized",
+                    NotificationResult = ""
+                });
+                return GetOkResult(Result);
+            }
+        }
+
+
+        [HttpGet]
         [Route("user/wishlist")]
         public async Task<IHttpActionResult> getWishList()
         {
@@ -1601,6 +1716,7 @@ namespace InventoryApp.Controllers.API
                 return GetOkResult(Result);
             }
         }
+
 
 
         #endregion
