@@ -548,7 +548,7 @@ namespace InventoryApp.Controllers.API
                         CategoryId = addToCartModel.CategoryId == 0 ? product.CategoryId : addToCartModel.CategoryId
                     };
 
-                    if (newCartItem.OfferId != null)
+                    if (addToCartModel.OfferId != 0)
                     {
                         newCartItem.OfferId = addToCartModel.OfferId;
                     }
@@ -641,7 +641,7 @@ namespace InventoryApp.Controllers.API
                                     product.Products?.Quantity,
                                     SelectedQuantity = product.Quantity,
                                     OfferDetails = Repository<Offers>.GetEntityListForQuery(null).Item1.
-                                    Select(x => new { x.id, x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.StartDate, x.EndDate, IsSelected = x.id == product.OfferId }),
+                                    Select(x => new { x.id, x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.StartDate, x.EndDate, IsSelected = (x.id == product.OfferId) }),
                                     //OfferDetails = Repository<Offers>.GetEntityListForQuery(x => x.id == product.OfferId && x.IsDeleted == false).
                                     //Item1.Select(x => new { x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.StartDate, x.EndDate }),
                                     TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive && x.IsDeleted == false).
@@ -1739,7 +1739,7 @@ namespace InventoryApp.Controllers.API
                     Result = JObject.FromObject(new
                     {
                         status = true,
-                        message = "Device Id Updated!",                        
+                        message = "Device Id Updated!",
                         UpdateDeviceIdResult = ""
                     });
 
