@@ -1,0 +1,101 @@
+﻿@model InventoryApp.Areas.Admin.Models.NotificationsModel
+
+    @if (Model != null && Model.loOfferList.Count > 0)
+    {
+        if (TempData["SuccessMsg"] != null && TempData["SuccessMsg"].ToString() != "")
+        {
+            <div class="table-responsive">
+                <hr style="border-color:#F7F7F7 !important;" />
+                <div class="alert alert-success">
+                    <span class="close" data-dismiss="alert" aria-label="close">&times;</span>
+                    <span style="vertical-align:middle;"> @TempData["SuccessMsg"].ToString()</span>
+
+                    @{TempData["SuccessMsg"] = "";}
+                </div>
+            </div>
+        }
+        if (TempData["ErrorMsg"] != null && TempData["ErrorMsg"].ToString() != "")
+        {
+            <div class="table-responsive">
+                <div class="alert alert-danger" style="height:30px; padding:4px !important; margin-bottom:0px !important; margin-top:10px;">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    @TempData["ErrorMsg"].ToString()
+                </div>
+            </div>
+
+        }
+
+        <div class="table-responsive dash-table">
+            <table class="table table-bordered bg-white">
+                <thead>
+                    <tr class="heading">
+                        @Html.Hidden("hdnPageIndex", Model.inPageIndex)
+                        <th id="sortID" onclick="getOrderedList('ID', 'sortID');" class="heading-text sorting">Id</th>
+                        <th id="sortOfferCode" onclick="getOrderedList('OfferCode', 'sortOfferCode');" class="heading-text sorting">Offer Code</th>
+                        <th id="sortOfferDescription" onclick="getOrderedList('OfferDescription', 'sortOfferDescription');" class="heading-text sorting">Offer Description</th>
+                        <th id="sortFlatDiscount" onclick="getOrderedList('FlatDiscount', 'sortFlatDiscount');" class="heading-text sorting">Flat Discount</th>
+                        <th id="sortPercentageDiscount" onclick="getOrderedList('PercentageDiscount', 'sortPercentageDiscount');" class="heading-text sorting">Percentage Discount</th>
+                        <th id="sortProductId" onclick="getOrderedList('ProductId', 'sortProductId');" class="heading-text sorting">Product</th>
+                        <th id="sortCategoryId" onclick="getOrderedList('CategoryId', 'sortCategoryId');" class="heading-text sorting">Category</th>
+                        <th id="sortStartDate" onclick="getOrderedList('StartDate', 'sortStartDate');" class="heading-text sorting">Start Date</th>
+                        <th id="sortEndDate" onclick="getOrderedList('EndDate', 'sortEndDate');" class="heading-text sorting">End Date</th>
+                        <th id="sortEndDate" onclick="getOrderedList('EndDate', 'sortEndDate');" class="heading-text sorting">Is Active</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                @foreach (var coupon in Model.)
+                {
+                    <tr>
+                        <td>@coupon.id</td>
+                        <td>@coupon.OfferCode</td>
+                        <td>@coupon.OfferDescription</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        if (@Model.inRecordCount > 10)
+        {
+            <div class="showing">
+                <span>
+                    Page @(Model.inPageIndex) out of
+                    @((Model.inRecordCount + 10 - 1) / 10)
+                </span>
+                <div class="pull-right">
+                    @Html.Hidden("hdnTotalRec", @Model.inRecordCount)
+                    <div id="divPager"></div>
+                </div>
+            </div>
+        }
+        @Html.Hidden("hdnId", "")
+    }
+    else
+    {
+        <div class="table-responsive dash-table">
+            <div id="divItemListNoRecord" class="alert alert-warning" align="center">
+                <h4><i class="fa fa-warning"></i> No Record Found </h4>
+            </div>
+        </div>
+    }
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modelDelete">
+        <div class="modal-dialog">
+            <div class="modal-content white-box bg-white">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size:larger;">&times;</span></button>
+                    <h4 class="modal-title">Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this coupon?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-gradient" onclick="DeleteClick();">Yes</button>
+                    <button type="button" class="btn btn-gradient" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            GetPager($("#hdnTotalRec").val(), $("#hdnPageIndex").val());
+        });
+    </script>

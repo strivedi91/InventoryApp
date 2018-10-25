@@ -1,0 +1,59 @@
+﻿@model InventoryApp.Areas.Admin.Models.NotificationsModel
+@{
+    ViewBag.Title = "Coupons";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<section>
+    <div class="section-title">
+        <h2>Coupons</h2>
+    </div>
+    <form style="padding-top:0px;">
+        <div style="padding-top:0px;" class="add-card ">
+            <div class="btn-block">
+                <a href="@Url.RouteUrl("Admin_default", new { action = "SendNotifications", controller = "Notifications" })" class="btn toggle">Add New Coupon <i class="fa fa-plus-square-o" aria-hidden="true"></i></a>
+            </div>
+        </div>       
+    </form>
+    <div id="divCouponlist">
+        @Html.Partial("_Notifications", Model)
+    </div>
+    @Html.Hidden("hdnOrder", "Id ASC")
+    @Html.Hidden("hdnSortingOnColumn", "sortName")
+    @Html.Hidden("hdnSortingDirection", "ASC")
+    <script type="text/javascript">
+        var lsSearchCouponsUrl = '@Url.RouteUrl("Admin_default", new { controller = "Coupons", action = "searchCoupons" })';
+        var lsDeleteCouponUrl = '@Url.RouteUrl("Admin_default", new { controller = "Coupons", action = "DeleteCoupon" })';
+    </script>
+    <script src="@Url.Content("~/Areas/Admin/assets/scripts/Coupons.js?ver=0.1")" type="text/javascript"></script>
+</section>
+
+<script>
+    $(document).ready(function () {
+        $(".menu-item a").removeClass("active");
+        $('#lnkCoupon').addClass('active');
+    });
+</script>
+
+<script>
+    function confirmDelete(id) {
+        $('#hdnId').val(id);
+        jQuery.noConflict();
+        (
+            function ($) {
+                $('#modelDelete').modal('show');
+            }
+        )(jQuery);
+    }
+
+    function DeleteClick() {
+        jQuery.noConflict();
+        (
+            function ($) {
+                $('#modelDelete').modal('hide');
+            }
+        )(jQuery);
+        var id = $('#hdnId').val();
+        DeleteCategory(id);
+    }
+</script>
+

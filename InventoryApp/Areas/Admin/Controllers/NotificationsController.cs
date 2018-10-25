@@ -13,6 +13,7 @@ namespace InventoryApp.Areas.Admin.Controllers
         // GET: Admin/Notifications
         public ActionResult Index()
         {
+            SendNotificaitons("cgSYtLu6oLc:APA91bEXKljdcKx517qZGeg2xCR8EaE5vEnPf6MSG5c9X8rcvTW7uk1nPoRJV5TzllhqqguK8KdAJa1Ir3dmAALGIzZ_NTS-VXbCVT7G7eBeW0PFw_Q3SgngIIpPzt5BCA0BSB1EnQby");
             return View();
         }
 

@@ -266,6 +266,7 @@
     <Compile Include="Areas\Admin\Controllers\ManageUsersController.cs" />
     <Compile Include="Areas\Admin\Controllers\PageAccessController.cs" />
     <Compile Include="Areas\Admin\Controllers\SuggestionController.cs" />
+    <Compile Include="Areas\Admin\Models\NotificationsModel.cs" />
     <Compile Include="Areas\Admin\Models\OrderDetailsModel.cs" />
     <Compile Include="Areas\Admin\Models\OrderModel.cs" />
     <Compile Include="Areas\Admin\Models\OffersModel.cs" />
@@ -600,7 +601,9 @@
     <Content Include="Areas\Admin\Views\Coupons\Index.cshtml" />
     <Content Include="Areas\Admin\Views\PageAccess\_PageAccess.cshtml" />
     <Content Include="Areas\Admin\Views\PageAccess\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Notifications\SendNotification.cshtml" />
+    <Content Include="Areas\Admin\Views\Notifications\_Notifications.cshtml" />
+    <Content Include="Areas\Admin\Views\Notifications\SendNotifications.cshtml" />
+    <Content Include="Areas\Admin\Views\Notifications\Index.cshtml" />
     <None Include="Properties\PublishProfiles\app.thegodam.com - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\inventory.sachintrivedi.com - Web Deploy.pubxml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
