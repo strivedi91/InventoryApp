@@ -748,6 +748,10 @@ namespace InventoryApp.Controllers.API
                     {
                         CartItem.OfferId = addToCartModel.OfferId;
                     }
+                    else
+                    {
+                        CartItem.OfferId = null;
+                    }
 
                     await Repository<Cart>.UpdateEntity(CartItem, entity => { return entity.id; });
 
