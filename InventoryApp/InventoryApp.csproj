@@ -309,6 +309,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\assets\css\DatePicker.css" />
+    <Content Include="Areas\Admin\assets\scripts\Notifications.js" />
     <Content Include="Areas\Admin\assets\scripts\Order.js" />
     <Content Include="Areas\Admin\assets\scripts\Coupons.js" />
     <Content Include="Areas\Admin\assets\scripts\Suggestions.js" />
