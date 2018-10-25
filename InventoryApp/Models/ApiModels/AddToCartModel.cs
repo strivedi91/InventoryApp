@@ -17,5 +17,6 @@ namespace InventoryApp.Models.ApiModels
     {
         public int CartId { get; set; }
         public int Quantity { get; set; }
+        public int OfferId { get; set; }
     }
 }
