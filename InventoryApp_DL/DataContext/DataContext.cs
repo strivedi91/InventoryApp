@@ -101,5 +101,9 @@ namespace InventoryApp_DL.DataContext
             //modelBuilder.Entity<Stop>().HasKey(t => t.ID);
             
         }
+
+        public System.Data.Entity.DbSet<InventoryApp_DL.Entities.NotificationHistory> NotificationHistories { get; set; }
+
+        public System.Data.Entity.DbSet<InventoryApp_DL.Entities.AspNetUsers> AspNetUsers { get; set; }
     }
 }

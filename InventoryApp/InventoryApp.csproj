@@ -600,6 +600,7 @@
     <Content Include="Areas\Admin\Views\Coupons\Index.cshtml" />
     <Content Include="Areas\Admin\Views\PageAccess\_PageAccess.cshtml" />
     <Content Include="Areas\Admin\Views\PageAccess\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Notifications\Index.cshtml" />
     <None Include="Properties\PublishProfiles\app.thegodam.com - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\inventory.sachintrivedi.com - Web Deploy.pubxml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
@@ -784,7 +785,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Admin\Views\Notifications\" />
     <Folder Include="PDF\OrderInvoices\" />
     <Folder Include="Views\Base\" />
     <Folder Include="Views\Pager\" />

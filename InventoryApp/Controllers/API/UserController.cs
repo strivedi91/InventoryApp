@@ -290,7 +290,7 @@ namespace InventoryApp.Controllers.API
                                     GST = product.Products.ApplyGst ? product.Categories.GST : 0,
                                     product.Products.MOQ,
                                     product.Products.Quantity,
-                                    Offers = mergeOffers(categoryOffer, product.Products.Offers.Where(x => x.IsDeleted == false && x.IsActive == true))
+                                    OfferDetails = mergeOffers(categoryOffer, product.Products.Offers.Where(x => x.IsDeleted == false && x.IsActive == true))
                                               .Select(x => new
                                               {
                                                   x.id,
@@ -302,14 +302,14 @@ namespace InventoryApp.Controllers.API
                                                   x.ProductId,
                                                   x.StartDate,
                                                   x.EndDate,
-                                                  IsApplied = Repository<Cart>.GetEntityListForQuery(c => c.OfferId == x.id && x.IsDeleted == false && c.AspNetUsers.Id == LoggedInUserId).Item2 > 0 ? true : false,
-                                                  IsUsed = Repository<OrderDetails>.GetEntityListForQuery(o => o.OfferId == x.id && x.IsDeleted == false && o.Orders.UserId == LoggedInUserId).Item2 > 0 ? true : false,
+                                                  IsSelected = Repository<Cart>.GetEntityListForQuery(c => c.OfferId == x.id && x.IsDeleted == false && c.AspNetUsers.Id == LoggedInUserId).Item2 > 0 ? true : false,
+                                                  //IsUsed = Repository<OrderDetails>.GetEntityListForQuery(o => o.OfferId == x.id && x.IsDeleted == false && o.Orders.UserId == LoggedInUserId).Item2 > 0 ? true : false,
                                               }),
                                     TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive && x.IsDeleted == false).
                                     Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
                                     IsInCart = cart.Where(x => x.ProductId == product.Products.id).Count() > 0 ? true : false,
                                     SelectedQuantity = cart.Where(x => x.ProductId == product.Products.id).Count(),
-                                    OfferId = cart.Where(x => x.ProductId == product.Products.id).Select(x => x.OfferId),
+                                    //OfferId = cart.Where(x => x.ProductId == product.Products.id).Select(x => x.OfferId),
                                     IsInWishList = Repository<WishList>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.UserId == LoggedInUserId).Item1.Count() > 0 ? true : false,
                                     //Reviews = Repository<ProductReview>.GetEntityListForQuery(x => x.ProductId == product.ProductId),
                                     Images = GetProductImagesById(product.Products.id)
@@ -618,7 +618,17 @@ namespace InventoryApp.Controllers.API
                                     product.Products?.Quantity,
                                     SelectedQuantity = product.Quantity,
                                     OfferDetails = Repository<Offers>.GetEntityListForQuery(null).Item1.
-                                    Select(x => new { x.id, x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.StartDate, x.EndDate, IsSelected = (x.id == product.OfferId) }),
+                                    Select(x => new
+                                    {
+                                        x.id,
+                                        x.OfferCode,
+                                        x.OfferDescription,
+                                        x.FlatDiscount,
+                                        x.PercentageDiscount,
+                                        x.StartDate,
+                                        x.EndDate,
+                                        IsSelected = (x.id == product.OfferId)
+                                    }),
                                     //OfferDetails = Repository<Offers>.GetEntityListForQuery(x => x.id == product.OfferId && x.IsDeleted == false).
                                     //Item1.Select(x => new { x.OfferCode, x.OfferDescription, x.FlatDiscount, x.PercentageDiscount, x.StartDate, x.EndDate }),
                                     TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive && x.IsDeleted == false).
