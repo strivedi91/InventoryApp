@@ -34,7 +34,10 @@ namespace InventoryApp.Helpers
             Suggestions = 6,
 
             [Description("Page Access")]
-            Page_Access = 7
+            Page_Access = 7,
+
+            [Description("Notifications")]
+            Notifications = 8
         }
 
         public enum OrderStatus : int
