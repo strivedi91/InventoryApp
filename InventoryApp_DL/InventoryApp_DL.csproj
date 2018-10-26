@@ -118,12 +118,6 @@
     <Compile Include="Entities\NotificationHistoryConfiguration.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\Notifications.cs">
-      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Entities\NotificationsConfiguration.cs">
-      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
-    </Compile>
     <Compile Include="Entities\Offers.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>

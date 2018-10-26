@@ -27,6 +27,7 @@ namespace InventoryApp_DL.Entities
             HasKey(x => x.Id);
 
             Property(x => x.Id).HasColumnName("Id").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Title).HasColumnName("Title").IsRequired().HasMaxLength(50);
             Property(x => x.NotificationText).HasColumnName("NotificationText").IsRequired().HasMaxLength(200);
             Property(x => x.CreatedOn).HasColumnName("CreatedOn").IsRequired();
             Property(x => x.CreatedBy).HasColumnName("CreatedBy").IsRequired().HasMaxLength(128);

@@ -19,6 +19,7 @@ namespace InventoryApp_DL.Entities
     public partial class NotificationHistory : InventoryApp_DL.Infrastructure.Entity
     {
         public int Id { get; set; } // Id (Primary key)
+        public string Title { get; set; } // Title
         public string NotificationText { get; set; } // NotificationText
         public DateTime CreatedOn { get; set; } // CreatedOn
         public string CreatedBy { get; set; } // CreatedBy

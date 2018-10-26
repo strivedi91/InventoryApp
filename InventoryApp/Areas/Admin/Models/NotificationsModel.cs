@@ -23,6 +23,7 @@ namespace InventoryApp.Areas.Admin.Models
     public class NotificaitonViewModel
     {
         public int Id { get; set; }
+        public string Title { get; set; }
         public string NotificaitonText { get; set; }
         public DateTime CreatedOn { get; set; }
     }
