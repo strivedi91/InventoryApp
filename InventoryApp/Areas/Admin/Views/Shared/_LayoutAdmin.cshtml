@@ -169,7 +169,7 @@
                         @if (pages.Where(x => x.PageName.ToLower() == Enums.GetEnumDescription(Enums.Menus.Notifications).ToLower()).FirstOrDefault() != null)
                         {
                             <li class="nav-item">
-                                <a id="lnkPageNotification" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "SendNotification", controller = "Notifications" })">
+                                <a id="lnkPageNotification" class="nav-link" href="@Url.RouteUrl("Admin_default", new { action = "Index", controller = "Notifications" })">
                                     <i class="fa fa-lock"></i>
                                     &nbsp;@Enums.GetEnumDescription(Enums.Menus.Notifications)
                                 </a>
