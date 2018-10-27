@@ -26,6 +26,16 @@ namespace InventoryApp.Areas.Admin.Models
         public string Title { get; set; }
         public string NotificaitonText { get; set; }
         public DateTime CreatedOn { get; set; }
+
+        public string stSearch { get; set; }
+
+        public int inPageIndex { get; set; }
+
+        public int inPageSize { get; set; }
+
+        public string stSortColumn { get; set; }
+
+        public Int64 inRowNumber { get; set; }
     }
 
 }

@@ -30,17 +30,21 @@
                 <thead>
                     <tr class="heading">
                         @Html.Hidden("hdnPageIndex", Model.inPageIndex)
-                        <th id="sortID" onclick="getOrderedList('ID', 'sortID');" class="heading-text sorting">Id</th>
-                        <th id="sortOfferCode" onclick="getOrderedList('OfferCode', 'sortOfferCode');" class="heading-text sorting">Offer Code</th>                        
+                        <th>Id</th>
+                        <th>Title</th>
+
+                        <th>Notification</th>
+                        @*<th>Sent On</th>*@
                     </tr>
                 </thead>
                 @foreach (var notification in Model.notifications)
                 {
-                    <tr>
-                        <td>@notification.Id</td>
-                        <td>@notification.NotificaitonText</td>
-                        <td>@notification.CreatedOn</td>
-                    </tr>
+                <tr>
+                    <td>@notification.Id</td>
+                    <td>@notification.Title</td>
+                    <td>@notification.NotificaitonText</td>
+                    @*<td>@notification.CreatedOn.ToShortDateString()</td>*@
+                </tr>
                 }
             </table>
         </div>
