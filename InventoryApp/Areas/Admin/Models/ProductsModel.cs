@@ -30,6 +30,8 @@ namespace InventoryApp.Areas.Admin.Models
         {
             objCategoryList = new List<SelectListItem>();
             loFilesPath = new List<string>();
+            productReviews = new List<ProductReview>();
+            suggestions = new List<Suggestions>();
         }
 
         public int id { get; set; }
@@ -91,5 +93,10 @@ namespace InventoryApp.Areas.Admin.Models
         public HttpPostedFileBase[] loFiles { get; set; }
 
         public List<string> loFilesPath { get; set; }
+
+        public List<Suggestions> suggestions { get; set; }
+
+        public List<ProductReview> productReviews { get; set; }
+
     }
 }

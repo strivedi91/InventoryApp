@@ -525,7 +525,12 @@ namespace InventoryApp.Areas.Admin.Controllers
 
         public ActionResult getProductDetailsById(int ProductId)
         {
-            Products objProductDetails = Repository<Products>.GetEntityListForQuery(x => x.id == ProductId && x.IsDeleted == false).Item1.FirstOrDefault();
+            List<Expression<Func<Products, Object>>> includes = new List<Expression<Func<Products, object>>>();
+            Expression<Func<Products, object>> IncludeOffer = (Offer) => Offer.Offers;
+            Expression<Func<Products, object>> IncludeReview = (review) => review.ProductReviews;
+            Expression<Func<Products, object>> IncludeSuggestion = (suggestion) => suggestion.Suggestions;
+
+            Products objProductDetails = Repository<Products>.GetEntityListForQuery(x => x.id == ProductId && x.IsDeleted == false,null,includes).Item1.FirstOrDefault();
 
             ProductsViewModel loProductDetails = new ProductsViewModel()
             {
@@ -542,7 +547,9 @@ namespace InventoryApp.Areas.Admin.Controllers
                 Price = objProductDetails.Price,
                 Quantity = objProductDetails.Quantity,
                 ApplyGst = objProductDetails.ApplyGst,
-                objTierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == objProductDetails.id && x.IsDeleted == false).Item1.ToList()
+                objTierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == objProductDetails.id && x.IsDeleted == false).Item1.ToList(),
+                productReviews = objProductDetails.ProductReviews.ToList(),
+                suggestions = objProductDetails.Suggestions.ToList()
             };
 
             string path = Path.Combine(Server.MapPath(ProductImagePath), objProductDetails.id.ToString());
