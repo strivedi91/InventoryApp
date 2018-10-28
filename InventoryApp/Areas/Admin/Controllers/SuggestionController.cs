@@ -22,7 +22,7 @@ namespace InventoryApp.Areas.Admin.Controllers
         {
             SuggestionsViewModel foRequest = new SuggestionsViewModel();
 
-            foRequest.stSortColumn = "ID ASC";
+            foRequest.stSortColumn = "ID DESC";
 
             return View(getSuggestionList(foRequest));
         }
@@ -66,6 +66,10 @@ namespace InventoryApp.Areas.Admin.Controllers
             {
                 switch (foRequest.stSortColumn)
                 {
+
+                    case "ID DESC":
+                        orderingFunc = q => q.OrderByDescending(s => s.Id);
+                        break;
                     case "ProductName DESC":
                         orderingFunc = q => q.OrderByDescending(s => s.ProductId);
                         break;

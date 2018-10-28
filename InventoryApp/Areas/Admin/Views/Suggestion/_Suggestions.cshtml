@@ -45,6 +45,7 @@
             <thead>
                 <tr class="heading">
                     @Html.Hidden("hdnPageIndex", Model.inPageIndex)
+                    <th style="width:5%;" class="heading-text">Id</th>
                     <th style="width:15%;" class="heading-text">Image</th>
                     <th id="sortID" style="width:15%;" onclick="getOrderList('ProductName', 'sortProductName');" class="heading-text sorting">Product Name</th>
                     <th id="sortName" style="width:15%;" onclick="getOrderList('UserName', 'sortUserName');" class="heading-text sorting">Seller Name</th>
@@ -57,6 +58,7 @@
             @foreach (var suggestion in Model.loSuggestionList)
             {
                 <tr>
+                    <td>@suggestion.Id</td>
                     <td>
                         @if (@suggestion.ProductImgPath != null && @suggestion.ProductImgPath != "")
                         {
@@ -140,8 +142,7 @@ else
         GetPager($("#hdnTotalRec").val(), $("#hdnPageIndex").val());
     });
 
-    function ReplayForSuggestion()
-    {
+    function ReplayForSuggestion() {
         foRequest = {
             SuggestionId: $('#hdnSuggestionIdForResponse').val(),
             Replay: $('#txtReplay').val()
@@ -154,7 +155,7 @@ else
             dataType: "json",
             data: foRequest,
             success: function (loResponse) {
-               
+
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 if (errorThrown === "abort") {
