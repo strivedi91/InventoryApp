@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using static InventoryApp.Helpers.Enums;
 
 namespace InventoryApp.Areas.Admin.Controllers
 {
@@ -20,7 +21,8 @@ namespace InventoryApp.Areas.Admin.Controllers
             (List<Products>, int) objProducts = Repository<Products>.GetEntityListForQuery(null);
             (List<Categories>, int) objCategories = Repository<Categories>.GetEntityListForQuery(null);
             string cancelOrder = Helpers.Enums.GetEnumDescription((Helpers.Enums.OrderStatus.Cancelled));
-            (List<Orders>, int) objOrders = Repository<Orders>.GetEntityListForQuery(x=>x.OrderStatus != cancelOrder);
+            (List<Orders>, int) objOrders = Repository<Orders>.GetEntityListForQuery(null);
+            var objCancelledOrders = objOrders.Item1.Where(x => x.OrderStatus == cancelOrder);
 
             return View(new DashboardModel
             {
@@ -32,6 +34,12 @@ namespace InventoryApp.Areas.Admin.Controllers
                 YesterdayOrderCount = objOrders.Item1.Where(x => x.CreatedOn.Date == DateTime.Now.AddDays(-1).Date).Count(),
                 CurrentMonthOrderCount = objOrders.Item1.Where(x => x.CreatedOn.Month == DateTime.Now.Month).Count(),
                 LastMonthOrderCount = objOrders.Item1.Where(x => x.CreatedOn.Month == DateTime.Now.AddMonths(-1).Month).Count(),
+
+                CancelledTodayOrderCount = objCancelledOrders.Where(x => x.CreatedOn.Date == DateTime.Now.Date && x.OrderStatus== GetEnumDescription(OrderStatus.Cancelled)).Count(),
+                CancelledOrderCount = objCancelledOrders.Where(x => x.CreatedOn.Date == DateTime.Now.AddDays(-1).Date && x.OrderStatus == GetEnumDescription(OrderStatus.Cancelled)).Count(),
+                CancelledCurrentMonthOrderCount = objCancelledOrders.Where(x => x.CreatedOn.Month == DateTime.Now.Month && x.OrderStatus == GetEnumDescription(OrderStatus.Cancelled)).Count(),
+                CancelledLastMonthOrderCount = objCancelledOrders.Where(x => x.CreatedOn.Month == DateTime.Now.AddMonths(-1).Month && x.OrderStatus == GetEnumDescription(OrderStatus.Cancelled)).Count(),
+
                 TodayOrderPayment = objOrders.Item1.Where(x => x.CreatedOn.Date == DateTime.Now.Date).Sum(x=>x.Total),
                 YesterdayOrderPayment = objOrders.Item1.Where(x => x.CreatedOn.Date == DateTime.Now.AddDays(-1).Date).Sum(x => x.Total),
                 CurrentMonthOrderPayment = objOrders.Item1.Where(x => x.CreatedOn.Month == DateTime.Now.Month).Sum(x => x.Total),

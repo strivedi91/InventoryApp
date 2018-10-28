@@ -61,10 +61,41 @@
                     <h6>Last Month</h6>
                     <h2>@Model.LastMonthOrderCount</h2>
                 </div>
-                
+
             </div>
         </div>
     </div>
+    <div class="col-md-12"><br /></div>
+    <div class="white-box bg-white">
+        <div class="box-title">CANCELLED ORDERS</div>
+        <div class="overview-listing">
+            <div class="row">
+
+                <div class="col-md-3 col-sm-3">
+                    @*<img src="~/assets/images/wallet.png">*@
+                    <h6>Today</h6>
+                    <h2>@Model.CancelledTodayOrderCount</h2>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    @*<img src="~/assets/images/wallet.png">*@
+                    <h6>Yesterday</h6>
+                    <h2>@Model.CancelledYesterdayOrderCount</h2>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    @*<img src="~/assets/images/wallet.png">*@
+                    <h6>Current Month</h6>
+                    <h2>@Model.CancelledCurrentMonthOrderCount</h2>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    @*<img src="~/assets/images/wallet.png">*@
+                    <h6>Last Month</h6>
+                    <h2>@Model.CancelledLastMonthOrderCount</h2>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <div class="col-md-12"><br /></div>
     <div class="white-box bg-white">
         <div class="box-title">PAYMENT</div>
