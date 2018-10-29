@@ -110,6 +110,29 @@
                                         </tbody>
                                     </table>
                                 }
+                                <p><b>Product Review:&nbsp;</b><text class="textGreycolor">@(Model.productReviews.Count == 0 ? "N/A" : "")</text></p>
+                                @if (Model.productReviews.Count > 0)
+                                {
+                                    <table class="table">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Review</th>
+                                                <th>Rate</th>
+                                                <th>Seller</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.productReviews)
+                                            {
+                                                <tr>
+                                                    <td>@item.Review</td>
+                                                    <td>@item.Rating</td>
+                                                    <td>@(Model.objUserList.Where(x=>x.Id == item.UserId).Select(y=>y.Name).FirstOrDefault())</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
                             </div>
                         </div>
                     </div>

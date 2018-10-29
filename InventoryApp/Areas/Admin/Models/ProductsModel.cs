@@ -32,6 +32,7 @@ namespace InventoryApp.Areas.Admin.Models
             loFilesPath = new List<string>();
             productReviews = new List<ProductReview>();
             suggestions = new List<Suggestions>();
+            objUserList = new List<AspNetUsers>();
         }
 
         public int id { get; set; }
@@ -98,5 +99,6 @@ namespace InventoryApp.Areas.Admin.Models
 
         public List<ProductReview> productReviews { get; set; }
 
+        public List<AspNetUsers> objUserList { get; set; }
     }
 }

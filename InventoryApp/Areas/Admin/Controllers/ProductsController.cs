@@ -529,6 +529,11 @@ namespace InventoryApp.Areas.Admin.Controllers
             Expression<Func<Products, object>> IncludeOffer = (Offer) => Offer.Offers;
             Expression<Func<Products, object>> IncludeReview = (review) => review.ProductReviews;
             Expression<Func<Products, object>> IncludeSuggestion = (suggestion) => suggestion.Suggestions;
+            
+
+            includes.Add(IncludeOffer);
+            includes.Add(IncludeReview);
+            includes.Add(IncludeSuggestion);
 
             Products objProductDetails = Repository<Products>.GetEntityListForQuery(x => x.id == ProductId && x.IsDeleted == false,null,includes).Item1.FirstOrDefault();
 
@@ -549,7 +554,8 @@ namespace InventoryApp.Areas.Admin.Controllers
                 ApplyGst = objProductDetails.ApplyGst,
                 objTierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == objProductDetails.id && x.IsDeleted == false).Item1.ToList(),
                 productReviews = objProductDetails.ProductReviews.ToList(),
-                suggestions = objProductDetails.Suggestions.ToList()
+                suggestions = objProductDetails.Suggestions.ToList(),
+                objUserList = Repository<AspNetUsers>.GetEntityListForQuery(x => x.IsDeleted == false).Item1.ToList(),
             };
 
             string path = Path.Combine(Server.MapPath(ProductImagePath), objProductDetails.id.ToString());
