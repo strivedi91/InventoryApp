@@ -605,6 +605,8 @@
     <Content Include="Areas\Admin\Views\Notifications\_Notifications.cshtml" />
     <Content Include="Areas\Admin\Views\Notifications\SendNotification.cshtml" />
     <Content Include="Areas\Admin\Views\Notifications\Index.cshtml" />
+    <Content Include="PDF\OrderInvoices\Order_Invoice_1017.pdf" />
+    <Content Include="PDF\OrderInvoices\Order_Invoice_1026.pdf" />
     <None Include="Properties\PublishProfiles\app.thegodam.com - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\inventory.sachintrivedi.com - Web Deploy.pubxml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
@@ -789,7 +791,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="PDF\OrderInvoices\" />
     <Folder Include="Views\Base\" />
     <Folder Include="Views\Pager\" />
   </ItemGroup>
