@@ -843,13 +843,20 @@ namespace InventoryApp.Controllers.API
                     var userSelectedProducts = Repository<Cart>.
                         GetEntityListForQuery(x => x.UserId == LoggedInUserId, null, includes).Item1;
 
+                    
+                    decimal flatDiscount = userSelectedProducts.Where(x=>x.Offers != null && x.Offers?.FlatDiscount > 0).Sum(x => Convert.ToDecimal(x.Offers?.FlatDiscount));
+
+                    decimal percentageDiscont = userSelectedProducts.Where(x => x.Offers != null && x.Offers?.PercentageDiscount > 0).Sum(x => (Convert.ToDecimal(x.Offers?.PercentageDiscount * (x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price)) / 100));
+
+                    decimal CouponDiscount = flatDiscount + percentageDiscont;
+
                     Orders orders = new Orders
                     {
                         CreatedOn = DateTime.Now,
-                        Discount = userSelectedProducts.Sum(x => x.Quantity * x.Products.Price) - userSelectedProducts.Sum(x => x.Quantity * Convert.ToDecimal(x.Products?.OfferPrice)),
+                        Discount = (userSelectedProducts.Sum(x => x.Quantity * x.Products.Price) - userSelectedProducts.Sum(x => x.Quantity * Convert.ToDecimal(x.Products.OfferPrice !=null ? x.Products?.OfferPrice : x.Products.Price))) + CouponDiscount,
                         OrderStatus = Enums.GetEnumDescription((Enums.OrderStatus.OrderPlaced)),
                         SubTotal = userSelectedProducts.Sum(x => x.Quantity * x.Products.Price),
-                        Total = userSelectedProducts.Sum(x => x.Quantity * Convert.ToDecimal(x.Products?.OfferPrice)),
+                        Total = userSelectedProducts.Sum(x => x.Quantity * Convert.ToDecimal(x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price)) - CouponDiscount,
                         UserId = LoggedInUserId,
                         ShippingAddress = orderModel.ShippingAddress
                     };
@@ -864,9 +871,9 @@ namespace InventoryApp.Controllers.API
                             OrderId = orders.id,
                             Quantity = x.Quantity,
                             CategoryId = x.CategoryId,
-                            Discount = 0,
+                            Discount = Convert.ToDecimal((x.Quantity * x.Products.Price) - Convert.ToDecimal(x.Quantity * (x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price))) + Convert.ToDecimal(x.Offers?.PercentageDiscount > 0 ? ((x.Offers?.PercentageDiscount * (x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price))/100) : x.Offers?.FlatDiscount),
                             Price = x.Products.Price,
-                            TotalPrice = x.Products.Price,
+                            TotalPrice = (Convert.ToDecimal(x.Quantity * (x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price)) - Convert.ToDecimal(x.Offers?.PercentageDiscount > 0 ? ((x.Offers?.PercentageDiscount * (x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price)) / 100) : x.Offers?.FlatDiscount)),
                             ProductId = x.ProductId,
                             OfferId = x.OfferId == 0 ? null : x.OfferId,
                             OfferCode = x.Offers?.OfferCode,

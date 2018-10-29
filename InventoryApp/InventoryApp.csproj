@@ -607,6 +607,7 @@
     <Content Include="Areas\Admin\Views\Notifications\Index.cshtml" />
     <Content Include="PDF\OrderInvoices\Order_Invoice_1017.pdf" />
     <Content Include="PDF\OrderInvoices\Order_Invoice_1026.pdf" />
+    <Content Include="PDF\OrderInvoices\Order_Invoice_1038.pdf" />
     <None Include="Properties\PublishProfiles\app.thegodam.com - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\inventory.sachintrivedi.com - Web Deploy.pubxml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
