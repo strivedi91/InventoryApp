@@ -868,11 +868,11 @@ namespace InventoryApp.Controllers.API
                             Price = x.Products.Price,
                             TotalPrice = x.Products.Price,
                             ProductId = x.ProductId,
-                            OfferId = x.OfferId,
-                            OfferCode = x.Offers.OfferCode,
-                            OfferDescription = x.Offers.OfferDescription,
-                            FlatDiscount = x.Offers.FlatDiscount,
-                            PercentageDiscount = x.Offers.PercentageDiscount,
+                            OfferId = x.OfferId == 0 ? null : x.OfferId,
+                            OfferCode = x.Offers?.OfferCode,
+                            OfferDescription = x.Offers?.OfferDescription,
+                            FlatDiscount = x.Offers?.FlatDiscount,
+                            PercentageDiscount = x.Offers?.PercentageDiscount,
                         }));
 
                     await Repository<OrderDetails>.InsertMultipleEntities(orderItems);

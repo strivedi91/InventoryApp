@@ -297,7 +297,7 @@ input[type="submit"] {
 .sidebar-sticky {
   position: relative;
   top: 0;
-  height: calc(100vh - 48px);
+  height: calc(100vh - 90px);
   padding-top: .5rem;
   overflow-x: hidden;
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
@@ -312,7 +312,7 @@ input[type="submit"] {
   font-family: 'avenirheavy';
   color: #adadad;
   font-size: 18px;
-  padding: 25px 30px;
+  padding: 16px 30px;
 }
 .report-feedback {
   position: absolute;
