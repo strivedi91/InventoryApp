@@ -20,7 +20,7 @@ namespace InventoryApp.Areas.Admin.Controllers
         public ActionResult Index()
         {
             OrderViewModel foRequest = new OrderViewModel();
-            foRequest.stSortColumn = "CreatedOn DESC";
+            foRequest.stSortColumn = "ID DESC";
             return View("~/Areas/Admin/Views/Order/Index.cshtml", getOrderList(foRequest));
         }
 
@@ -63,19 +63,19 @@ namespace InventoryApp.Areas.Admin.Controllers
 
             // 1. Seller, from date, to date, category
             if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsFromDate) && !string.IsNullOrEmpty(foRequest.lsToDate) && !string.IsNullOrEmpty(foRequest.OrderStatus) && foRequest.inFilterCategory > 0)
-                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller && x.OrderStatus == foRequest.OrderStatus && (x.OrderDetails.Where(y=>y.CategoryId == foRequest.inFilterCategory).Count() >= 1);
+                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller && x.OrderStatus == foRequest.OrderStatus && (x.OrderDetails.Where(y=>y.CategoryId == foRequest.inFilterCategory).Count() >= 1) && x.OrderDetails.Count() > 0;
 
             // 1. Seller, from date, to date, category
             if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsFromDate) && !string.IsNullOrEmpty(foRequest.lsToDate) && foRequest.inFilterCategory > 0)
-                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1);
+                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1) && x.OrderDetails.Count() > 0;
 
             // 2. Seller, from date, to date
             else if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsFromDate) && !string.IsNullOrEmpty(foRequest.lsToDate) && !string.IsNullOrEmpty(foRequest.OrderStatus))
-                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller && x.OrderStatus == foRequest.OrderStatus;
-            
+                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller && x.OrderStatus == foRequest.OrderStatus && x.OrderDetails.Count() > 0;
+
             // 2. Seller, from date, to date
             else if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsFromDate) && !string.IsNullOrEmpty(foRequest.lsToDate))
-                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller;
+                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller && x.OrderDetails.Count() > 0;
 
             // 3. from date, to date, category
             else if (!string.IsNullOrEmpty(foRequest.lsFromDate) && !string.IsNullOrEmpty(foRequest.lsToDate) && foRequest.inFilterCategory > 0 && !string.IsNullOrEmpty(foRequest.OrderStatus))
@@ -83,91 +83,93 @@ namespace InventoryApp.Areas.Admin.Controllers
 
             // 3. from date, to date, category
             else if (!string.IsNullOrEmpty(foRequest.lsFromDate) && !string.IsNullOrEmpty(foRequest.lsToDate) && foRequest.inFilterCategory > 0)
-                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1);
+                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1) && x.OrderDetails.Count() > 0;
 
             // 4. Seller, from date, category
             else if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsFromDate) && foRequest.inFilterCategory > 0 && !string.IsNullOrEmpty(foRequest.OrderStatus))
-                expression = x => x.CreatedOn >= ldFromDate && x.UserId == foRequest.inFilterSeller && x.OrderStatus == foRequest.OrderStatus && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1);
+                expression = x => x.CreatedOn >= ldFromDate && x.UserId == foRequest.inFilterSeller && x.OrderStatus == foRequest.OrderStatus && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1) && x.OrderDetails.Count() > 0;
 
             // 4. Seller, from date, category
             else if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsFromDate) && foRequest.inFilterCategory > 0)
-                expression = x => x.CreatedOn >= ldFromDate && x.UserId == foRequest.inFilterSeller && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1);
-            
+                expression = x => x.CreatedOn >= ldFromDate && x.UserId == foRequest.inFilterSeller && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1) && x.OrderDetails.Count() > 0;
+
             // 5. Seller, to date, category
             else if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsToDate) && foRequest.inFilterCategory > 0 && !string.IsNullOrEmpty(foRequest.OrderStatus))
-                expression = x => x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller && x.OrderStatus == foRequest.OrderStatus && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1);
+                expression = x => x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller && x.OrderStatus == foRequest.OrderStatus && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1) && x.OrderDetails.Count() > 0;
 
             // 5. Seller, to date, category
             else if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsToDate) && foRequest.inFilterCategory > 0)
-                expression = x => x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1);
+                expression = x => x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1) && x.OrderDetails.Count() > 0;
 
             // 6. Seller, category
             else if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && foRequest.inFilterCategory > 0 && !string.IsNullOrEmpty(foRequest.OrderStatus))
-                expression = x => x.UserId == foRequest.inFilterSeller && x.OrderStatus == foRequest.OrderStatus && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1);
-            
+                expression = x => x.UserId == foRequest.inFilterSeller && x.OrderStatus == foRequest.OrderStatus && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1) && x.OrderDetails.Count() > 0;
+
             // 6. Seller, category
             else if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && foRequest.inFilterCategory > 0)
-                expression = x => x.UserId == foRequest.inFilterSeller && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1);
+                expression = x => x.UserId == foRequest.inFilterSeller && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1) && x.OrderDetails.Count() > 0;
 
             // 7. from date, to date
             else if (!string.IsNullOrEmpty(foRequest.lsFromDate) && !string.IsNullOrEmpty(foRequest.lsToDate) && !string.IsNullOrEmpty(foRequest.OrderStatus))
-                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate && x.OrderStatus == foRequest.OrderStatus;
+                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate && x.OrderStatus == foRequest.OrderStatus && x.OrderDetails.Count() > 0;
 
             // 7. from date, to date
             else if (!string.IsNullOrEmpty(foRequest.lsFromDate) && !string.IsNullOrEmpty(foRequest.lsToDate))
-                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate;
+                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate && x.OrderDetails.Count() > 0;
 
             // 8. Seller, from date
             else if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsFromDate) && !string.IsNullOrEmpty(foRequest.OrderStatus))
-                expression = x => x.CreatedOn >= ldFromDate && x.UserId == foRequest.inFilterSeller && x.OrderStatus == foRequest.OrderStatus;
+                expression = x => x.CreatedOn >= ldFromDate && x.UserId == foRequest.inFilterSeller && x.OrderStatus == foRequest.OrderStatus && x.OrderDetails.Count() > 0;
 
             // 8. Seller, from date
             else if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsFromDate))
-                expression = x => x.CreatedOn >= ldFromDate && x.UserId == foRequest.inFilterSeller;
+                expression = x => x.CreatedOn >= ldFromDate && x.UserId == foRequest.inFilterSeller && x.OrderDetails.Count() > 0;
 
             // 9. Seller, to date
             else if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsToDate) && !string.IsNullOrEmpty(foRequest.OrderStatus))
-                expression = x => x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller && x.OrderStatus == foRequest.OrderStatus;
+                expression = x => x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller && x.OrderStatus == foRequest.OrderStatus && x.OrderDetails.Count() > 0;
 
             // 9. Seller, to date
             else if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsToDate))
-                expression = x => x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller;
+                expression = x => x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller && x.OrderDetails.Count() > 0;
 
             // 10. Category, from date
             else if (foRequest.inFilterCategory > 0 && !string.IsNullOrEmpty(foRequest.lsFromDate) && !string.IsNullOrEmpty(foRequest.OrderStatus))
-                expression = x => x.CreatedOn >= ldFromDate && x.OrderStatus == foRequest.OrderStatus && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1);
+                expression = x => x.CreatedOn >= ldFromDate && x.OrderStatus == foRequest.OrderStatus && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1) && x.OrderDetails.Count() > 0;
 
             // 10. Category, from date
             else if (foRequest.inFilterCategory > 0 && !string.IsNullOrEmpty(foRequest.lsFromDate))
-                expression = x => x.CreatedOn >= ldFromDate && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1);
+                expression = x => x.CreatedOn >= ldFromDate && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1) && x.OrderDetails.Count() > 0;
 
             // 11. Category, to date
             else if (foRequest.inFilterCategory > 0 && !string.IsNullOrEmpty(foRequest.lsToDate) && !string.IsNullOrEmpty(foRequest.OrderStatus))
-                expression = x => x.CreatedOn <= ldToDate && x.OrderStatus == foRequest.OrderStatus && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1);
-            
+                expression = x => x.CreatedOn <= ldToDate && x.OrderStatus == foRequest.OrderStatus && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1) && x.OrderDetails.Count() > 0;
+
             // 11. Category, to date
             else if (foRequest.inFilterCategory > 0 && !string.IsNullOrEmpty(foRequest.lsToDate))
-                expression = x => x.CreatedOn <= ldToDate && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1);
+                expression = x => x.CreatedOn <= ldToDate && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1) && x.OrderDetails.Count() > 0;
 
             // 12. Seller
             else if (!string.IsNullOrEmpty(foRequest.inFilterSeller))
-                expression = x => x.UserId == foRequest.inFilterSeller;
+                expression = x => x.UserId == foRequest.inFilterSeller && x.OrderDetails.Count() > 0;
 
             // 13. Category
             else if (foRequest.inFilterCategory > 0)
-                expression = x => (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1);
+                expression = x => (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1) && x.OrderDetails.Count() > 0;
 
             // 14. From date
             else if (!string.IsNullOrEmpty(foRequest.lsFromDate))
-                expression = x => x.CreatedOn >= ldFromDate;
+                expression = x => x.CreatedOn >= ldFromDate && x.OrderDetails.Count() > 0;
 
             // 15. To date
             else if (!string.IsNullOrEmpty(foRequest.lsToDate))
-                expression = x => x.CreatedOn <= ldToDate;
+                expression = x => x.CreatedOn <= ldToDate && x.OrderDetails.Count() > 0;
 
             // 15. To Status
             else if (!string.IsNullOrEmpty(foRequest.OrderStatus))
-                expression = x => x.OrderStatus == foRequest.OrderStatus;
+                expression = x => x.OrderStatus == foRequest.OrderStatus && x.OrderDetails.Count() > 0;
+            else
+                expression = x=> x.OrderDetails.Count() > 0;
 
             if (!string.IsNullOrEmpty(foRequest.stSortColumn))
             {

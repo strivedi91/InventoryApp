@@ -120,7 +120,7 @@
                         {
                             <li class="nav-item">
                                 @{
-                                    var loOrders = Repository<Orders>.GetEntityListForQuery(null).Item1;
+                                    var loOrders = Repository<Orders>.GetEntityListForQuery(x=>x.OrderDetails.Count > 0).Item1;
 
                                     loOrders = loOrders.Where(x => x.CreatedOn.Date == DateTime.Now.Date).ToList();
                                 }
