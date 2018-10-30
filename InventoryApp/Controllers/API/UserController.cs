@@ -1018,7 +1018,7 @@ namespace InventoryApp.Controllers.API
                                     ShippingAddress = string.IsNullOrEmpty(order.ShippingAddress) ? "" : order.ShippingAddress,
                                     OrderInvoice = getOrderInvoiceUrl(order.id),
                                     Images = getProductImages(order.id),
-                                    order.CancellationReason
+                                    CancellationReason = string.IsNullOrEmpty(order.CancellationReason) ? "" : order.CancellationReason
                                 }
                         })
                     });
