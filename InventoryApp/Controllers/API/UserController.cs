@@ -472,7 +472,7 @@ namespace InventoryApp.Controllers.API
                                IsSelected = userSelectedProducts.Contains(product.id),
                                IsInCart = product.Carts.Where(x => x.UserId == LoggedInUserId).Count() > 0 ? true : false,
                                OfferId = product.Carts.Where(x => x.ProductId == product.id).Select(x => x.OfferId),
-                               SelectedQuantity = product.Carts.Where(x => x.ProductId == product.id).Select(x=>x.Quantity).FirstOrDefault(),
+                               SelectedQuantity = product.Carts.Where(x => x.ProductId == product.id).Select(x => x.Quantity).FirstOrDefault(),
                                IsInWishList = product.WishLists.Where(x => x.UserId == LoggedInUserId).Count() > 0 ? true : false,
                                //Reviews=product.ProductReviews,
                                Images = GetProductImagesById(product.id)
@@ -843,8 +843,8 @@ namespace InventoryApp.Controllers.API
                     var userSelectedProducts = Repository<Cart>.
                         GetEntityListForQuery(x => x.UserId == LoggedInUserId, null, includes).Item1;
 
-                    
-                    decimal flatDiscount = userSelectedProducts.Where(x=>x.Offers != null && x.Offers?.FlatDiscount > 0).Sum(x => Convert.ToDecimal(x.Offers?.FlatDiscount));
+
+                    decimal flatDiscount = userSelectedProducts.Where(x => x.Offers != null && x.Offers?.FlatDiscount > 0).Sum(x => Convert.ToDecimal(x.Offers?.FlatDiscount));
 
                     decimal percentageDiscont = userSelectedProducts.Where(x => x.Offers != null && x.Offers?.PercentageDiscount > 0).Sum(x => (Convert.ToDecimal(x.Offers?.PercentageDiscount * (x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price)) / 100));
 
@@ -853,7 +853,7 @@ namespace InventoryApp.Controllers.API
                     Orders orders = new Orders
                     {
                         CreatedOn = DateTime.Now,
-                        Discount = (userSelectedProducts.Sum(x => x.Quantity * x.Products.Price) - userSelectedProducts.Sum(x => x.Quantity * Convert.ToDecimal(x.Products.OfferPrice !=null ? x.Products?.OfferPrice : x.Products.Price))) + CouponDiscount,
+                        Discount = (userSelectedProducts.Sum(x => x.Quantity * x.Products.Price) - userSelectedProducts.Sum(x => x.Quantity * Convert.ToDecimal(x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price))) + CouponDiscount,
                         OrderStatus = Enums.GetEnumDescription((Enums.OrderStatus.OrderPlaced)),
                         SubTotal = userSelectedProducts.Sum(x => x.Quantity * x.Products.Price),
                         Total = userSelectedProducts.Sum(x => x.Quantity * Convert.ToDecimal(x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price)) - CouponDiscount,
@@ -871,7 +871,7 @@ namespace InventoryApp.Controllers.API
                             OrderId = orders.id,
                             Quantity = x.Quantity,
                             CategoryId = x.CategoryId,
-                            Discount = Convert.ToDecimal((x.Quantity * x.Products.Price) - Convert.ToDecimal(x.Quantity * (x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price))) + Convert.ToDecimal(x.Offers?.PercentageDiscount > 0 ? ((x.Offers?.PercentageDiscount * (x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price))/100) : x.Offers?.FlatDiscount),
+                            Discount = Convert.ToDecimal((x.Quantity * x.Products.Price) - Convert.ToDecimal(x.Quantity * (x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price))) + Convert.ToDecimal(x.Offers?.PercentageDiscount > 0 ? ((x.Offers?.PercentageDiscount * (x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price)) / 100) : x.Offers?.FlatDiscount),
                             Price = x.Products.Price,
                             TotalPrice = (Convert.ToDecimal(x.Quantity * (x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price)) - Convert.ToDecimal(x.Offers?.PercentageDiscount > 0 ? ((x.Offers?.PercentageDiscount * (x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price)) / 100) : x.Offers?.FlatDiscount)),
                             ProductId = x.ProductId,
@@ -1185,9 +1185,9 @@ namespace InventoryApp.Controllers.API
         }
 
 
-        [HttpGet]
-        [Route("user/orders/{orderId:int}/cancel")]
-        public async Task<IHttpActionResult> CancelOrder(int orderId)
+        [HttpPost]
+        [Route("user/orders/cancel")]
+        public async Task<IHttpActionResult> CancelOrder(CancelOrderModel cancelOrderModel)
         {
             IEnumerable<string> headerValues = Request.Headers.GetValues("UserId");
             var LoggedInUserId = headerValues.FirstOrDefault();
@@ -1197,9 +1197,10 @@ namespace InventoryApp.Controllers.API
                 try
                 {
                     var userOrders = Repository<Orders>.
-                        GetEntityListForQuery(x => x.id == orderId, null, null).Item1.FirstOrDefault();
+                        GetEntityListForQuery(x => x.id == cancelOrderModel.OrderId, null, null).Item1.FirstOrDefault();
 
                     userOrders.OrderStatus = Enums.GetEnumDescription((Enums.OrderStatus.Cancelled));
+                    userOrders.CancellationReason = cancelOrderModel.CancelReason;
 
                     await Repository<Orders>.UpdateEntity(userOrders, entity => { return entity.id; });
 
@@ -1729,11 +1730,11 @@ namespace InventoryApp.Controllers.API
             {
                 try
                 {
-                    if (!string.IsNullOrEmpty(user.DeviceId))
+                    if (!string.IsNullOrEmpty(foRequest.DeviceId))
                     {
                         user.DeviceId = foRequest.DeviceId;
 
-                        await Repository<AspNetUsers>.UpdateEntity(user, entity => { return entity.Id; });
+                        await Repository<AspNetUsers>.UpdateUserEntity(user, (entity) => { return entity.Id; });
                     }
 
                     Result = JObject.FromObject(new

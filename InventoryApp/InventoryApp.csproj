@@ -295,6 +295,7 @@
     <Compile Include="Models\ApiModels\AddToWishListModel.cs" />
     <Compile Include="Models\ApiModels\AddToCartModel.cs" />
     <Compile Include="Models\ApiModels\AuthenticationResponse.cs" />
+    <Compile Include="Models\ApiModels\CancelOrderModel.cs" />
     <Compile Include="Models\ApiModels\PlaceOrderModel.cs" />
     <Compile Include="Models\ApiModels\SaveFeedbackModel.cs" />
     <Compile Include="Models\ApiModels\SaveUserPreferencesModel.cs" />
