@@ -286,9 +286,9 @@ namespace InventoryApp.Controllers.API
                                     Description = product.Products.Description,
                                     Type = product.Products.Type,
                                     Price = product.Products.Price + (product.Products.ApplyGst ? (product.Products.Price * product.Categories.GST) / 100 : 0),
-                                    OfferPrice = product.Products.OfferPrice,
-                                    GST = product.Products.ApplyGst ? product.Categories.GST : 0,
-                                    product.Products.MOQ,
+                                    OfferPrice = product.Products.OfferPrice == null ? 0 : product.Products.OfferPrice,
+                                    MOQ = product.Products.MOQ == null ? 1 : product.Products.MOQ,
+                                    GST = product.Products.ApplyGst ? product.Categories.GST : 0,                                    
                                     product.Products.Quantity,
                                     OfferDetails = mergeOffers(categoryOffer, product.Products.Offers.Where(x => x.IsDeleted == false && x.IsActive == true))
                                               .Select(x => new
@@ -449,9 +449,9 @@ namespace InventoryApp.Controllers.API
                                Description = product.Description,
                                Type = product.Type,
                                Price = product.Price + (product.ApplyGst ? (product.Price * product.Categories.GST) / 100 : 0),
-                               OfferPrice = product.OfferPrice,
                                GST = product.ApplyGst ? product.Categories.GST : 0,
-                               product.MOQ,
+                               OfferPrice = product.OfferPrice == null ? 0 : product.OfferPrice,
+                               MOQ = product.MOQ == null ? 1 : product.MOQ,
                                product.Quantity,
                                OfferDetails = mergeOffers(categoryOffer, product.Offers.Where(x => x.IsDeleted == false && x.IsActive == true))
                                               .Select(x => new
@@ -613,8 +613,8 @@ namespace InventoryApp.Controllers.API
                                     Description = product.Products?.Description,
                                     Type = product.Products?.Type,
                                     Price = product.Products?.Price,
-                                    OfferPrice = product.Products?.OfferPrice,
-                                    product.Products?.MOQ,
+                                    OfferPrice = product.Products.OfferPrice == null ? 0 : product.Products.OfferPrice,
+                                    MOQ = product.Products.MOQ == null ? 1 : product.Products.MOQ,
                                     product.Products?.Quantity,
                                     SelectedQuantity = product.Quantity,
                                     OfferDetails = Repository<Offers>.GetEntityListForQuery(x => x.IsDeleted == false && x.IsActive == true).Item1.
@@ -682,13 +682,16 @@ namespace InventoryApp.Controllers.API
                     var userSelectedProducts = Repository<Cart>.
                         GetEntityListForQuery(x => x.UserId == LoggedInUserId, null, includes).Item1;
 
+                    var TotalAmount = userSelectedProducts.Sum(x => x.Products.OfferPrice == null ? x.Quantity * x.Products.Price : x.Quantity * x.Products.OfferPrice);
+
                     Result = JObject.FromObject(new
                     {
                         status = true,
                         message = "",
+
                         CheckoutResult = JObject.FromObject(new
                         {
-                            TotalAmount = userSelectedProducts.Sum(x => x.Quantity * x.Products.Price),
+                            TotalAmount = TotalAmount, //userSelectedProducts.Sum(x => x.Quantity * x.Products.OfferPrice),
                             ShippingAddress = Repository<AspNetUsers>.GetEntityListForQuery(x => x.Id == LoggedInUserId).Item1.First()?.Address
                         })
                     });
@@ -1152,8 +1155,8 @@ namespace InventoryApp.Controllers.API
                                 Description = product.Products.Description,
                                 Type = product.Products.Type,
                                 Price = product.Products.Price,
-                                OfferPrice = product.Products.OfferPrice,
-                                product.Products.MOQ,
+                                OfferPrice = product.Products.OfferPrice == null ? 0 : product.Products.OfferPrice,
+                                MOQ = product.Products.MOQ == null ? 1 : product.Products.MOQ,
                                 product.Products.Quantity,
                                 OrderedQuantity = product.Quantity,
                                 Images = GetProductImagesById(product.Products.id)
@@ -1526,8 +1529,8 @@ namespace InventoryApp.Controllers.API
                                     Description = product.Products?.Description,
                                     Type = product.Products?.Type,
                                     Price = product.Products?.Price,
-                                    OfferPrice = product.Products?.OfferPrice,
-                                    product.Products?.MOQ,
+                                    OfferPrice = product.Products.OfferPrice == null ? 0 : product.Products.OfferPrice,
+                                    MOQ = product.Products.MOQ == null ? 1 : product.Products.MOQ,
                                     product.Products?.Quantity,
                                     TierPricing = Repository<TierPricing>.GetEntityListForQuery(x => x.ProductId == product.Products.id && x.IsActive && x.IsDeleted == false).
                                     Item1.Select(x => new { x.QtyTo, x.QtyFrom, x.Price }),
