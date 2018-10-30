@@ -63,5 +63,7 @@ namespace InventoryApp.Areas.Admin.Models
         public int inFilterCategory { get; set; }
 
         public string inFilterSeller { get; set; }
+
+        public string CancellationReason { get; set; }
     }
 }

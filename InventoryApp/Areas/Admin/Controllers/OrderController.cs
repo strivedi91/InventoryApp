@@ -63,7 +63,7 @@ namespace InventoryApp.Areas.Admin.Controllers
 
             // 1. Seller, from date, to date, category
             if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsFromDate) && !string.IsNullOrEmpty(foRequest.lsToDate) && !string.IsNullOrEmpty(foRequest.OrderStatus) && foRequest.inFilterCategory > 0)
-                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller && x.OrderStatus == foRequest.OrderStatus && (x.OrderDetails.Where(y=>y.CategoryId == foRequest.inFilterCategory).Count() >= 1) && x.OrderDetails.Count() > 0;
+                expression = x => x.CreatedOn >= ldFromDate && x.CreatedOn <= ldToDate && x.UserId == foRequest.inFilterSeller && x.OrderStatus == foRequest.OrderStatus && (x.OrderDetails.Where(y => y.CategoryId == foRequest.inFilterCategory).Count() >= 1) && x.OrderDetails.Count() > 0;
 
             // 1. Seller, from date, to date, category
             if (!string.IsNullOrEmpty(foRequest.inFilterSeller) && !string.IsNullOrEmpty(foRequest.lsFromDate) && !string.IsNullOrEmpty(foRequest.lsToDate) && foRequest.inFilterCategory > 0)
@@ -169,7 +169,7 @@ namespace InventoryApp.Areas.Admin.Controllers
             else if (!string.IsNullOrEmpty(foRequest.OrderStatus))
                 expression = x => x.OrderStatus == foRequest.OrderStatus && x.OrderDetails.Count() > 0;
             else
-                expression = x=> x.OrderDetails.Count() > 0;
+                expression = x => x.OrderDetails.Count() > 0;
 
             if (!string.IsNullOrEmpty(foRequest.stSortColumn))
             {
@@ -224,7 +224,7 @@ namespace InventoryApp.Areas.Admin.Controllers
             objOrderViewModel.inRecordCount = objProducts.Item2;
             objOrderViewModel.inPageIndex = foRequest.inPageIndex;
             objOrderViewModel.Pager = new Pager(objProducts.Item2, foRequest.inPageIndex);
-                        
+
             #region Category DDl
             var objCategories = Repository<Categories>.GetEntityListForQuery(x => x.IsDeleted == false).Item1.ToList();
 
@@ -238,11 +238,11 @@ namespace InventoryApp.Areas.Admin.Controllers
 
             #region Seller DDl
             var objSeller = Repository<AspNetUsers>.GetEntityListForQuery(x => x.IsDeleted == false).Item1.ToList();
-            
+
             objOrderViewModel.loSellerList.Add(new SelectListItem { Text = "ALL", Value = "", Selected = true });
 
             foreach (var user in objSeller)
-            {   
+            {
                 objOrderViewModel.loSellerList.Add(new SelectListItem { Text = user.Name, Value = user.Id.ToString(), Selected = false });
             }
             #endregion
@@ -267,7 +267,8 @@ namespace InventoryApp.Areas.Admin.Controllers
                         Discount = order.Discount,
                         OrderStatus = order.OrderStatus,
                         SubTotal = order.SubTotal,
-                        Total = order.Total
+                        Total = order.Total,
+                        CancellationReason = order.CancellationReason
                     });
                 }
             }

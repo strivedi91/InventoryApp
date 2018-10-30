@@ -8,27 +8,29 @@
                 <tr class="heading">
                     @Html.Hidden("hdnPageIndex", Model.inPageIndex)
                     <th id="sortID" onclick="getOrderbyCategoryList('ID', 'sortID');" class="heading-text sorting">id</th>
-                    <th>Product Count</th>
+                    @*<th>Product Count</th>*@
                     <th id="sortType" onclick="getOrderbyCategoryList('CreatedOn', 'sortType');" class="heading-text sorting">CreatedOn</th>
-                    <th id="sortBrand" onclick="getOrderbyCategoryList('Discount', 'sortBrand');" class="heading-text sorting">Discount</th>
-                    <th id="sortPrice" onclick="getOrderbyCategoryList('OrderStatus', 'sortPrice');" class="heading-text sorting">Order Status</th>
                     <th id="sortOfferPrice" onclick="getOrderbyCategoryList('SubTotal', 'sortOfferPrice');" class="heading-text sorting">SubTotal</th>
+                    <th id="sortBrand" onclick="getOrderbyCategoryList('Discount', 'sortBrand');" class="heading-text sorting">Discount</th>
                     <th id="sortQuantity" onclick="getOrderbyCategoryList('Total', 'sortQuantity');" class="heading-text sorting">Total</th>
+                    <th id="sortPrice" onclick="getOrderbyCategoryList('OrderStatus', 'sortPrice');" class="heading-text sorting">Order Status</th>                    
+                    <th class="heading-text sorting">Reason</th>
                     <th class="text-capitalize">Action</th>
                 </tr>
             </thead>
             @foreach (var order in Model.loOrderList)
             {
                 <tr>
-                    <td>@order.id</td>
-                    <td>
+                    <td><a href="@Url.Action("Index", "OrderDetails", new { Id = order.id })" style="text-decoration:none">@order.id</a></td>
+                    @*<td>
                         <a href="@Url.Action("Index", "OrderDetails", new { Id = order.id })" style="text-decoration:none"> @order.ProductCount Items</a>
-                    </td>
+                    </td>*@
                     <td>@order.CreatedOn.ToShortDateString()</td>
-                    <td>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(order.Discount)</td>
-                    <td>@Html.DropDownList("ddlOrdeStatus_" + order.id, Model.loOrdeStatusList, new { @class = "form-control placeholder-no-fix", @onchange = "updateOrderStatus(" + order.id + ", this)" })</td>
                     <td>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(order.SubTotal)</td>
+                    <td>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(order.Discount)</td>
                     <td>@InventoryApp.Helpers.CommonFunctions.getCurrencyConverted(order.Total)</td>
+                    <td>@Html.DropDownList("ddlOrdeStatus_" + order.id, Model.loOrdeStatusList, new { @class = "form-control placeholder-no-fix", @onchange = "updateOrderStatus(" + order.id + ", this)" })</td>
+                    <td></td>                    
                     <td>
                         @{
                             string PDFPath = HttpContext.Current.Server.MapPath(System.Configuration.ConfigurationManager.AppSettings["OrderInvoicePdfPath"]);
@@ -47,7 +49,7 @@
                                     </text>
                                 }
                             }
-                        }
+                        }                        
                     </td>
                 </tr>
                 <script>
