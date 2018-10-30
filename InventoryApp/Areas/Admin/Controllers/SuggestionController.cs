@@ -135,17 +135,10 @@ namespace InventoryApp.Areas.Admin.Controllers
         public async Task<JsonResult> ReplayForSuggestion(SuggestionReplayRequest foRequest)
         {
             bool IsSuccess = false;
-
-            List<Expression<Func<Suggestions, Object>>> includes = new List<Expression<Func<Suggestions, object>>>();
-            Expression<Func<Suggestions, object>> IncludeProducts = (product) => product.Products;
-            Expression<Func<Suggestions, object>> IncludeUser = (suggestion) => suggestion.AspNetUsers;
-            includes.Add(IncludeProducts);
-            includes.Add(IncludeUser);
-
+           
             Expression<Func<Suggestions, bool>> expression = x => x.Id == foRequest.SuggestionId;
 
-            var objSuggestions = Repository<Suggestions>.GetEntityListForQuery(expression, null, includes).Item1.FirstOrDefault();
-
+            var objSuggestions = Repository<Suggestions>.GetEntityListForQuery(expression, null, null).Item1.FirstOrDefault();
             objSuggestions.SuggestionResponse = foRequest.Replay;
             objSuggestions.IsReplied = true;
 
