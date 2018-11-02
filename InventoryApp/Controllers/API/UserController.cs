@@ -957,6 +957,8 @@ namespace InventoryApp.Controllers.API
                     }
                     #endregion
 
+                    sendPlacedOrderEmail(orders, orderItems);
+
                     Result = JObject.FromObject(new
                     {
                         status = true,
@@ -1847,6 +1849,66 @@ namespace InventoryApp.Controllers.API
         #endregion
 
         #region private methodes
+        private bool sendPlacedOrderEmail(Orders foOrder, List<OrderDetails> foOrderItems)
+        {
+            try
+            {
+                AspNetUsers loUser = Repository<AspNetUsers>.GetEntityListForQuery(x => x.Id == foOrder.UserId).Item1.FirstOrDefault();
+
+               
+
+                string lsFrom = "no-replay@thgodowninventorryapp.com";
+
+                string lsToMails = loUser.Email;
+
+                string lsSubject = string.Empty;
+
+                string lsEmailBody = string.Empty;
+
+                lsSubject = "Your Order Status";
+
+                using (StreamReader loStreamReader = new StreamReader(System.Web.HttpContext.Current.Server.MapPath("~/Views/Shared/EmailTemplates/OrderStatus.html")))
+                {
+                    string lsLine = string.Empty;
+                    while ((lsLine = loStreamReader.ReadLine()) != null)
+                    {
+                        lsEmailBody += lsLine;
+                    }
+                }
+
+                string OrderItemRow = string.Empty;
+                decimal TotalAmount = 0; 
+                foreach (var item in foOrderItems)
+                {
+                    Products loProducts = Repository<Products>.GetEntityListForQuery(x => x.id == item.ProductId).Item1.FirstOrDefault();
+
+                    OrderItemRow += OrderItemRow + "<tr>"
+                                    + "<td width='15%' style='border-bottom:1px solid #676161; padding:10px; text-align:left'><img src='" + GetProductImagesById(loProducts.id)[0] + "' style='height:50px;width:50px'></td>"
+                                    + "<td width='30%' style='border-bottom:1px solid #676161; padding:10px; text-align:left'>" + loProducts.Name + "</td>"
+                                    + "<td width='15%' style='border-bottom:1px solid #676161; padding:10px; text-align:center'>" + item.Quantity + "</td>"
+                                    + "<td width='20%' style='border-bottom:1px solid #676161; padding:10px; text-align:righ'>" + item.Price + "</td>"
+                                    + "<td width='20%' style='border-bottom:1px solid #676161; padding:10px; text-align:righ'>" + item.TotalPrice + "</td>"
+                                    + "</tr>";
+
+                    TotalAmount += TotalAmount + item.TotalPrice;
+                }
+
+                lsEmailBody = lsEmailBody.Replace("{OrderNo}", foOrder.id.ToString());
+                lsEmailBody = lsEmailBody.Replace("{OrderDate}", foOrder.CreatedOn.ToShortDateString());
+                lsEmailBody = lsEmailBody.Replace("{OrderStatus}", foOrder.OrderStatus);
+                lsEmailBody = lsEmailBody.Replace("{CustomerName}", loUser.Name);
+                lsEmailBody = lsEmailBody.Replace("{Address}", foOrder.ShippingAddress);
+                lsEmailBody = lsEmailBody.Replace("{OrderItemRows}", OrderItemRow);
+                lsEmailBody = lsEmailBody.Replace("{TotalAmount}", TotalAmount.ToString());
+
+                return EmailHelper.sendEmail(lsToMails, lsFrom, lsSubject, lsEmailBody);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         private string[] GetProductImagesById(int productId)
         {
             string ProductImagePath = ConfigurationManager.AppSettings["ProductImagePath"].ToString();

@@ -753,6 +753,7 @@
     <Content Include="Scripts\SelectBoxIt\jquery.selectBoxIt.css" />
     <Content Include="Scripts\SelectBoxIt\jquery.selectBoxIt.min.js" />
     <None Include="Scripts\_references.js" />
+    <Content Include="Views\Shared\EmailTemplates\OrderStatus.html" />
     <Content Include="Views\Shared\EmailTemplates\UserAccountCreation.html" />
     <Content Include="Views\Shared\PdfTemplates\OrderDetails.html" />
     <Content Include="Web1.config" />
@@ -800,6 +801,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Common\" />
     <Folder Include="Views\Base\" />
     <Folder Include="Views\Pager\" />
   </ItemGroup>
