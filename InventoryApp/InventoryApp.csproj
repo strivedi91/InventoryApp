@@ -257,6 +257,7 @@
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\AdvertisementController.cs" />
     <Compile Include="Areas\Admin\Controllers\NotificationsController.cs" />
     <Compile Include="Areas\Admin\Controllers\OrderController.cs" />
     <Compile Include="Areas\Admin\Controllers\OrderDetailsController.cs" />
@@ -612,6 +613,7 @@
     <Content Include="PDF\OrderInvoices\Order_Invoice_1017.pdf" />
     <Content Include="PDF\OrderInvoices\Order_Invoice_1026.pdf" />
     <Content Include="PDF\OrderInvoices\Order_Invoice_1038.pdf" />
+    <Content Include="Areas\Admin\Views\Advertisement\Index.cshtml" />
     <None Include="Properties\PublishProfiles\app.thegodam.com - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\inventory.sachintrivedi.com - Web Deploy.pubxml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
