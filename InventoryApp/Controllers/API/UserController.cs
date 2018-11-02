@@ -182,11 +182,12 @@ namespace InventoryApp.Controllers.API
                                 FirstTimeLogin = false,
                                 Categories =
                                    from category in userCategories
+                                   let Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Categories.Id).Item1.FirstOrDefault()
                                    select new
                                    {
                                        Id = category.Categories.Id,
                                        Name = category.Categories.Name,
-                                       Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Categories.Id).Item1.FirstOrDefault(),
+                                       Offer = Offer ?? new Offers(),
                                        ProductCount = Repository<Products>.GetEntityListForQuery(x => x.CategoryId == category.CategoryId && x.IsActive == true).Item1.Select(x => x.id).Count(),
                                        SelectedProductCount = Repository<AspNetUserPreferences>.GetEntityListForQuery(x => x.CategoryId == category.CategoryId && x.UserId == LoggedInUserId).Item1.Count()
                                    }
@@ -208,11 +209,13 @@ namespace InventoryApp.Controllers.API
                                 FirstTimeLogin = true,
                                 Categories =
                                         from category in categories
+                                        let Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Id).Item1.FirstOrDefault()
                                         select new
                                         {
+
                                             Id = category.Id,
                                             Name = category.Name,
-                                            Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Id).Item1.FirstOrDefault(),
+                                            Offer = Offer ?? new Offers(),
                                             ProductCount = category.Products.Where(x => x.IsActive == true).Count(),
                                             SelectedProductCount = 0
                                         }
