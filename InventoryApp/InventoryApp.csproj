@@ -493,6 +493,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\Advertisements\campaign7.png" />
+    <Content Include="Images\Advertisements\fpage.jpg" />
+    <Content Include="Images\Advertisements\www.YTS.AM.jpg" />
     <Content Include="Images\Product\16\PNGPIX-COM-Happy-Young-Woman-Standing-In-Casual-Clothes-PNG-Image-500x635.png" />
     <Content Include="Images\Product\16\trousers.jpg" />
     <Content Include="Images\Product\16\Tr_12507215._triveni-charming-peach-colored-casual-wear-indian-traditional-dress-material.jpg" />
@@ -783,7 +786,9 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_Pager.cshtml" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

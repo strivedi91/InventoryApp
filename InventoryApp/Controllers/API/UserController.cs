@@ -288,7 +288,7 @@ namespace InventoryApp.Controllers.API
                                     Price = product.Products.Price + (product.Products.ApplyGst ? (product.Products.Price * product.Categories.GST) / 100 : 0),
                                     OfferPrice = product.Products.OfferPrice == null ? 0 : product.Products.OfferPrice,
                                     MOQ = product.Products.MOQ == null ? 1 : product.Products.MOQ,
-                                    GST = product.Products.ApplyGst ? product.Categories.GST : 0,                                    
+                                    GST = product.Products.ApplyGst ? product.Categories.GST : 0,
                                     product.Products.Quantity,
                                     OfferDetails = mergeOffers(categoryOffer, product.Products.Offers.Where(x => x.IsDeleted == false && x.IsActive == true))
                                               .Select(x => new
@@ -1772,6 +1772,72 @@ namespace InventoryApp.Controllers.API
                 return GetOkResult(Result);
             }
         }
+
+        [HttpGet]
+        [Route("getadvertisements")]
+        public async Task<IHttpActionResult> getAdvertisements()
+        {
+            IEnumerable<string> headerValues = Request.Headers.GetValues("UserId");
+            var LoggedInUserId = headerValues.FirstOrDefault();
+            JObject Result = null;
+
+            if (LoggedInUserId != null)
+            {
+                try
+                {
+                    string ProductImagePath = ConfigurationManager.AppSettings["AdvertisementImagePath"].ToString();
+
+                    string path = Path.Combine((System.Web.Hosting.HostingEnvironment.ApplicationHost.ToString() + ProductImagePath));
+
+                    string Productpath = Path.Combine(HttpContext.Current.Server.MapPath(ProductImagePath));
+
+                    List<string> ProductImages = new List<string>();
+                    if (Directory.Exists(Productpath))
+                    {
+                        DirectoryInfo info = new DirectoryInfo(Productpath);
+                        FileInfo[] files = info.GetFiles("*.*");
+                        foreach (FileInfo file in files)
+                        {
+                            string fileName = file.Name;
+                            ProductImages.Add(Url.Content(ProductImagePath) + "/" + fileName);
+                        }
+                    }
+
+                    Result = JObject.FromObject(new
+                    {
+                        status = true,
+                        message = "Device Id Updated!",
+                        AdvertisementResult = JObject.FromObject(new
+                        {
+                            Images = getAdvertisements()
+                        })
+                    });
+
+                    return GetOkResult(Result);
+                }
+                catch (Exception ex)
+                {
+                    Result = JObject.FromObject(new
+                    {
+                        status = false,
+                        message = "Sorry, there was an error processing your request. Please try again !",
+                        AdvertisementResult = ""
+                    });
+                    return GetOkResult(Result);
+                }
+            }
+            else
+            {
+                Result = JObject.FromObject(new
+                {
+                    status = false,
+                    message = "Unauthorized",
+                    AdvertisementResult = ""
+                });
+                return GetOkResult(Result);
+            }
+        }
+
         #endregion
 
         #region private methodes
