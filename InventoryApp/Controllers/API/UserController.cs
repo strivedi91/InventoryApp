@@ -57,6 +57,7 @@ namespace InventoryApp.Controllers.API
                                     {
                                         Id = category.Id,
                                         Name = category.Name,
+                                        Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Id).Item1.FirstOrDefault(),
                                         ProductCount = category.Products.Where(x => x.IsActive == true).Count(),
                                         SelectedProductCount = Repository<AspNetUserPreferences>.GetEntityListForQuery(x => x.CategoryId == category.Id && x.UserId == LoggedInUserId).Item1.Count()
                                     }
@@ -185,6 +186,7 @@ namespace InventoryApp.Controllers.API
                                    {
                                        Id = category.Categories.Id,
                                        Name = category.Categories.Name,
+                                       Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Categories.Id).Item1.FirstOrDefault(),
                                        ProductCount = Repository<Products>.GetEntityListForQuery(x => x.CategoryId == category.CategoryId && x.IsActive == true).Item1.Select(x => x.id).Count(),
                                        SelectedProductCount = Repository<AspNetUserPreferences>.GetEntityListForQuery(x => x.CategoryId == category.CategoryId && x.UserId == LoggedInUserId).Item1.Count()
                                    }
@@ -210,6 +212,7 @@ namespace InventoryApp.Controllers.API
                                         {
                                             Id = category.Id,
                                             Name = category.Name,
+                                            Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Id).Item1.FirstOrDefault(),
                                             ProductCount = category.Products.Where(x => x.IsActive == true).Count(),
                                             SelectedProductCount = 0
                                         }
