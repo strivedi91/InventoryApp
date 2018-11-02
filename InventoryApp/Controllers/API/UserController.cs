@@ -1809,10 +1809,10 @@ namespace InventoryApp.Controllers.API
                     Result = JObject.FromObject(new
                     {
                         status = true,
-                        message = "Device Id Updated!",
+                        message = "",
                         AdvertisementResult = JObject.FromObject(new
                         {
-                            Images = getAdvertisements()
+                            Images = ProductImages.ToArray()
                         })
                     });
 
