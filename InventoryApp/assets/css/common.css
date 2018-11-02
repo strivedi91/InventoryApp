@@ -63,7 +63,7 @@ Sorting
     }
 
 .pagingActive {
-    background-color: #FE0B75 !important;
+    background-color: #E28E16 !important;
     color: white !important;
 }
 
@@ -112,7 +112,7 @@ Sorting
 
         .pagination a.active {
             color: #fff;
-            background: #FE0B75;
+            background: #E28E16;
         }
 .reg-main {
     background: #FCFCFC;
@@ -248,7 +248,7 @@ Sorting
 }
 
 .linkCommon {
-    color: #FE0B75;
+    color: #E28E16;
     text-decoration: underline;
 }
 
@@ -268,5 +268,5 @@ Sorting
 }
 
 .commonColor {
-    color: #FE0B75;
+    color: #E28E16;
 }
