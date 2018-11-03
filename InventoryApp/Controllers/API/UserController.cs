@@ -53,7 +53,8 @@ namespace InventoryApp.Controllers.API
                         {
                             Categories =
                                     from category in categories
-                                    let Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Id).Item1.FirstOrDefault()
+                                    let Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Id
+                                    && x.IsActive == true && x.IsDeleted == false).Item1.FirstOrDefault()
                                     select new
                                     {
                                         Id = category.Id,
@@ -183,7 +184,8 @@ namespace InventoryApp.Controllers.API
                                 FirstTimeLogin = false,
                                 Categories =
                                    from category in userCategories
-                                   let Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Categories.Id).Item1.FirstOrDefault()
+                                   let Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Categories.Id
+                                   && x.IsActive == true && x.IsDeleted == false).Item1.FirstOrDefault()
                                    select new
                                    {
                                        Id = category.Categories.Id,
@@ -210,7 +212,8 @@ namespace InventoryApp.Controllers.API
                                 FirstTimeLogin = true,
                                 Categories =
                                         from category in categories
-                                        let Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Id).Item1.FirstOrDefault()
+                                        let Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Id
+                                        && x.IsActive == true && x.IsDeleted == false).Item1.FirstOrDefault()
                                         select new
                                         {
 
