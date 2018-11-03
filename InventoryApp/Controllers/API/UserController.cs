@@ -957,7 +957,7 @@ namespace InventoryApp.Controllers.API
                     }
                     #endregion
 
-                    sendPlacedOrderEmail(orders, orderItems);
+                    bool sendEmailResult = CommonFunctions.sendPlacedOrderEmail(orders, orderItems, "Placed");
 
                     Result = JObject.FromObject(new
                     {

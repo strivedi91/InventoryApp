@@ -348,6 +348,7 @@
     <Content Include="assets\images\edit.png" />
     <Content Include="assets\images\favicon-16x16.png" />
     <Content Include="assets\images\feedback.png" />
+    <Content Include="assets\images\Godam_Logo.jpg" />
     <Content Include="assets\images\graph.png" />
     <Content Include="assets\images\icon1.png" />
     <Content Include="assets\images\icon2.png" />

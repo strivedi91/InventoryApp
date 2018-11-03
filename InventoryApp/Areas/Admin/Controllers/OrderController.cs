@@ -286,6 +286,8 @@ namespace InventoryApp.Areas.Admin.Controllers
                 objOrder.OrderStatus = fsOrderStatus;
                 await Repository<Orders>.UpdateEntity(objOrder, (entity) => { return entity.id; });
                 flgIsSuccess = true;
+                if(fsOrderStatus == Enums.GetEnumDescription(Enums.OrderStatus.DeliveredCompleted) || fsOrderStatus == Enums.GetEnumDescription(Enums.OrderStatus.Dispatched))
+                sendStatusEmail(objOrder, fsOrderStatus);
             }
             catch
             {
@@ -293,6 +295,41 @@ namespace InventoryApp.Areas.Admin.Controllers
             }
 
             return Json(flgIsSuccess, JsonRequestBehavior.AllowGet);
+        }
+
+        private bool sendStatusEmail(Orders foOrder, string fsOrderStatus)
+        {
+            List<Expression<Func<OrderDetails, Object>>> includes = new List<Expression<Func<OrderDetails, object>>>();
+            Expression<Func<OrderDetails, object>> IncludeProducts = (product) => product.Products;
+            //Expression<Func<OrderDetails, object>> IncludeCategory = (category) => category.Categories;
+            
+            includes.Add(IncludeProducts);
+            //includes.Add(IncludeCategory);
+            
+            var userSelectedProducts = Repository<OrderDetails>.
+                GetEntityListForQuery(x => x.OrderId == foOrder.id, null, includes).Item1;
+
+            List<OrderDetails> orderItems = new List<OrderDetails>();
+            orderItems.AddRange(
+                userSelectedProducts.
+                Select(x => new OrderDetails
+                {
+                    OrderId = foOrder.id,
+                    Quantity = x.Quantity,
+                    CategoryId = x.CategoryId,
+                    Discount = Convert.ToDecimal((x.Quantity * x.Products.Price) - Convert.ToDecimal(x.Quantity * (x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price))) + Convert.ToDecimal(x.PercentageDiscount > 0 ? ((x.PercentageDiscount * (x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price)) / 100) : x.FlatDiscount),
+                    Price = x.Products.Price,
+                    TotalPrice = (Convert.ToDecimal(x.Quantity * (x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price)) - Convert.ToDecimal(x.PercentageDiscount > 0 ? ((x.PercentageDiscount * (x.Products.OfferPrice != null ? x.Products?.OfferPrice : x.Products.Price)) / 100) : x.FlatDiscount)),
+                    ProductId = x.ProductId,
+                    OfferId = x.OfferId == 0 ? null : x.OfferId,
+                    OfferCode = x.OfferCode,
+                    OfferDescription = x.OfferDescription,
+                    FlatDiscount = x.FlatDiscount,
+                    PercentageDiscount = x.PercentageDiscount,
+                }));
+
+            bool sendEmailResult = CommonFunctions.sendPlacedOrderEmail(foOrder, orderItems, fsOrderStatus);
+            return sendEmailResult;
         }
 
     }
