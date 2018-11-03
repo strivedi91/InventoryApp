@@ -6,6 +6,8 @@ using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
+using System.Net.Mime;
 using System.Web;
 using System.Web.Http;
 
@@ -52,9 +54,15 @@ namespace InventoryApp.Helpers
                 foreach (var item in foOrderItems)
                 {
                     Products loProducts = Repository<Products>.GetEntityListForQuery(x => x.id == item.ProductId).Item1.FirstOrDefault();
+                    
+                    //var contentID = "Image" + loProducts.id;
+                    //var prodImage = new Attachment(GetProductImagesById(loProducts.id));
+                    //prodImage.ContentId = contentID;
+                    //prodImage.ContentDisposition.Inline = true;
+                    //prodImage.ContentDisposition.DispositionType = DispositionTypeNames.Inline;
 
                     OrderItemRow += OrderItemRow + "<tr>"
-                                    + "<td width='15%' style='border-bottom:1px solid #676161; padding:10px; text-align:left'><img src='" + GetProductImagesById(loProducts.id)[0] + "' style='height:50px;width:50px'></td>"
+                                    + "<td width='15%' style='border-bottom:1px solid #676161; padding:10px; text-align:left'><img src='"+GetProductImagesById(loProducts.id)+"' style='height:50px;width:50px'></td>"
                                     + "<td width='30%' style='border-bottom:1px solid #676161; padding:10px; text-align:left'>" + loProducts.Name + "</td>"
                                     + "<td width='15%' style='border-bottom:1px solid #676161; padding:10px; text-align:center'>" + item.Quantity + "</td>"
                                     + "<td width='20%' style='border-bottom:1px solid #676161; padding:10px; text-align:right'>" + item.Price + "</td>"
@@ -64,6 +72,15 @@ namespace InventoryApp.Helpers
                     TotalAmount += TotalAmount + item.TotalPrice;
                 }
 
+                //var contentLogoID = "LogoImage";
+                //var inlineLogo = new Attachment(HttpContext.Current.Server.MapPath("/assets/images/Godam_Logo.jpg"));
+                //inlineLogo.ContentId = contentLogoID;
+                //inlineLogo.ContentDisposition.Inline = true;
+                //inlineLogo.ContentDisposition.DispositionType = DispositionTypeNames.Inline;
+                string strPathAndQuery = HttpContext.Current.Request.Url.PathAndQuery;
+                string strUrl = HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
+
+                lsEmailBody = lsEmailBody.Replace("{logo}", "<img src='"+ strUrl + "assets/images/Godam_Logo.jpg' style='height: 60px;'>");
                 lsEmailBody = lsEmailBody.Replace("{OrderNo}", foOrder.id.ToString());
                 lsEmailBody = lsEmailBody.Replace("{OrderDate}", foOrder.CreatedOn.ToShortDateString());
                 lsEmailBody = lsEmailBody.Replace("{OrderStatus}", foOrder.OrderStatus);
@@ -80,33 +97,31 @@ namespace InventoryApp.Helpers
             }
         }
 
-        private static string[] GetProductImagesById(int productId)
+        private static string GetProductImagesById(int productId)
         {
             string ProductImagePath = ConfigurationManager.AppSettings["ProductImagePath"].ToString();
 
             string path = Path.Combine((System.Web.Hosting.HostingEnvironment.ApplicationHost.ToString() + ProductImagePath), productId.ToString());
 
-            string Productpath = Path.Combine(HttpContext.Current.Server.MapPath(ProductImagePath), productId.ToString());
+            string strPathAndQuery = HttpContext.Current.Request.Url.PathAndQuery;
+            string strUrl = HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
 
+            string Productpath = Path.Combine(HttpContext.Current.Server.MapPath(ProductImagePath), productId.ToString());
+            string imageURL = "";
             if (Directory.Exists(Productpath))
             {
                 DirectoryInfo info = new DirectoryInfo(Productpath);
                 FileInfo[] files = info.GetFiles("*.*");
-
-                List<string> ProductImages = new List<string>();
-
-                foreach (FileInfo file in files)
-                {
-                    string fileName = file.Name;
-                    ProductImages.Add(VirtualPathUtility.ToAbsolute(ProductImagePath) + productId.ToString() + "/" + fileName);
-                }
-                return ProductImages.ToArray();
+                if(files.Count() > 0)
+                    imageURL = strUrl +"Images/Product/" + productId.ToString() + "/" + files[0].Name;
+                else
+                    imageURL = strUrl + "Images/Product/NoImage.png";
             }
+            if(string.IsNullOrEmpty(imageURL))
+                imageURL = strUrl + "Images/Product/NoImage.png";
+
+            return imageURL;
             
-            else
-            {
-                return new string[] { };
-            }
         }
     }
 }
