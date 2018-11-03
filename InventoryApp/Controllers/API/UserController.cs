@@ -895,6 +895,8 @@ namespace InventoryApp.Controllers.API
 
                     await Repository<Cart>.DeleteRange(userSelectedProducts);
 
+                    await AdjustQuantity(orderItems);
+
                     #region PDF
                     string lsPDFBody = string.Empty;
 
@@ -1855,7 +1857,7 @@ namespace InventoryApp.Controllers.API
             {
                 AspNetUsers loUser = Repository<AspNetUsers>.GetEntityListForQuery(x => x.Id == foOrder.UserId).Item1.FirstOrDefault();
 
-               
+
 
                 string lsFrom = "no-replay@thgodowninventorryapp.com";
 
@@ -1877,7 +1879,7 @@ namespace InventoryApp.Controllers.API
                 }
 
                 string OrderItemRow = string.Empty;
-                decimal TotalAmount = 0; 
+                decimal TotalAmount = 0;
                 foreach (var item in foOrderItems)
                 {
                     Products loProducts = Repository<Products>.GetEntityListForQuery(x => x.id == item.ProductId).Item1.FirstOrDefault();
@@ -1972,6 +1974,16 @@ namespace InventoryApp.Controllers.API
             loAllOffers.AddRange(foOffers2);
 
             return loAllOffers;
+        }
+
+        private async Task AdjustQuantity(List<OrderDetails> orderDetails)
+        {
+            foreach (var product in orderDetails)
+            {
+                var p = Repository<Products>.GetEntityListForQuery(x => x.id == product.ProductId).Item1.FirstOrDefault();
+                p.Quantity = p.Quantity - product.Quantity;
+                await Repository<Products>.UpdateEntity(p, (entity) => { return entity.id; });
+            }
         }
         #endregion
     }
