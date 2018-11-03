@@ -53,11 +53,12 @@ namespace InventoryApp.Controllers.API
                         {
                             Categories =
                                     from category in categories
+                                    let Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Id).Item1.FirstOrDefault()
                                     select new
                                     {
                                         Id = category.Id,
                                         Name = category.Name,
-                                        Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Id).Item1.FirstOrDefault(),
+                                        Offer = Offer ?? new Offers(),
                                         ProductCount = category.Products.Where(x => x.IsActive == true).Count(),
                                         SelectedProductCount = Repository<AspNetUserPreferences>.GetEntityListForQuery(x => x.CategoryId == category.Id && x.UserId == LoggedInUserId).Item1.Count()
                                     }
