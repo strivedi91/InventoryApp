@@ -53,11 +53,12 @@ namespace InventoryApp.Controllers.API
                         {
                             Categories =
                                     from category in categories
+                                    let Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Id).Item1.FirstOrDefault()
                                     select new
                                     {
                                         Id = category.Id,
                                         Name = category.Name,
-                                        Offer = Repository<Offers>.GetEntityListForQuery(x => x.CategoryId == category.Id).Item1.FirstOrDefault(),
+                                        Offer = Offer ?? new Offers(),
                                         ProductCount = category.Products.Where(x => x.IsActive == true).Count(),
                                         SelectedProductCount = Repository<AspNetUserPreferences>.GetEntityListForQuery(x => x.CategoryId == category.Id && x.UserId == LoggedInUserId).Item1.Count()
                                     }
@@ -894,6 +895,8 @@ namespace InventoryApp.Controllers.API
                     await Repository<OrderDetails>.InsertMultipleEntities(orderItems);
 
                     await Repository<Cart>.DeleteRange(userSelectedProducts);
+
+                    await AdjustQuantity(orderItems);
 
                     #region PDF
                     string lsPDFBody = string.Empty;
@@ -1855,7 +1858,7 @@ namespace InventoryApp.Controllers.API
             {
                 AspNetUsers loUser = Repository<AspNetUsers>.GetEntityListForQuery(x => x.Id == foOrder.UserId).Item1.FirstOrDefault();
 
-               
+
 
                 string lsFrom = "no-replay@thgodowninventorryapp.com";
 
@@ -1877,7 +1880,7 @@ namespace InventoryApp.Controllers.API
                 }
 
                 string OrderItemRow = string.Empty;
-                decimal TotalAmount = 0; 
+                decimal TotalAmount = 0;
                 foreach (var item in foOrderItems)
                 {
                     Products loProducts = Repository<Products>.GetEntityListForQuery(x => x.id == item.ProductId).Item1.FirstOrDefault();
@@ -1972,6 +1975,16 @@ namespace InventoryApp.Controllers.API
             loAllOffers.AddRange(foOffers2);
 
             return loAllOffers;
+        }
+
+        private async Task AdjustQuantity(List<OrderDetails> orderDetails)
+        {
+            foreach (var product in orderDetails)
+            {
+                var p = Repository<Products>.GetEntityListForQuery(x => x.id == product.ProductId).Item1.FirstOrDefault();
+                p.Quantity = p.Quantity - product.Quantity;
+                await Repository<Products>.UpdateEntity(p, (entity) => { return entity.id; });
+            }
         }
         #endregion
     }
