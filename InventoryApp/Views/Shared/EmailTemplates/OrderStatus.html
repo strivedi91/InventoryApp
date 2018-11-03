@@ -3,7 +3,7 @@
 </head>
 <body style="padding: 20px;font-size: 18px;line-height: 1.7">
     <div style="border-bottom:3px solid #e28d16;padding-bottom: 10px">
-        <img src="~/assets/images/Godam_Logo.jpg" style="height:60px;">
+        {logo}
         <div style="display:inline-block;float:right;">
             <table border="0" style="font-size:18px">
                 <tr>
@@ -19,8 +19,8 @@
     </div>
     <div style="padding: 15px;background-color: #eeeeee">
         <div>
-            Dear Akshay Lad,
-            <div style="padding-left:25px">Your order {OrderNo} place successfully.</div>
+            Dear {CustomerName},
+            <div style="padding-left:25px">Your order {OrderNo} {OrderStatus} successfully.</div>
             <div style="font-size:20px;border-bottom:2px solid #e28d16">
                 <b>Order Detail</b>
             </div>
