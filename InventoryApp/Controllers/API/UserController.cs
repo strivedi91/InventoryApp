@@ -300,6 +300,12 @@ namespace InventoryApp.Controllers.API
                                     MOQ = product.Products.MOQ == null ? 1 : product.Products.MOQ,
                                     GST = product.Products.ApplyGst ? product.Categories.GST : 0,
                                     product.Products.Quantity,
+                                    Attributes = Repository<ProductAttributes>.GetEntityListForQuery(x => x.ProductId == product.ProductId).
+                                    Item1.Select(x => new
+                                    {
+                                        x.AttributeName,
+                                        values = x.AttributeValues.Split(',')
+                                    }),
                                     OfferDetails = mergeOffers(categoryOffer, product.Products.Offers.Where(x => x.IsDeleted == false && x.IsActive == true))
                                               .Select(x => new
                                               {
@@ -427,11 +433,13 @@ namespace InventoryApp.Controllers.API
                     Expression<Func<Products, object>> IncludeTierPricing = (pricing) => pricing.TierPricings;
                     Expression<Func<Products, object>> IncludeCart = (pricing) => pricing.Carts;
                     Expression<Func<Products, object>> IncludeOffer = (Offer) => Offer.Offers;
+                    Expression<Func<Products, object>> IncludeAttributes = (Attributes) => Attributes.ProductAttributes;
                     //Expression<Func<Products, object>> IncludeReview = (review) => review.ProductReviews;
                     includes.Add(IncludeCategories);
                     includes.Add(IncludeTierPricing);
                     includes.Add(IncludeCart);
                     includes.Add(IncludeOffer);
+                    includes.Add(IncludeAttributes);
                     //includes.Add(IncludeReview);
 
                     var products = Repository<Products>.GetEntityListForQuery(x => x.IsActive && x.CategoryId == Id, null, includes).Item1;
@@ -463,6 +471,12 @@ namespace InventoryApp.Controllers.API
                                OfferPrice = product.OfferPrice == null ? 0 : product.OfferPrice,
                                MOQ = product.MOQ == null ? 1 : product.MOQ,
                                product.Quantity,
+                               Attributes = product.ProductAttributes.
+                                    Select(x => new
+                                    {
+                                        x.AttributeName,
+                                        values = x.AttributeValues.Split(',')
+                                    }),
                                OfferDetails = mergeOffers(categoryOffer, product.Offers.Where(x => x.IsDeleted == false && x.IsActive == true))
                                               .Select(x => new
                                               {
@@ -549,6 +563,20 @@ namespace InventoryApp.Controllers.API
                             await Repository<WishList>.DeleteEntity(WishListItem, entity => { return entity.Id; });
                         }
                     }
+
+                    foreach (var item in addToCartModel.cartAttributes)
+                    {
+                        await Repository<CartAttributes>.InsertEntity(
+                            new CartAttributes
+                            {
+                                CartId = newCartItem.id,
+                                ProductId = newCartItem.ProductId,
+                                AttributeName = item.AttributeName,
+                                AttributeValue = item.AttributeValue
+                            }
+                        , entity => { return entity.Id; });
+                    }
+
                     Result = JObject.FromObject(new
                     {
                         status = true,
@@ -596,9 +624,11 @@ namespace InventoryApp.Controllers.API
                     Expression<Func<Cart, object>> IncludeProducts = (product) => product.Products;
                     Expression<Func<Cart, object>> IncludeCategory = (category) => category.Categories;
                     Expression<Func<Cart, object>> IncludeOffers = (offers) => offers.Offers;
+                    Expression<Func<Cart, object>> IncludeAttributes = (Attributes) => Attributes.CartAttributes;
                     includes.Add(IncludeProducts);
                     includes.Add(IncludeCategory);
                     includes.Add(IncludeOffers);
+                    includes.Add(IncludeAttributes);
 
                     var userSelectedProducts = Repository<Cart>.
                         GetEntityListForQuery(x => x.UserId == LoggedInUserId, null, includes).Item1;
@@ -627,6 +657,11 @@ namespace InventoryApp.Controllers.API
                                     MOQ = product.Products.MOQ == null ? 1 : product.Products.MOQ,
                                     product.Products?.Quantity,
                                     SelectedQuantity = product.Quantity,
+                                    Attributes = product.CartAttributes.Select(x => new
+                                    {
+                                        x.AttributeName,
+                                        x.AttributeValue
+                                    }),
                                     OfferDetails = Repository<Offers>.GetEntityListForQuery(x => x.IsDeleted == false && x.IsActive == true).Item1.
                                     Select(x => new
                                     {

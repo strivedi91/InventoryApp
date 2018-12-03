@@ -25,11 +25,21 @@ namespace InventoryApp_DL.Entities
         public string UserId { get; set; } // UserId
         public int Quantity { get; set; } // Quantity
 
+        // Reverse navigation
+        public virtual ICollection<CartAttributes> CartAttributes { get; set; } // CartAttributes.FK_CartAttributes_Cart
+
         // Foreign keys
         public virtual AspNetUsers AspNetUsers { get; set; } //  FK_Cart_AspNetUsers
         public virtual Categories Categories { get; set; } //  FK_Cart_Categories
         public virtual Offers Offers { get; set; } //  FK_Cart_Offers
         public virtual Products Products { get; set; } //  FK_Cart_Products
+
+        public Cart()
+        {
+            CartAttributes = new List<CartAttributes>();
+            InitializePartial();
+        }
+        partial void InitializePartial();
     }
 
 }

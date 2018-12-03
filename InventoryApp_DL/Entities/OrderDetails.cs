@@ -32,10 +32,20 @@ namespace InventoryApp_DL.Entities
         public int? PercentageDiscount { get; set; } // PercentageDiscount
         public int? OfferId { get; set; } // OfferId
 
+        // Reverse navigation
+        public virtual ICollection<OrderDetailsAttributes> OrderDetailsAttributes { get; set; } // OrderDetailsAttributes.FK_OrderDetailsAttributes_OrderDetails
+
         // Foreign keys
         public virtual Categories Categories { get; set; } //  FK_OrderDetails_Categories
         public virtual Orders Orders { get; set; } //  FK_OrderDetails_Order
         public virtual Products Products { get; set; } //  FK_OrderDetails_Products
+
+        public OrderDetails()
+        {
+            OrderDetailsAttributes = new List<OrderDetailsAttributes>();
+            InitializePartial();
+        }
+        partial void InitializePartial();
     }
 
 }

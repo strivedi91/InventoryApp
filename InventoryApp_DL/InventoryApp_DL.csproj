@@ -97,6 +97,12 @@
     <Compile Include="Entities\Cart.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\CartAttributes.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\CartAttributesConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\CartConfiguration.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
@@ -127,6 +133,12 @@
     <Compile Include="Entities\OrderDetails.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\OrderDetailsAttributes.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\OrderDetailsAttributesConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\OrderDetailsConfiguration.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
@@ -146,6 +158,12 @@
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\PagesConfiguration.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\ProductAttributes.cs">
+      <DependentUpon>InventoryApp_Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\ProductAttributesConfiguration.cs">
       <DependentUpon>InventoryApp_Database.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\ProductReview.cs">

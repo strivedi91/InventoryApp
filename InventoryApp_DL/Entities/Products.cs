@@ -36,8 +36,11 @@ namespace InventoryApp_DL.Entities
         // Reverse navigation
         public virtual ICollection<AspNetUserPreferences> AspNetUserPreferences { get; set; } // AspNetUserPreferences.FK_AspNetUserPreferences_Products
         public virtual ICollection<Cart> Carts { get; set; } // Cart.FK_Cart_Products
+        public virtual ICollection<CartAttributes> CartAttributes { get; set; } // CartAttributes.FK_CartAttributes_Products
         public virtual ICollection<Offers> Offers { get; set; } // Offers.FK_Offers_Products
         public virtual ICollection<OrderDetails> OrderDetails { get; set; } // OrderDetails.FK_OrderDetails_Products
+        public virtual ICollection<OrderDetailsAttributes> OrderDetailsAttributes { get; set; } // OrderDetailsAttributes.FK_OrderDetailsAttributes_Products
+        public virtual ICollection<ProductAttributes> ProductAttributes { get; set; } // ProductAttributes.FK_ProductAttributes_Products
         public virtual ICollection<ProductReview> ProductReviews { get; set; } // ProductReview.FK_ProductReview_Products
         public virtual ICollection<Suggestions> Suggestions { get; set; } // Suggestions.FK__Suggestio__Produ__282DF8C2
         public virtual ICollection<TierPricing> TierPricings { get; set; } // TierPricing.FK_TierPricing_Products
@@ -53,8 +56,11 @@ namespace InventoryApp_DL.Entities
             ApplyGst = false;
             AspNetUserPreferences = new List<AspNetUserPreferences>();
             Carts = new List<Cart>();
+            CartAttributes = new List<CartAttributes>();
             Offers = new List<Offers>();
             OrderDetails = new List<OrderDetails>();
+            OrderDetailsAttributes = new List<OrderDetailsAttributes>();
+            ProductAttributes = new List<ProductAttributes>();
             ProductReviews = new List<ProductReview>();
             Suggestions = new List<Suggestions>();
             TierPricings = new List<TierPricing>();
