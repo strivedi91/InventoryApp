@@ -22,8 +22,7 @@ namespace InventoryApp_DL.Entities
         public int OrderDetailsId { get; set; } // OrderDetailsId
         public int ProductId { get; set; } // ProductId
         public string AttributeName { get; set; } // AttributeName
-        public string AttributeValues { get; set; } // AttributeValues
-        public string ControlType { get; set; } // ControlType
+        public string AttributeValue { get; set; } // AttributeValue
 
         // Foreign keys
         public virtual OrderDetails OrderDetails { get; set; } //  FK_OrderDetailsAttributes_OrderDetails

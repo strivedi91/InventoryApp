@@ -12,12 +12,18 @@ namespace InventoryApp.Models.ApiModels
         public int OfferId { get; set; }
         public int Quantity { get; set; }
         public int CategoryId { get; set; }
-        public List<CartAttributes> cartAttributes { get; set; }
+        public List<CartItemAttributes> CartAttributes { get; set; }
 
         public AddToCartModel()
         {
-            cartAttributes = new List<CartAttributes>();
+            CartAttributes = new List<CartItemAttributes>();
         }
+    }
+
+    public class CartItemAttributes
+    {
+        public string AttributeName { get; set; } 
+        public string AttributeValue { get; set; }
     }
 
     public class UpdateCartModel

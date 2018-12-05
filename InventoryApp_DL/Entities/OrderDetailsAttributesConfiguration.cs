@@ -30,8 +30,7 @@ namespace InventoryApp_DL.Entities
             Property(x => x.OrderDetailsId).HasColumnName("OrderDetailsId").IsRequired();
             Property(x => x.ProductId).HasColumnName("ProductId").IsRequired();
             Property(x => x.AttributeName).HasColumnName("AttributeName").IsRequired().HasMaxLength(50);
-            Property(x => x.AttributeValues).HasColumnName("AttributeValues").IsRequired();
-            Property(x => x.ControlType).HasColumnName("ControlType").IsRequired().HasMaxLength(50);
+            Property(x => x.AttributeValue).HasColumnName("AttributeValue").IsRequired();
 
             // Foreign keys
             HasRequired(a => a.OrderDetails).WithMany(b => b.OrderDetailsAttributes).HasForeignKey(c => c.OrderDetailsId); // FK_OrderDetailsAttributes_OrderDetails

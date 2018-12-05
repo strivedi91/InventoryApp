@@ -564,7 +564,7 @@ namespace InventoryApp.Controllers.API
                         }
                     }
 
-                    foreach (var item in addToCartModel.cartAttributes)
+                    foreach (var item in addToCartModel.CartAttributes)
                     {
                         await Repository<CartAttributes>.InsertEntity(
                             new CartAttributes
@@ -884,9 +884,11 @@ namespace InventoryApp.Controllers.API
                     Expression<Func<Cart, object>> IncludeProducts = (product) => product.Products;
                     Expression<Func<Cart, object>> IncludeCategory = (category) => category.Categories;
                     Expression<Func<Cart, object>> IncludeOffers = (offer) => offer.Offers;
+                    Expression<Func<Cart, object>> IncludeAttributes = (Attrivutes) => Attrivutes.CartAttributes;
                     includes.Add(IncludeProducts);
                     includes.Add(IncludeCategory);
                     includes.Add(IncludeOffers);
+                    includes.Add(IncludeAttributes);
 
                     var userSelectedProducts = Repository<Cart>.
                         GetEntityListForQuery(x => x.UserId == LoggedInUserId, null, includes).Item1;
@@ -927,10 +929,35 @@ namespace InventoryApp.Controllers.API
                             OfferCode = x.Offers?.OfferCode,
                             OfferDescription = x.Offers?.OfferDescription,
                             FlatDiscount = x.Offers?.FlatDiscount,
-                            PercentageDiscount = x.Offers?.PercentageDiscount,
+                            PercentageDiscount = x.Offers?.PercentageDiscount
+                            //OrderDetailsAttributes = x.CartAttributes.
+                            //Select(y => new OrderDetailsAttributes
+                            //{
+                            //    AttributeName = y.AttributeName,
+                            //    AttributeValue = y.AttributeValue,
+                            //    ProductId = y.ProductId,
+                            //}).ToList()
                         }));
+                    //await Repository<OrderDetails>.InsertMultipleEntities(orderItems);
 
-                    await Repository<OrderDetails>.InsertMultipleEntities(orderItems);
+
+                    foreach (var item in orderItems)
+                    {
+                        await Repository<OrderDetails>.InsertEntity(item, entity => { return entity.id; });
+
+                        foreach (var productAttribute in userSelectedProducts.
+                            Where(x => x.ProductId == item.ProductId).FirstOrDefault().CartAttributes)
+                        {
+                            var orderDetailsAttribute = new OrderDetailsAttributes()
+                            {
+                                AttributeName = productAttribute.AttributeName,
+                                AttributeValue = productAttribute.AttributeValue,
+                                OrderDetailsId = item.id,
+                                ProductId = productAttribute.ProductId
+                            };
+                            await Repository<OrderDetailsAttributes>.InsertEntity(orderDetailsAttribute, entity => { return entity.Id; });
+                        }
+                    }
 
                     await Repository<Cart>.DeleteRange(userSelectedProducts);
 
@@ -1208,7 +1235,14 @@ namespace InventoryApp.Controllers.API
                                 MOQ = product.Products.MOQ == null ? 1 : product.Products.MOQ,
                                 product.Products.Quantity,
                                 OrderedQuantity = product.Quantity,
-                                Images = GetProductImagesById(product.Products.id)
+                                Images = GetProductImagesById(product.Products.id),
+                                Attributes = Repository<OrderDetailsAttributes>.
+                                GetEntityListForQuery(x => x.ProductId == product.ProductId).
+                                    Item1.Select(x => new
+                                    {
+                                        x.AttributeName,
+                                        x.AttributeValue
+                                    }),
                             }
                         })
                     });
